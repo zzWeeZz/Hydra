@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist|x64">
+      <Configuration>Dist</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BDF6590D-290B-82BE-F28C-251E5E607EEF}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Hydra</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\bin\Debug-windows-x86_64\Hydra\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-x86_64\Hydra\</IntDir>
+    <TargetName>Hydra</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\bin\Release-windows-x86_64\Hydra\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86_64\Hydra\</IntDir>
+    <TargetName>Hydra</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <OutDir>..\bin\Dist-windows-x86_64\Hydra\</OutDir>
+    <IntDir>..\bin-int\Dist-windows-x86_64\Hydra\</IntDir>
+    <TargetName>Hydra</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>HYpch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;6285;26437;26451;26498;26800;26495;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_CONSOLE;HY_CONFIG_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.216.0\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalOptions>/ignore:4006 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>HYpch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;6285;26437;26451;26498;26800;26495;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_CONSOLE;HY_CONFIG_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.216.0\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalOptions>/ignore:4006 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>HYpch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;6285;26437;26451;26498;26800;26495;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_CONSOLE;HY_CONFIG_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.216.0\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalOptions>/ignore:4006 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\HYpch.h" />
+    <ClInclude Include="src\Hydra\API\Context.h" />
+    <ClInclude Include="src\Hydra\API\DX12\Backend\DxDevice.h" />
+    <ClInclude Include="src\Hydra\API\DX12\Backend\DxPhysicalDevice.h" />
+    <ClInclude Include="src\Hydra\API\DX12\Backend\DxSwapchain.h" />
+    <ClInclude Include="src\Hydra\API\DX12\DxUtils.h" />
+    <ClInclude Include="src\Hydra\API\Device.h" />
+    <ClInclude Include="src\Hydra\API\Factory.h" />
+    <ClInclude Include="src\Hydra\API\PhysicalDevice.h" />
+    <ClInclude Include="src\Hydra\API\Swapchain.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanDevice.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanPhysicalDevice.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanSwapchain.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\VulkanAllocator.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\VulkanContext.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\VulkanUtils.h" />
+    <ClInclude Include="src\Hydra\Application.h" />
+    <ClInclude Include="src\Hydra\EntryPoint.h" />
+    <ClInclude Include="src\Hydra\Events\ApplicationEvent.h" />
+    <ClInclude Include="src\Hydra\Events\Event.h" />
+    <ClInclude Include="src\Hydra\Events\InputEvent.h" />
+    <ClInclude Include="src\Hydra\Hydra.h" />
+    <ClInclude Include="src\Hydra\Layer.h" />
+    <ClInclude Include="src\Hydra\LayerStack.h" />
+    <ClInclude Include="src\Hydra\Platform\WindowsWindow.h" />
+    <ClInclude Include="src\Hydra\Utils\Log.h" />
+    <ClInclude Include="src\Hydra\Utils\Memory.h" />
+    <ClInclude Include="src\Hydra\Utils\PlatformDetection.h" />
+    <ClInclude Include="src\Hydra\Window.h" />
+    <ClInclude Include="vendor\vma\vk_mem_alloc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\HYpch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\DX12\Backend\DxDevice.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\Backend\DxPhysicalDevice.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\Backend\DxSwapchain.cpp" />
+    <ClCompile Include="src\Hydra\API\Factory.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Backend\VulkanDevice.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Backend\VulkanPhysicalDevice.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Backend\VulkanSwapchain.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\VulkanAllocator.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\VulkanContext.cpp" />
+    <ClCompile Include="src\Hydra\Application.cpp" />
+    <ClCompile Include="src\Hydra\Layer.cpp" />
+    <ClCompile Include="src\Hydra\LayerStack.cpp" />
+    <ClCompile Include="src\Hydra\Platform\WindowsWindow.cpp" />
+    <ClCompile Include="src\Hydra\Utils\Log.cpp" />
+    <ClCompile Include="vendor\dx12Helpers\D3D12MemAlloc.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

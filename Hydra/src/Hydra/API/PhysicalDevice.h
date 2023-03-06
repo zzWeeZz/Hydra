@@ -10,7 +10,6 @@ namespace Hydra
 	{
 	public:
 		PhysicalDevice(const PhysicalDeviceSpecifications& specs) { m_Specs = specs; };
-		virtual void Create() = 0;
 
 	protected:
 		PhysicalDeviceSpecifications m_Specs;

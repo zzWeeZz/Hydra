@@ -8,7 +8,7 @@ namespace Hydra
 	public:
 		DxDevice(Ptr<PhysicalDevice> physicalDevice);
 		// Inherited via Device
-		void Create(Ptr<PhysicalDevice> phycicalDevice) override;
+		void Create(Ptr<PhysicalDevice> phycicalDevice);
 
 		[[nodiscard]] WinRef<ID3D12CommandQueue> GetCommandQueue() { return m_CommandQueue; }
 

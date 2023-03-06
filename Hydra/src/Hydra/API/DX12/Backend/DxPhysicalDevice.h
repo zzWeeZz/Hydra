@@ -8,7 +8,7 @@ namespace Hydra
 	public:
 		DxPhysicalDevice(const PhysicalDeviceSpecifications& specs);
 		// Inherited via PhysicalDevice
-		void Create() override;
+		void Create();
 		[[nodiscard]] WinRef<IDXGIAdapter1> GetAdapter() { return m_Adapter; }
 		[[nodiscard]] WinRef<IDXGIFactory4> GetFactory() { return m_Factory; }
 		[[nodiscard]] int32_t GetAdapterIndex() const { return m_AdapterIndex; }

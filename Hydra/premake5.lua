@@ -16,7 +16,8 @@ project "Hydra"
     {
         "src/**.cpp",
         "src/**.h", 
-        "vendor/dx12Helpers/**.cpp"
+        "vendor/dx12Helpers/**.cpp",
+        FileDir["VMA"]
     }
     
     includedirs
@@ -26,6 +27,7 @@ project "Hydra"
         IncludeDir["spdlog"],
         IncludeDir["VulkanSDK"],
         IncludeDir["Dx12Helpers"],
+        IncludeDir["Vendor"]
     }
     
     libdirs

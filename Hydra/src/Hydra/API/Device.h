@@ -10,7 +10,6 @@ namespace Hydra
 		Device(Ptr<PhysicalDevice> physicalDevice) {}
 		virtual ~Device(){}
 
-		virtual void Create(Ptr<PhysicalDevice> phycicalDevice) = 0;
 	protected:
 	};
 }

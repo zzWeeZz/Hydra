@@ -7,7 +7,14 @@
 
 namespace Hydra
 {
-	class VkSwapchain : public Swapchain
+	struct SwapChainSupportDetails
+	{
+		VkSurfaceCapabilitiesKHR capabilities;
+		std::vector<VkSurfaceFormatKHR> formats;
+		std::vector<VkPresentModeKHR> presentModes;
+	};
+
+	class VulkanSwapchain : public Swapchain
 	{
 	public:
 		void Resize(uint32_t width, uint32_t height) override;

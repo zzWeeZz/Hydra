@@ -1,11 +1,15 @@
 VULKAN_SDK = os.getenv("VULKAN_SDK")
 
+FileDir = {};
+FileDir["VMA"] = "%{wks.location}/Hydra/vendor/vma/vk_mem_alloc.h"
+
 IncludeDir = {};
 
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include/"
 IncludeDir["GLFW"] = "%{wks.location}/Hydra/vendor/GLFW/include"
 IncludeDir["spdlog"] = "%{wks.location}/Hydra/vendor/spdlog/include"
 IncludeDir["Dx12Helpers"] = "%{wks.location}/Hydra/vendor/dx12helpers"
+IncludeDir["Vendor"] = "%{wks.location}/Hydra/vendor/"
 
 LibDir = {};
 

@@ -15,7 +15,7 @@ Hydra::Application::Application() : m_Running(true)
 
 	gcSpecs.api = API::Dx12;
 	Log::Initialize();
-	GraphicsContext::Initalize(gcSpecs);
+	Context::Initalize(gcSpecs);
 
 }
 
