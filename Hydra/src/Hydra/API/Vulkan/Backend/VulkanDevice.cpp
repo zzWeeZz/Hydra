@@ -1,7 +1,6 @@
-
+#include "HYpch.h"
 #include "VulkanDevice.h"
 
-#include "HYpch.h"
 #include <set>
 #include <Hydra/API/Vulkan/VulkanUtils.h>
 
@@ -10,8 +9,9 @@ namespace Hydra
 
 	VulkanDevice::VulkanDevice(Ptr<PhysicalDevice> physicalDevice) : Device(physicalDevice)
 	{
+		
 	}
-	void VulkanDevice::Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer, VulkanAllocator allocator)
+	void VulkanDevice::Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer, VulkanAllocator& allocator)
 	{
 		auto indices = physicalDevice->GetFamilyIndices();
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -60,11 +60,12 @@ namespace Hydra
 
 
 		HY_VK_CHECK(vkCreateDevice(physicalDevice->GetHandle(), &createInfo, nullptr, &m_Device));
-
+		HY_CORE_INFO("Vulkan: Successflly created device!");
 		vkGetDeviceQueue(m_Device, indices.graphicsFamily.value(), 0, &m_GraphicsQueue);
-		vkGetDeviceQueue(m_Device, indices.presentFamily.value(), 0, &m_PresentQueue);
+		m_PresentQueue = std::make_shared<VulkanDeviceQueue>();
+		vkGetDeviceQueue(m_Device, indices.presentFamily.value(), 0, &m_PresentQueue->m_Queue);
 	}
-	void VulkanDevice::CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, VulkanAllocator allocator, size_t amount)
+	void VulkanDevice::CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, VulkanAllocator& allocator, size_t amount)
 	{
 		auto indices = physicalDevice->GetFamilyIndices();
 		m_CommandPools.resize(amount);

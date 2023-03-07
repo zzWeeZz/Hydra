@@ -2,8 +2,10 @@
 
 #include <Array>
 
+constexpr uint32_t g_FramesInFlight = 3;
+
 template<typename T>
-using PerFrameInFlight = std::array<T, 3>;
+using PerFrameInFlight = std::array<T, g_FramesInFlight>;
 
 inline std::string errorString(VkResult errorCode)
 {

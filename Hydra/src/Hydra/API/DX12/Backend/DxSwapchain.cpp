@@ -1,5 +1,6 @@
 #include "HYpch.h"
 #include "DxSwapchain.h"
+#include "Hydra/API/Context.h"
 #include <Hydra/API/DX12/Backend/DxDevice.h>
 #include "Hydra/API/DX12/Backend/DxPhysicalDevice.h"
 
@@ -14,10 +15,10 @@ namespace Hydra
 {
 	DxSwapchain::DxSwapchain(const SwapchainSpecfications& specs) : Swapchain(specs)
 	{
-		Create();
+		Create(specs.context);
 	}
 
-	void DxSwapchain::Create()
+	void DxSwapchain::Create(Ptr<Context> context)
 	{
 		DXGI_SWAP_CHAIN_DESC scDesc{};
 
@@ -42,8 +43,8 @@ namespace Hydra
 		scDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 		scDesc.Flags = 0;
 
-		auto dxPhysicalDevice = std::reinterpret_pointer_cast<DxPhysicalDevice>(m_Specs.physicalDevice.lock());
-		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(m_Specs.device.lock());
+		auto dxPhysicalDevice = std::reinterpret_pointer_cast<DxPhysicalDevice>(context.lock()->GetPhyicalDevice().lock());
+		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(context.lock()->GetDevice().lock());
 
 		IDXGISwapChain* transferSwapchain = nullptr; // create a dummy swapchain0 inorder to move it to later version.
 		HRESULT hr = dxPhysicalDevice->GetFactory()->CreateSwapChain(dxDevice->GetCommandQueue().Get(), &scDesc, &transferSwapchain);
@@ -62,7 +63,7 @@ namespace Hydra
 	{
 	}
 	
-	void DxSwapchain::Validate()
+	void DxSwapchain::Validate(Ptr<Context> context)
 	{
 	}
 }

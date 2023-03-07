@@ -10,6 +10,8 @@
 #include <Hydra/API/Vulkan/VulkanUtils.h>
 #include <Hydra/API/Vulkan/Backend/VulkanPhysicalDevice.h>
 #include <Hydra/API/Vulkan/Backend/VulkanDevice.h>
+#include "Hydra/API/Swapchain.h"
+#include <Hydra/API/Vulkan/Backend/VulkanSwapchain.h>
 
 namespace Hydra
 {
@@ -36,7 +38,7 @@ namespace Hydra
 		return VK_FALSE;
 	}
 
-	void VulkanContext::Initalize(const GraphicsContextSpecification& specs)
+	void VulkanContext::Initalize(const ContextSpecification& specs)
 	{
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -66,7 +68,6 @@ namespace Hydra
 		{
 			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		}
-
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
@@ -108,11 +109,53 @@ namespace Hydra
 		{
 			HY_CORE_INFO(extension.extensionName);
 		}
+
+		CreateSuface();
+
+
 		PhysicalDeviceSpecifications pdSpecs{};
 		auto vpd = std::make_shared<VulkanPhysicalDevice>(pdSpecs);
 		vpd->Create(m_Instance, m_Surface);
+		m_PhysicalDevice = std::reinterpret_pointer_cast<PhysicalDevice>(vpd);
+
 		auto vd = std::make_shared<VulkanDevice>(vpd);
-		vd->Create(vpd, validationLayers);
+		vd->Create(vpd, validationLayers, m_Allocator);
+		m_Device = std::reinterpret_pointer_cast<Device>(vd);
+
+		SwapchainSpecfications scSpecs{};
+		scSpecs.context = weak_from_this();
+		auto swapchain = std::make_shared<VulkanSwapchain>(scSpecs);
+		swapchain->Create(scSpecs.context);
+	}
+
+	void VulkanContext::QuerySwapchainSupport(SwapChainSupportDetails& swapchainDetails)
+	{
+		auto vulkanPhysicalDevice = std::reinterpret_pointer_cast<VulkanPhysicalDevice>(m_PhysicalDevice);
+		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Device);
+
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkanPhysicalDevice->GetHandle(), m_Surface, &swapchainDetails.capabilities);
+		uint32_t formatCount;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice->GetHandle(), m_Surface, &formatCount, nullptr);
+
+		if (formatCount != 0)
+		{
+			swapchainDetails.formats.resize(formatCount);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(vulkanPhysicalDevice->GetHandle(), m_Surface, &formatCount, swapchainDetails.formats.data());
+		}
+
+		uint32_t presentModeCount;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(vulkanPhysicalDevice->GetHandle(), m_Surface, &presentModeCount, nullptr);
+		if (presentModeCount != 0)
+		{
+			swapchainDetails.presentModes.resize(presentModeCount);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(vulkanPhysicalDevice->GetHandle(), m_Surface, &presentModeCount, swapchainDetails.presentModes.data());
+		}
+	}
+
+	void VulkanContext::CreateSuface()
+	{
+		auto& glfwWindow = *static_cast<GLFWwindow*>(Application::GetWindow().GetNativeWindow());
+		glfwCreateWindowSurface(m_Instance, &glfwWindow, nullptr, &m_Surface);
 	}
 
 	bool VulkanContext::CheckValidationLayerSupport(std::vector<const char*> validationLayer)

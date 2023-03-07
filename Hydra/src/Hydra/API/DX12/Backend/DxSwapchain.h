@@ -12,9 +12,9 @@ namespace Hydra
 		// Inherited via Swapchain
 		void Resize(uint32_t width, uint32_t height) override;
 
-		void Create() override;
+		void Create(Ptr<Context> context) override;
 
-		void Validate() override;
+		void Validate(Ptr<Context> context) override;
 
 	private:
 		WinRef<IDXGISwapChain3> m_Swapchain;

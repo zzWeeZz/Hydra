@@ -13,15 +13,19 @@ namespace Hydra
 		std::vector<VkSurfaceFormatKHR> formats;
 		std::vector<VkPresentModeKHR> presentModes;
 	};
-
+	class Context;
 	class VulkanSwapchain : public Swapchain
 	{
 	public:
+		VulkanSwapchain(const SwapchainSpecfications& specs);
 		void Resize(uint32_t width, uint32_t height) override;
-
+		void Create(Ptr<Context> context) override;
+		void Validate(Ptr<Context> context) override;
+		void Present() override;
+		void CleanUp();
+		void Shutdown(bool destroyRenderTarget);
 	protected:
-		void Create() override;
-		void Validate() override;
+	
 	private:
 
 		// Resizes the swapchain after width and height.

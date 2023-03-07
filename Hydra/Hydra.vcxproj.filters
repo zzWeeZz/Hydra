@@ -28,6 +28,9 @@
     <Filter Include="src\Hydra\Platform">
       <UniqueIdentifier>{E8374E3E-D41B-0F94-3D7C-09E7297FF915}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Hydra\Rendering">
+      <UniqueIdentifier>{6137933E-CD98-704C-5606-B7FEC266A70B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Hydra\Utils">
       <UniqueIdentifier>{7485F9C2-E010-6787-E921-EA7B552CC387}</UniqueIdentifier>
     </Filter>
@@ -56,6 +59,9 @@
     </ClInclude>
     <ClInclude Include="src\Hydra\API\DX12\Backend\DxSwapchain.h">
       <Filter>src\Hydra\API\DX12\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\DX12\DxContext.h">
+      <Filter>src\Hydra\API\DX12</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\DX12\DxUtils.h">
       <Filter>src\Hydra\API\DX12</Filter>
@@ -117,6 +123,9 @@
     <ClInclude Include="src\Hydra\Platform\WindowsWindow.h">
       <Filter>src\Hydra\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\Rendering\GraphicsContext.h">
+      <Filter>src\Hydra\Rendering</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Utils\Log.h">
       <Filter>src\Hydra\Utils</Filter>
     </ClInclude>
@@ -132,6 +141,9 @@
     <ClInclude Include="vendor\vma\vk_mem_alloc.h">
       <Filter>vendor\vma</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\API\CommandBuffer.h" />
+    <ClInclude Include="src\Hydra\API\DeviceQueue.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\VulkanDeviceQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -145,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="src\Hydra\API\DX12\Backend\DxSwapchain.cpp">
       <Filter>src\Hydra\API\DX12\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\DX12\DxContext.cpp">
+      <Filter>src\Hydra\API\DX12</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\API\Factory.cpp">
       <Filter>src\Hydra\API</Filter>
@@ -176,11 +191,15 @@
     <ClCompile Include="src\Hydra\Platform\WindowsWindow.cpp">
       <Filter>src\Hydra\Platform</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\Rendering\GraphicsContext.cpp">
+      <Filter>src\Hydra\Rendering</Filter>
+    </ClCompile>
     <ClCompile Include="src\Hydra\Utils\Log.cpp">
       <Filter>src\Hydra\Utils</Filter>
     </ClCompile>
     <ClCompile Include="vendor\dx12Helpers\D3D12MemAlloc.cpp">
       <Filter>vendor\dx12Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\API\Vulkan\VulkanDeviceQueue.cpp" />
   </ItemGroup>
 </Project>

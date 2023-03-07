@@ -1,4 +1,5 @@
 #include "HYpch.h"
+#define VMA_IMPLEMENTATION
 #include "VulkanAllocator.h"
 #include "Hydra/API/Vulkan/VulkanContext.h"
 #include <Hydra/API/Vulkan/VulkanUtils.h>
@@ -107,9 +108,9 @@ namespace Hydra
 			s_DestroyFunctions[s_AllocateDestructorOrder[Index]]();
 		}
 
-		for (auto it = s_DestructionQueue.begin(); it != s_DestructionQueue.end(); ++it)
+		for (auto & it : s_DestructionQueue)
 		{
-			(*it)();
+			it();
 		}
 		s_DestructionQueue.clear();
 	}

@@ -2,17 +2,18 @@
 #include <cstdint>
 #include "Hydra/API/PhysicalDevice.h"
 #include "Hydra/API/Device.h"
+#include "Hydra/Utils/Memory.h"
 namespace Hydra
 {
+	class Context;
 	struct SwapchainSpecfications
 	{
 		size_t width = 0;
 		size_t height = 0;
 		size_t frameCount = 3;
-		Ptr<PhysicalDevice> physicalDevice;
-		Ptr<Device> device;
+		Ptr<Context> context;
 	};
-
+	class Context;
 	class Swapchain
 	{
 	public:
@@ -20,9 +21,9 @@ namespace Hydra
 		virtual ~Swapchain(){}
 
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
-		virtual void Create() = 0;
-
-		virtual void Validate() = 0;
+		virtual void Create(Ptr<Context> context) = 0;
+		virtual void Present() = 0;
+		virtual void Validate(Ptr<Context> context) = 0;
 		
 	protected:
 		

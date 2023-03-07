@@ -1,6 +1,7 @@
 #pragma once
 #include "Hydra/API/PhysicalDevice.h"
 #include "Hydra/Utils/Memory.h"
+#include <Hydra/API/DeviceQueue.h>
 
 namespace Hydra
 {
@@ -11,5 +12,6 @@ namespace Hydra
 		virtual ~Device(){}
 
 	protected:
+		std::unordered_map<QueueType, Ref<DeviceQueue>> m_DeviceQueues;
 	};
 }

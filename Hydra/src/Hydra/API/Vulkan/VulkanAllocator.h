@@ -1,8 +1,11 @@
 #pragma once
 
+
 #include "vma/vk_mem_alloc.h"
 #include <deque>
 #include <functional>
+#include <unordered_map>
+#include <mutex>
 
 namespace Hydra
 {
@@ -39,11 +42,11 @@ namespace Hydra
 
 
 	private:
-		static VmaAllocator s_Allocator;
-		static uint32_t s_ID;
-		static std::unordered_map<uint32_t, std::function<void()>> s_DestroyFunctions;
-		static std::vector<uint32_t> s_AllocateDestructorOrder;
-		static std::deque<std::function<void()>> s_DestructionQueue;
-		static std::mutex s_AllocationMutex;
+		VmaAllocator s_Allocator;
+		uint32_t s_ID;
+		std::unordered_map<uint32_t, std::function<void()>> s_DestroyFunctions;
+		std::vector<uint32_t> s_AllocateDestructorOrder;
+		std::deque<std::function<void()>> s_DestructionQueue;
+		std::mutex s_AllocationMutex;
 	};
 }

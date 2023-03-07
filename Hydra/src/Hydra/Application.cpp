@@ -6,24 +6,18 @@
 #include "Events/ApplicationEvent.h"
 #include "Hydra/Utils/Log.h"
 #include "Hydra/Rendering/GraphicsContext.h"
-
 Hydra::Application::Application() : m_Running(true)
 {
 	s_Window = Ref<Window>(Window::Create());
 	s_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
-	GraphicsContextSpecification gcSpecs{};
-
-	gcSpecs.api = API::Dx12;
 	Log::Initialize();
-	Context::Initalize(gcSpecs);
-
+	GraphicsContext::Intitalize(API::Vulkan);
 }
 
 void Hydra::Application::Run()
 {
 	while (m_Running)
 	{
-
 		for (const auto& layer : m_LayerStack)
 		{
 			layer->OnUpdate();

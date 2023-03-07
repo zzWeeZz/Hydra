@@ -2,6 +2,7 @@
 #include "Hydra/API/PhysicalDevice.h"
 #include "Hydra/API/Device.h"
 #include "Hydra/API/Swapchain.h"
+#include "Hydra/API/Context.h"
 
 namespace Hydra
 {
@@ -10,12 +11,18 @@ namespace Hydra
 		Dx12,
 		Vulkan
 	};
+
+	struct ContextConstructSpecifications
+	{
+		ContextSpecification contextSpecs;
+		Ref<Context> context;
+		API api;
+	};
+
 	class Factory
 	{
 	public:
-		static void BuildBackend(Ref<PhysicalDevice> physicalDevice, Ref<Device> device, Ref<Swapchain> swapchain, API api);
+		static void ContructContext(ContextConstructSpecifications specs);
 	private:
-		static void BuildVulkanBackend(Ref<PhysicalDevice> physicalDevice, Ref<Device> device, Ref<Swapchain> swapchain);
-		static void BuildDx12Backend(Ref<PhysicalDevice> physicalDevice, Ref<Device> device, Ref<Swapchain> swapchain);
 	};
 }

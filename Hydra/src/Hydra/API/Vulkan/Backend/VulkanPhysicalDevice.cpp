@@ -48,6 +48,7 @@ namespace Hydra
 		}
 		if (candidates.rbegin()->first > 0)
 		{
+			HY_CORE_INFO("Vulkan: Physical Device found!");
 			m_PhysicalDevice = candidates.rbegin()->second;
 			VkPhysicalDeviceMeshShaderPropertiesNV meshShaderProperties{};
 			meshShaderProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV;
@@ -78,7 +79,7 @@ namespace Hydra
 			{
 				indices.graphicsFamily = i;
 				VkBool32 presentSupport = false;
-				vkGetPhysicalDeviceSurfaceSupportKHR(m_PhysicalDevice, i, , &presentSupport);
+				vkGetPhysicalDeviceSurfaceSupportKHR(m_PhysicalDevice, i, surface, &presentSupport);
 				if (presentSupport)
 				{
 					indices.presentFamily = i;
