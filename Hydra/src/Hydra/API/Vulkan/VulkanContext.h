@@ -7,7 +7,6 @@ namespace Hydra
 	struct SwapChainSupportDetails;
 	class VulkanContext : public Context
 	{
-		friend class VulkanAllocator;
 	public:
 		// Inherited via Context
 		void Initalize(const ContextSpecification& specs) override;
@@ -17,11 +16,12 @@ namespace Hydra
 
 	private:
 		void CreateSuface();
+		void CreateDebugMessanger();
+		void DestroyDebugMessanger();
 		bool CheckValidationLayerSupport(std::vector<const char*> validationLayer);
 		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 		VkInstance m_Instance{};
 		VkSurfaceKHR m_Surface{};
-		VkDebugUtilsMessengerEXT m_DebugMessager{};
-		VulkanAllocator m_Allocator;
+		VkDebugUtilsMessengerEXT m_DebugMessanger{};
 	};
 }

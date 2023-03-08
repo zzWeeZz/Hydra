@@ -1,6 +1,11 @@
 #pragma once
+
+#include "Hydra/Utils/Memory.h"
+
 namespace Hydra
 {
+	class CommandQueue;
+	class Device;
 	enum class CommandBufferLevel
 	{
 		Primary,

@@ -94,7 +94,7 @@ namespace Hydra
 		vmaUnmapMemory(s_Allocator, allocation.allocation);
 	}
 
-	void VulkanAllocator::QueueDeletion(std::function<void()>&& func)
+	void VulkanAllocator::CustomDeletion(std::function<void()>&& func)
 	{
 		s_DestructionQueue.push_back(func);
 	}

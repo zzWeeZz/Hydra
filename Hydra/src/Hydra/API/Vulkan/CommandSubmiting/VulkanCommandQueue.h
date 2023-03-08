@@ -7,7 +7,9 @@ namespace Hydra
 	class VulkanCommandQueue : public CommandQueue
 	{
 	public:
-		VulkanCommandQueue(Ptr<VulkanDevice> device, Ptr<VulkanDeviceQueue> deviceQueue);
+		VulkanCommandQueue() = default;
+
+		void Create(Ptr<VulkanDevice> device, Ptr<VulkanDeviceQueue> queue);
 
 		[[nodiscard]] FORCEINLINE VkCommandPool GetHandle() { return m_CommandPool; }
 
@@ -17,7 +19,5 @@ namespace Hydra
 
 	private:
 		VkCommandPool m_CommandPool;
-
-		// Inherited via CommandQueue
 	};
 }

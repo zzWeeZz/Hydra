@@ -12,6 +12,7 @@ namespace Hydra
 		pdSpecs.queueTypes = m_Specs.queueTypes;
 		m_PhysicalDevice = std::make_shared<DxPhysicalDevice>(pdSpecs);
 		m_Device = std::make_shared<DxDevice>(m_PhysicalDevice);
+		std::reinterpret_pointer_cast<DxDevice>(m_Device)->CreateCommandLists(std::reinterpret_pointer_cast<DxPhysicalDevice>(m_PhysicalDevice));
 		SwapchainSpecfications scSpecs = {};
 		scSpecs.context = shared_from_this();
 		m_Swapchain = std::make_shared<DxSwapchain>(scSpecs);

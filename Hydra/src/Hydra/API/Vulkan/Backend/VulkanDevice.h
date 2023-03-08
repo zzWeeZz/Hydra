@@ -14,15 +14,13 @@ namespace Hydra
 	public:
 		VulkanDevice(Ptr<PhysicalDevice> physicalDevice);
 
-		void Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer, VulkanAllocator& allocator);
+		void Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer);
 		VkDevice GetHandle() { return m_Device; }
 		void Shutdown();
 	private:
-		void CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, VulkanAllocator& allocator, size_t amount = 1);
+		void CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, size_t amount = 1);
 		bool CheckDeviceExtensionSupport(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> deviceExtensions);
 
 		VkDevice m_Device;
-		std::vector<PerFrameInFlight<VkCommandBuffer>> m_CommandBuffers;
-		std::vector<VkCommandPool> m_CommandPools;
 	};
 }

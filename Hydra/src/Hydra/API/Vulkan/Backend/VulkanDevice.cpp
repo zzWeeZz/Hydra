@@ -3,6 +3,7 @@
 
 #include <set>
 #include <Hydra/API/Vulkan/VulkanUtils.h>
+#include <Hydra/API/Vulkan/CommandSubmiting/VulkanCommandQueue.h>
 
 namespace Hydra
 {
@@ -11,7 +12,7 @@ namespace Hydra
 	{
 		
 	}
-	void VulkanDevice::Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer, VulkanAllocator& allocator)
+	void VulkanDevice::Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer)
 	{
 		auto indices = physicalDevice->GetFamilyIndices();
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -90,39 +91,39 @@ namespace Hydra
 			m_DeviceQueues[QueueType::Compute] = std::make_shared<VulkanDeviceQueue>(m_Device, indices.computeFamily.value(), QueueType::Compute);
 		}
 
-		CreateCommandPools(physicalDevice, allocator);
+		CreateCommandPools(physicalDevice);
 	}
 	void VulkanDevice::Shutdown()
 	{
 		vkDestroyDevice(m_Device, nullptr);
 	}
-	void VulkanDevice::CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, VulkanAllocator& allocator, size_t amount)
+	void VulkanDevice::CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, size_t amount)
 	{
 		auto indices = physicalDevice->GetFamilyIndices();
-		m_CommandPools.resize(amount);
-		m_CommandBuffers.resize(amount);
-
-		for (size_t i = 0; i < amount; ++i)
+		auto& physicalDeviceSpecs = physicalDevice->GetSpecifications();
+		if (physicalDeviceSpecs.queueTypes & QueueType::Graphics)
 		{
-			VkCommandPoolCreateInfo poolInfo{};
-			poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-			poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-			poolInfo.queueFamilyIndex = indices.graphicsFamily.value();
-
-			HY_VK_CHECK(vkCreateCommandPool(m_Device, &poolInfo, nullptr, &m_CommandPools[i]));
-
-			VkCommandBufferAllocateInfo allocInfo{};
-			allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-			allocInfo.commandPool = m_CommandPools[i];
-			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-			allocInfo.commandBufferCount = 3;
-
-			HY_VK_CHECK(vkAllocateCommandBuffers(m_Device, &allocInfo, m_CommandBuffers[i].data()));
+			m_CommandQueues[QueueType::Graphics] = {};
 		}
-		for (size_t i = 0; i < amount; ++i)
+		if (physicalDeviceSpecs.queueTypes & QueueType::Transfer)
 		{
-			allocator.QueueDeletion([&, i]() { vkDestroyCommandPool(m_Device, m_CommandPools[i], nullptr); });
+			m_CommandQueues[QueueType::Transfer] = {};
 		}
+		if (physicalDeviceSpecs.queueTypes & QueueType::Compute)
+		{
+			m_CommandQueues[QueueType::Compute] = {};
+		}
+
+		for (auto& [queueType, commandQueues] : m_CommandQueues)
+		{
+			auto vulkanQueue = std::reinterpret_pointer_cast<VulkanDeviceQueue>(m_DeviceQueues[queueType]);
+			for (size_t i = 0; i < g_FramesInFlight; ++i)
+			{
+				commandQueues[i] = std::make_shared<VulkanCommandQueue>();
+				std::reinterpret_pointer_cast<VulkanCommandQueue>(commandQueues[i])->Create(std::reinterpret_pointer_cast<VulkanDevice>(shared_from_this()), vulkanQueue);
+			}
+		}
+
 	}
 	bool VulkanDevice::CheckDeviceExtensionSupport(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> deviceExtensions)
 	{

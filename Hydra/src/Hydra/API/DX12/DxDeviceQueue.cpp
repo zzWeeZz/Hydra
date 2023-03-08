@@ -20,7 +20,7 @@ namespace Hydra
 			HY_CORE_ERROR("Dx12: Invalid Command list type. Most be one of these 3: DIRECT, COMPUTE, COPY!");
 			break;
 		}
-		if (type == QueueType::Count)
+		if (type & QueueType::Count)
 		{
 			return;
 		}

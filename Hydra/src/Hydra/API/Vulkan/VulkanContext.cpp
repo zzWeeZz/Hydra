@@ -111,6 +111,8 @@ namespace Hydra
 			HY_CORE_INFO(extension.extensionName);
 		}
 
+		CreateDebugMessanger();
+
 		CreateSuface();
 
 
@@ -121,19 +123,25 @@ namespace Hydra
 		m_PhysicalDevice = std::reinterpret_pointer_cast<PhysicalDevice>(vpd);
 
 		auto vd = std::make_shared<VulkanDevice>(vpd);
-		vd->Create(vpd, validationLayers, m_Allocator);
+		vd->Create(vpd, validationLayers);
 		m_Device = std::reinterpret_pointer_cast<Device>(vd);
 
 		SwapchainSpecfications scSpecs{};
-		scSpecs.context = weak_from_this();
+		scSpecs.context = shared_from_this();
 		auto swapchain = std::make_shared<VulkanSwapchain>(scSpecs);
 		swapchain->Create(scSpecs.context);
+		m_Swapchain = std::reinterpret_pointer_cast<Swapchain>(swapchain);
+		VulkanAllocator::Initialize(vpd->GetHandle(), vd->GetHandle(), m_Instance);
 	}
 
 	void VulkanContext::Shutdown()
 	{
 		HY_CORE_INFO("Vulkan: Shutdown protocall initalized...");
-		m_Allocator.Flush();
+		VulkanAllocator::Flush();
+		std::reinterpret_pointer_cast<VulkanSwapchain>(m_Swapchain)->CleanUp();
+		std::reinterpret_pointer_cast<VulkanSwapchain>(m_Swapchain)->Shutdown(true);
+		std::reinterpret_pointer_cast<VulkanDevice>(m_Device)->Shutdown();
+		DestroyDebugMessanger();
 		vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
 		vkDestroyInstance(m_Instance, nullptr);
 		HY_CORE_INFO("Vulkan: Shutdown successfull!");
@@ -167,6 +175,26 @@ namespace Hydra
 	{
 		auto& glfwWindow = *static_cast<GLFWwindow*>(Application::GetWindow().GetNativeWindow());
 		glfwCreateWindowSurface(m_Instance, &glfwWindow, nullptr, &m_Surface);
+	}
+
+	void VulkanContext::CreateDebugMessanger()
+	{
+		VkDebugUtilsMessengerCreateInfoEXT createInfo{};
+		PopulateDebugMessengerCreateInfo(createInfo);
+		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_Instance, "vkCreateDebugUtilsMessengerEXT");
+		if (func != nullptr)
+		{
+			HY_VK_CHECK(func(m_Instance, &createInfo, nullptr, &m_DebugMessanger));
+		}
+	}
+
+	void VulkanContext::DestroyDebugMessanger()
+	{
+		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_Instance, "vkDestroyDebugUtilsMessengerEXT");
+		if (func != nullptr)
+		{
+			func(m_Instance, m_DebugMessanger, nullptr);
+		}
 	}
 
 	bool VulkanContext::CheckValidationLayerSupport(std::vector<const char*> validationLayer)

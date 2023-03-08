@@ -2,6 +2,8 @@
 #include "DxDevice.h"
 #include <Hydra/API/DX12/Backend/DxPhysicalDevice.h>
 #include <Hydra/API/DX12/DxDeviceQueue.h>
+#include "Hydra/API/DX12/CommandSubmiting/DxCommandBuffer.h"
+#include "Hydra/API/DX12/CommandSubmiting/DxCommandQueue.h"
 namespace Hydra
 {
 	DxDevice::DxDevice(Ptr<PhysicalDevice> physicalDevice) : Device(physicalDevice)
@@ -41,6 +43,33 @@ namespace Hydra
 		{
 			cqDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
 			m_DeviceQueues[QueueType::Compute] = std::make_shared<DxDeviceQueue>(m_Device.Get(), cqDesc);
+		}
+
+	}
+	void DxDevice::CreateCommandLists(Ptr<DxPhysicalDevice> physicalDevice)
+	{
+		auto& physicalDeviceSpecs = physicalDevice.lock()->GetSpecifications();
+		if (physicalDeviceSpecs.queueTypes & QueueType::Graphics)
+		{
+			m_CommandQueues[QueueType::Graphics] = {};
+		}
+		if (physicalDeviceSpecs.queueTypes & QueueType::Transfer)
+		{
+			m_CommandQueues[QueueType::Transfer] = {};
+		}
+		if (physicalDeviceSpecs.queueTypes & QueueType::Compute)
+		{
+			m_CommandQueues[QueueType::Compute] = {};
+		}
+
+		for (auto& [queueType, commandQueues] : m_CommandQueues)
+		{
+			auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(m_DeviceQueues[queueType]);
+			for (size_t i = 0; i < g_FramesInFlight; ++i)
+			{
+				commandQueues[i] = std::make_shared<DxCommandQueue>();
+				std::reinterpret_pointer_cast<DxCommandQueue>(commandQueues[i])->Create(std::reinterpret_pointer_cast<DxDevice>(shared_from_this()), dxQueue);
+			}
 		}
 	}
 }

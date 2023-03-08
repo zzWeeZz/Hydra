@@ -168,6 +168,9 @@
     <ClInclude Include="vendor\vma\vk_mem_alloc.h">
       <Filter>vendor\vma</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\API\ApiUtils.h" />
+    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.h" />
+    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -236,8 +239,7 @@
     <ClCompile Include="vendor\dx12Helpers\D3D12MemAlloc.cpp">
       <Filter>vendor\dx12Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="vendor\vma\vk_mem_alloc.cpp">
-      <Filter>vendor\vma</Filter>
-    </ClCompile>
+    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.cpp" />
   </ItemGroup>
 </Project>

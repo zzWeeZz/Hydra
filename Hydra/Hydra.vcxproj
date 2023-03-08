@@ -78,7 +78,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4996;6285;26437;26451;26498;26800;26495;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>_CONSOLE;HY_CONFIG_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.224.1\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.216.0\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -101,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4996;6285;26437;26451;26498;26800;26495;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>_CONSOLE;HY_CONFIG_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.224.1\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.216.0\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -129,7 +129,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4996;6285;26437;26451;26498;26800;26495;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>_CONSOLE;HY_CONFIG_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.224.1\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.216.0\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -151,6 +151,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.h" />
+    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.h" />
+    <ClInclude Include="src\Hydra\API\ApiUtils.h" />
     <ClInclude Include="src\HYpch.h" />
     <ClInclude Include="src\Hydra\API\CommandBuffer.h" />
     <ClInclude Include="src\Hydra\API\CommandQueue.h" />
@@ -193,6 +196,8 @@
     <ClInclude Include="vendor\vma\vk_mem_alloc.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.cpp" />
     <ClCompile Include="src\HYpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -217,7 +222,6 @@
     <ClCompile Include="src\Hydra\Rendering\GraphicsContext.cpp" />
     <ClCompile Include="src\Hydra\Utils\Log.cpp" />
     <ClCompile Include="vendor\dx12Helpers\D3D12MemAlloc.cpp" />
-    <ClCompile Include="vendor\vma\vk_mem_alloc.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

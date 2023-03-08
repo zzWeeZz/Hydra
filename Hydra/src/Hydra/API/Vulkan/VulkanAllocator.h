@@ -28,25 +28,24 @@ namespace Hydra
 	class VulkanAllocator
 	{
 	public:
-		void Initialize(VkPhysicalDevice physicalDevice, VkDevice device, VkInstance instance);
-		void Allocate(AllocatedBuffer& allocation, VkBufferCreateInfo* bufferInfo, VmaAllocationCreateInfo* allocationInfo);
-		void Allocate(AllocatedImage& allocation, VkImageCreateInfo* imageInfo, VmaAllocationCreateInfo* allocationInfo);
-		void DeAllocate(AllocatedBuffer& allocation);
-		void DeAllocate(AllocatedImage& allocation);
-
-		void MapMemory(AllocatedBuffer& allocation, void*& mappedMemory);
-		void UnMapMemory(AllocatedBuffer& allocation);
-		void QueueDeletion(std::function<void()>&& func);
-		void Flush();
-		void Shutdown();
+		static void Initialize(VkPhysicalDevice physicalDevice, VkDevice device, VkInstance instance);
+		static void Allocate(AllocatedBuffer& allocation, VkBufferCreateInfo* bufferInfo, VmaAllocationCreateInfo* allocationInfo);
+		static void Allocate(AllocatedImage& allocation, VkImageCreateInfo* imageInfo, VmaAllocationCreateInfo* allocationInfo);
+		static void DeAllocate(AllocatedBuffer& allocation);
+		static void DeAllocate(AllocatedImage& allocation);
+		static void MapMemory(AllocatedBuffer& allocation, void*& mappedMemory);
+		static void UnMapMemory(AllocatedBuffer& allocation);
+		static void CustomDeletion(std::function<void()>&& func);
+		static void Flush();
+		static void Shutdown();
 
 
 	private:
-		VmaAllocator s_Allocator;
-		uint32_t s_ID;
-		std::unordered_map<uint32_t, std::function<void()>> s_DestroyFunctions;
-		std::vector<uint32_t> s_AllocateDestructorOrder;
-		std::deque<std::function<void()>> s_DestructionQueue;
-		std::mutex s_AllocationMutex;
+		inline static VmaAllocator s_Allocator;
+		inline static uint32_t s_ID;
+		inline static std::unordered_map<uint32_t, std::function<void()>> s_DestroyFunctions;
+		inline static std::vector<uint32_t> s_AllocateDestructorOrder;
+		inline static std::deque<std::function<void()>> s_DestructionQueue;
+		inline static std::mutex s_AllocationMutex;
 	};
 }

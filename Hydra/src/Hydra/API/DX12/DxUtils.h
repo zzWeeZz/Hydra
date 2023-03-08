@@ -4,6 +4,7 @@
 #include <dxgi1_6.h>
 #include "d3d12sdklayers.h"
 #include <filesystem>
+#include "Hydra/API/ApiUtils.h"
 
 template<typename T>
 using WinRef = Microsoft::WRL::ComPtr<T>;

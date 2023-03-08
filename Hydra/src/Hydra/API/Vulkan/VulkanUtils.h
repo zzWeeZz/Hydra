@@ -1,11 +1,7 @@
 #pragma once
 
 #include <Array>
-
-constexpr uint32_t g_FramesInFlight = 3;
-
-template<typename T>
-using PerFrameInFlight = std::array<T, g_FramesInFlight>;
+#include "Hydra/API/ApiUtils.h"
 
 inline std::string errorString(VkResult errorCode)
 {

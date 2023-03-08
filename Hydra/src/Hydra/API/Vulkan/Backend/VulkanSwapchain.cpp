@@ -10,6 +10,7 @@ namespace Hydra
 {
 	VulkanSwapchain::VulkanSwapchain(const SwapchainSpecfications& specs) : Swapchain(specs)
 	{
+		m_Specs = specs;
 	}
 	void VulkanSwapchain::Resize(uint32_t width, uint32_t height)
 	{
