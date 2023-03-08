@@ -16,6 +16,7 @@ namespace Hydra
 
 		void Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer, VulkanAllocator& allocator);
 		VkDevice GetHandle() { return m_Device; }
+		void Shutdown();
 	private:
 		void CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, VulkanAllocator& allocator, size_t amount = 1);
 		bool CheckDeviceExtensionSupport(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> deviceExtensions);

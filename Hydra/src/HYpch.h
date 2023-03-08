@@ -15,6 +15,8 @@
 #define HY_CORE_WARN(...) ::Hydra::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define HY_CORE_ERROR(...) ::Hydra::Log::GetCoreLogger()->error(__VA_ARGS__)
 
+#define HY_CORE_ASSERT(condition,...) { if((condition) == false){ HY_CORE_ERROR(__VA_ARGS__);} assert(condition);}
+
 #define HY_TRACE(...) ::Hydra::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define HY_INFO(...) ::Hydra::Log::GetClientLogger()->info(__VA_ARGS__)
 #define HY_WARN(...) ::Hydra::Log::GetClientLogger()->warn(__VA_ARGS__)

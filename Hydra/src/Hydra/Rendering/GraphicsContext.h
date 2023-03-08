@@ -7,6 +7,7 @@ namespace Hydra
 	{
 	public:
 		static void Intitalize(API api);
+		static void Shutdown();
 	private:
 		inline static Ref<Context> s_Context;
 	};

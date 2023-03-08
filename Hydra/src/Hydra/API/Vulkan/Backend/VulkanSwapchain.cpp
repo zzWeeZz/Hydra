@@ -58,21 +58,9 @@ namespace Hydra
 		createInfo.imageArrayLayers = 1;
 		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-		QueueFamilyIndices indices = vulkanPhysicalDevice->GetFamilyIndices();
-		uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
-
-		if (indices.graphicsFamily != indices.presentFamily)
-		{
-			createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-			createInfo.queueFamilyIndexCount = 2;
-			createInfo.pQueueFamilyIndices = queueFamilyIndices;
-		}
-		else
-		{
-			createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-			createInfo.queueFamilyIndexCount = 0; // Optional
-			createInfo.pQueueFamilyIndices = nullptr; // Optional
-		}
+		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		createInfo.queueFamilyIndexCount = 0; // Optional
+		createInfo.pQueueFamilyIndices = nullptr; // Optional
 
 		createInfo.preTransform = supportDetails.capabilities.currentTransform;
 		createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
@@ -124,7 +112,8 @@ namespace Hydra
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
 		//presentInfo.pImageIndices = &imageIndex;
-		vkQueuePresentKHR(vulkanDevice, &presentInfo);
+		auto vulkanQueue = std::reinterpret_pointer_cast<VulkanDeviceQueue>(vulkanDevice->GetQueue(QueueType::Graphics).lock());
+		vkQueuePresentKHR(vulkanQueue->GetHandle(), &presentInfo);
 	}
 	void VulkanSwapchain::CleanUp()
 	{
@@ -214,7 +203,7 @@ namespace Hydra
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
 		auto device = vulkanDevice->GetHandle();
 		size_t i = 0;
-		for (auto & SwapchainView : m_SwapchainViews)
+		for (auto& SwapchainView : m_SwapchainViews)
 		{
 			VkImageView attachments[] = { SwapchainView };
 

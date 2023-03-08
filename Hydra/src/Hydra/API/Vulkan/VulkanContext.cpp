@@ -40,11 +40,12 @@ namespace Hydra
 
 	void VulkanContext::Initalize(const ContextSpecification& specs)
 	{
+		m_Specs = specs;
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = "Titan";
+		appInfo.pApplicationName = "Hydra";
 		appInfo.applicationVersion = VK_API_VERSION_1_3;
-		appInfo.pEngineName = "Titan Engine";
+		appInfo.pEngineName = "Hydra Engine";
 		appInfo.engineVersion = VK_API_VERSION_1_3;
 		appInfo.apiVersion = VK_API_VERSION_1_3;
 
@@ -114,6 +115,7 @@ namespace Hydra
 
 
 		PhysicalDeviceSpecifications pdSpecs{};
+		pdSpecs.queueTypes = m_Specs.queueTypes;
 		auto vpd = std::make_shared<VulkanPhysicalDevice>(pdSpecs);
 		vpd->Create(m_Instance, m_Surface);
 		m_PhysicalDevice = std::reinterpret_pointer_cast<PhysicalDevice>(vpd);
@@ -126,6 +128,15 @@ namespace Hydra
 		scSpecs.context = weak_from_this();
 		auto swapchain = std::make_shared<VulkanSwapchain>(scSpecs);
 		swapchain->Create(scSpecs.context);
+	}
+
+	void VulkanContext::Shutdown()
+	{
+		HY_CORE_INFO("Vulkan: Shutdown protocall initalized...");
+		m_Allocator.Flush();
+		vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
+		vkDestroyInstance(m_Instance, nullptr);
+		HY_CORE_INFO("Vulkan: Shutdown successfull!");
 	}
 
 	void VulkanContext::QuerySwapchainSupport(SwapChainSupportDetails& swapchainDetails)

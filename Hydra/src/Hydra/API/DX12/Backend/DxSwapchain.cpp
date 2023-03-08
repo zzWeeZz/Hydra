@@ -11,6 +11,7 @@
 #define GLFW_EXPOSE_NATIVE_WGL
 #define GLFW_NATIVE_INCLUDE_NONE
 #include <GLFW/glfw3native.h>
+#include <Hydra/API/DX12/DxDeviceQueue.h>
 namespace Hydra
 {
 	DxSwapchain::DxSwapchain(const SwapchainSpecfications& specs) : Swapchain(specs)
@@ -47,7 +48,8 @@ namespace Hydra
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(context.lock()->GetDevice().lock());
 
 		IDXGISwapChain* transferSwapchain = nullptr; // create a dummy swapchain0 inorder to move it to later version.
-		HRESULT hr = dxPhysicalDevice->GetFactory()->CreateSwapChain(dxDevice->GetCommandQueue().Get(), &scDesc, &transferSwapchain);
+		auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(dxDevice->GetQueue(QueueType::Graphics).lock());
+		HRESULT hr = dxPhysicalDevice->GetFactory()->CreateSwapChain(dxQueue->Get(), &scDesc, &transferSwapchain);
 
 		if (FAILED(hr))
 		{
@@ -65,5 +67,9 @@ namespace Hydra
 	
 	void DxSwapchain::Validate(Ptr<Context> context)
 	{
+	}
+	void DxSwapchain::Present()
+	{
+		m_Swapchain->Present(0, 0);
 	}
 }

@@ -9,14 +9,14 @@ namespace Hydra
 		size_t width = 1280;
 		size_t height = 720;
 		bool debuging = true;
-		std::vector<QueueType> queueTypes;
+		QueueType queueTypes;
 	};
 
 	class Context : public std::enable_shared_from_this<Context>
 	{
 	public:
 		virtual void Initalize(const ContextSpecification& specs) = 0;
-
+		virtual void Shutdown() = 0;
 		Ptr<Device> GetDevice() { return m_Device; }
 		Ptr<PhysicalDevice> GetPhyicalDevice() { return m_PhysicalDevice; }
 		Ptr<Swapchain> GetSwapchain() { return m_Swapchain; }

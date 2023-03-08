@@ -151,24 +151,29 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Hydra\API\CommandBuffer.h" />
-    <ClInclude Include="src\Hydra\API\DeviceQueue.h" />
     <ClInclude Include="src\HYpch.h" />
+    <ClInclude Include="src\Hydra\API\CommandBuffer.h" />
+    <ClInclude Include="src\Hydra\API\CommandQueue.h" />
     <ClInclude Include="src\Hydra\API\Context.h" />
     <ClInclude Include="src\Hydra\API\DX12\Backend\DxDevice.h" />
     <ClInclude Include="src\Hydra\API\DX12\Backend\DxPhysicalDevice.h" />
     <ClInclude Include="src\Hydra\API\DX12\Backend\DxSwapchain.h" />
     <ClInclude Include="src\Hydra\API\DX12\DxContext.h" />
+    <ClInclude Include="src\Hydra\API\DX12\DxDeviceQueue.h" />
     <ClInclude Include="src\Hydra\API\DX12\DxUtils.h" />
     <ClInclude Include="src\Hydra\API\Device.h" />
+    <ClInclude Include="src\Hydra\API\DeviceQueue.h" />
     <ClInclude Include="src\Hydra\API\Factory.h" />
     <ClInclude Include="src\Hydra\API\PhysicalDevice.h" />
     <ClInclude Include="src\Hydra\API\Swapchain.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanDevice.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanPhysicalDevice.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanSwapchain.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandBuffer.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\VulkanAllocator.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\VulkanContext.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\VulkanDeviceQueue.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\VulkanUtils.h" />
     <ClInclude Include="src\Hydra\Application.h" />
     <ClInclude Include="src\Hydra\EntryPoint.h" />
@@ -180,12 +185,12 @@
     <ClInclude Include="src\Hydra\LayerStack.h" />
     <ClInclude Include="src\Hydra\Platform\WindowsWindow.h" />
     <ClInclude Include="src\Hydra\Rendering\GraphicsContext.h" />
+    <ClInclude Include="src\Hydra\Utils\EnumUtils.h" />
     <ClInclude Include="src\Hydra\Utils\Log.h" />
     <ClInclude Include="src\Hydra\Utils\Memory.h" />
     <ClInclude Include="src\Hydra\Utils\PlatformDetection.h" />
     <ClInclude Include="src\Hydra\Window.h" />
     <ClInclude Include="vendor\vma\vk_mem_alloc.h" />
-    <ClInclude Include="src\Hydra\API\Vulkan\VulkanDeviceQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -195,12 +200,16 @@
     <ClCompile Include="src\Hydra\API\DX12\Backend\DxPhysicalDevice.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Backend\DxSwapchain.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\DxContext.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\DxDeviceQueue.cpp" />
     <ClCompile Include="src\Hydra\API\Factory.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\Backend\VulkanDevice.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\Backend\VulkanPhysicalDevice.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\Backend\VulkanSwapchain.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandBuffer.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\VulkanAllocator.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\VulkanContext.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\VulkanDeviceQueue.cpp" />
     <ClCompile Include="src\Hydra\Application.cpp" />
     <ClCompile Include="src\Hydra\Layer.cpp" />
     <ClCompile Include="src\Hydra\LayerStack.cpp" />
@@ -208,7 +217,7 @@
     <ClCompile Include="src\Hydra\Rendering\GraphicsContext.cpp" />
     <ClCompile Include="src\Hydra\Utils\Log.cpp" />
     <ClCompile Include="vendor\dx12Helpers\D3D12MemAlloc.cpp" />
-    <ClCompile Include="src\Hydra\API\Vulkan\VulkanDeviceQueue.cpp" />
+    <ClCompile Include="vendor\vma\vk_mem_alloc.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

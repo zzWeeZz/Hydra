@@ -15,7 +15,22 @@ namespace Hydra
 	{
 		auto indices = physicalDevice->GetFamilyIndices();
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-		std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+		
+
+		std::set<uint32_t> uniqueQueueFamilies;
+
+		if (indices.HasGraphics())
+		{
+			uniqueQueueFamilies.insert(indices.graphicsFamily.value());
+		}
+		if (indices.HasTranfer())
+		{
+			uniqueQueueFamilies.insert(indices.transferFamily.value());
+		}
+		if (indices.HasCompute())
+		{
+			uniqueQueueFamilies.insert(indices.computeFamily.value());
+		}
 
 		float queuePriority = 1.0f;
 		for (uint32_t queueFamily : uniqueQueueFamilies)
@@ -61,9 +76,25 @@ namespace Hydra
 
 		HY_VK_CHECK(vkCreateDevice(physicalDevice->GetHandle(), &createInfo, nullptr, &m_Device));
 		HY_CORE_INFO("Vulkan: Successflly created device!");
-		vkGetDeviceQueue(m_Device, indices.graphicsFamily.value(), 0, &m_GraphicsQueue);
-		m_PresentQueue = std::make_shared<VulkanDeviceQueue>();
-		vkGetDeviceQueue(m_Device, indices.presentFamily.value(), 0, &m_PresentQueue->m_Queue);
+
+		if (indices.HasGraphics())
+		{
+			m_DeviceQueues[QueueType::Graphics] = std::make_shared<VulkanDeviceQueue>(m_Device, indices.graphicsFamily.value(), QueueType::Graphics);
+		}
+		if (indices.HasTranfer())
+		{
+			m_DeviceQueues[QueueType::Transfer] = std::make_shared<VulkanDeviceQueue>(m_Device, indices.transferFamily.value(), QueueType::Transfer);
+		}
+		if (indices.HasCompute())
+		{
+			m_DeviceQueues[QueueType::Compute] = std::make_shared<VulkanDeviceQueue>(m_Device, indices.computeFamily.value(), QueueType::Compute);
+		}
+
+		CreateCommandPools(physicalDevice, allocator);
+	}
+	void VulkanDevice::Shutdown()
+	{
+		vkDestroyDevice(m_Device, nullptr);
 	}
 	void VulkanDevice::CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, VulkanAllocator& allocator, size_t amount)
 	{

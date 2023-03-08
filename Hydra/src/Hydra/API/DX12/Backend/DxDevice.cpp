@@ -1,6 +1,7 @@
 #include "HYpch.h"
 #include "DxDevice.h"
 #include <Hydra/API/DX12/Backend/DxPhysicalDevice.h>
+#include <Hydra/API/DX12/DxDeviceQueue.h>
 namespace Hydra
 {
 	DxDevice::DxDevice(Ptr<PhysicalDevice> physicalDevice) : Device(physicalDevice)
@@ -22,14 +23,24 @@ namespace Hydra
 			return;
 		}
 		HY_CORE_INFO("DX12: Successfully created device!");
+		auto& physicalDeviceSpecs = dxPhyiscalDevice->GetSpecifications();
+
 		D3D12_COMMAND_QUEUE_DESC cqDesc = {};
 
-		hr = m_Device->CreateCommandQueue(&cqDesc, HY_DX_ID(m_CommandQueue));
-		if (FAILED(hr))
+		if (physicalDeviceSpecs.queueTypes & QueueType::Graphics)
 		{
-			HY_CORE_ERROR("DX12: Failed to create command queue!");
-			return;
+			cqDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+			m_DeviceQueues[QueueType::Graphics] = std::make_shared<DxDeviceQueue>(m_Device.Get(), cqDesc);
 		}
-		HY_CORE_INFO("DX12: Successfully created command queue!");
+		if (physicalDeviceSpecs.queueTypes & QueueType::Transfer)
+		{
+			cqDesc.Type = D3D12_COMMAND_LIST_TYPE_COPY;
+			m_DeviceQueues[QueueType::Transfer] = std::make_shared<DxDeviceQueue>(m_Device.Get(), cqDesc);
+		}
+		if (physicalDeviceSpecs.queueTypes & QueueType::Compute)
+		{
+			cqDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
+			m_DeviceQueues[QueueType::Compute] = std::make_shared<DxDeviceQueue>(m_Device.Get(), cqDesc);
+		}
 	}
 }

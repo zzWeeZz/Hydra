@@ -8,7 +8,10 @@ namespace Hydra
 		friend class VulkanDevice;
 	public:
 		VulkanDeviceQueue();
-		void Create(VkDevice device, uint32_t queueFamily);
+		VulkanDeviceQueue(VkDevice device, uint32_t queueFamily, QueueType type);
+
+		[[nodiscard]] FORCEINLINE VkQueue GetHandle() { return m_Queue; };
+		[[nodiscard]] FORCEINLINE uint32_t GetFamilyIndex() const { return m_QueueFamilyIndex; }
 	private:
 		VkQueue m_Queue;
 		uint32_t m_QueueFamilyIndex;

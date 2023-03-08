@@ -11,7 +11,7 @@ namespace Hydra
 	public:
 		// Inherited via Context
 		void Initalize(const ContextSpecification& specs) override;
-
+		void Shutdown() override;
 		void QuerySwapchainSupport(SwapChainSupportDetails& swapchainDetails);
 		VkSurfaceKHR GetSurface() { return m_Surface; }
 

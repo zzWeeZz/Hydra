@@ -15,8 +15,11 @@ namespace Hydra
 		void Create(Ptr<Context> context) override;
 
 		void Validate(Ptr<Context> context) override;
+		void Present() override;
 
 	private:
 		WinRef<IDXGISwapChain3> m_Swapchain;
+
+		// Inherited via Swapchain
 	};
 }

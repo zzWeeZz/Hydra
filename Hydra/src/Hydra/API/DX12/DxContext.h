@@ -7,6 +7,8 @@ namespace Hydra
 	{
 	public:
 		void Initalize(const ContextSpecification& specs) override;
+		void Shutdown() override;
+
 	private:
 
 	};

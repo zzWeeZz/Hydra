@@ -7,12 +7,27 @@ namespace Hydra
 	struct QueueFamilyIndices
 	{
 		std::optional<uint32_t> graphicsFamily;
-		std::optional<uint32_t> presentFamily;
 		std::optional<uint32_t> transferFamily;
+		std::optional<uint32_t> computeFamily;
 
-		bool HasValue()
+		inline bool HasAllValue()
 		{
-			return graphicsFamily.has_value() && presentFamily.has_value() && transferFamily.has_value();
+			return graphicsFamily.has_value() && transferFamily.has_value() && computeFamily.has_value();
+		}
+
+		inline bool HasGraphics()
+		{
+			return graphicsFamily.has_value();
+		}
+
+		inline bool HasTranfer()
+		{
+			return transferFamily.has_value();
+		}
+
+		inline bool HasCompute()
+		{
+			return computeFamily.has_value();
 		}
 	};
 	class VulkanPhysicalDevice : public PhysicalDevice

@@ -22,7 +22,7 @@ namespace Hydra
 	class Factory
 	{
 	public:
-		static void ContructContext(ContextConstructSpecifications specs);
+		static void ContructContext(ContextConstructSpecifications& specs);
 	private:
 	};
 }

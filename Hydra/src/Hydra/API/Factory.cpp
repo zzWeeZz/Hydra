@@ -7,8 +7,11 @@
 #include <Hydra/API/Vulkan/VulkanContext.h>
 namespace Hydra
 {
-	void Factory::ContructContext(ContextConstructSpecifications specs)
+	void Factory::ContructContext(ContextConstructSpecifications& specs)
 	{
+		HY_CORE_ASSERT((specs.contextSpecs.queueTypes & QueueType::Graphics), "Factory: In order to construct a context you need to have Queue type: [Graphics]!");
+
+		
 		switch (specs.api)
 		{
 		case Hydra::API::Dx12:

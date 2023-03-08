@@ -24,6 +24,8 @@ void Hydra::Application::Run()
 		}
 		s_Window->OnUpdate();
 	}
+
+	GraphicsContext::Shutdown();
 }
 
 void Hydra::Application::OnEvent(Event& e)

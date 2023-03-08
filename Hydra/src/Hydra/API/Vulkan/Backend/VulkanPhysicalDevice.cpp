@@ -74,23 +74,40 @@ namespace Hydra
 		int32_t i = 0;
 		for (const auto& queueFamily : queueFamilies)
 		{
-
-			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			if (m_Specs.queueTypes & QueueType::Graphics)
 			{
-				indices.graphicsFamily = i;
-				VkBool32 presentSupport = false;
-				vkGetPhysicalDeviceSurfaceSupportKHR(m_PhysicalDevice, i, surface, &presentSupport);
-				if (presentSupport)
+				if (indices.HasGraphics() == false)
 				{
-					indices.presentFamily = i;
+					if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+					{
+						indices.graphicsFamily = i;
+						VkBool32 presentSupport = false;
+						vkGetPhysicalDeviceSurfaceSupportKHR(m_PhysicalDevice, i, surface, &presentSupport);
+					}
 				}
 			}
-			if (queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT)
+
+			if (m_Specs.queueTypes & QueueType::Transfer)
 			{
-				indices.transferFamily = i;
+				if (indices.HasTranfer() == false)
+				{
+					if (queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT)
+					{
+						indices.transferFamily = i;
+					}
+				}
 			}
-			if (indices.HasValue())
-				break;
+
+			if (m_Specs.queueTypes & QueueType::Compute)
+			{
+				if (indices.HasCompute() == false)
+				{
+					if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)
+					{
+						indices.computeFamily = i;
+					}
+				}
+			}
 			i++;
 		}
 
