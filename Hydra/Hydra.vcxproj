@@ -151,16 +151,21 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.h" />
-    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.h" />
-    <ClInclude Include="src\Hydra\API\ApiUtils.h" />
+    <ClInclude Include="src\Hydra\API\Buffer.h" />
+    <ClInclude Include="src\Hydra\API\Image.h" />
+    <ClInclude Include="src\Hydra\API\ImageView.h" />
+    <ClInclude Include="src\Hydra\API\Resource.h" />
     <ClInclude Include="src\HYpch.h" />
+    <ClInclude Include="src\Hydra\API\ApiUtils.h" />
     <ClInclude Include="src\Hydra\API\CommandBuffer.h" />
     <ClInclude Include="src\Hydra\API\CommandQueue.h" />
     <ClInclude Include="src\Hydra\API\Context.h" />
     <ClInclude Include="src\Hydra\API\DX12\Backend\DxDevice.h" />
     <ClInclude Include="src\Hydra\API\DX12\Backend\DxPhysicalDevice.h" />
     <ClInclude Include="src\Hydra\API\DX12\Backend\DxSwapchain.h" />
+    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.h" />
+    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.h" />
+    <ClInclude Include="src\Hydra\API\DX12\DxAllocator.h" />
     <ClInclude Include="src\Hydra\API\DX12\DxContext.h" />
     <ClInclude Include="src\Hydra\API\DX12\DxDeviceQueue.h" />
     <ClInclude Include="src\Hydra\API\DX12\DxUtils.h" />
@@ -193,17 +198,20 @@
     <ClInclude Include="src\Hydra\Utils\Memory.h" />
     <ClInclude Include="src\Hydra\Utils\PlatformDetection.h" />
     <ClInclude Include="src\Hydra\Window.h" />
+    <ClInclude Include="vendor\dma\D3D12MemAlloc.h" />
     <ClInclude Include="vendor\vma\vk_mem_alloc.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanImage.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.cpp" />
-    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.cpp" />
     <ClCompile Include="src\HYpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Hydra\API\DX12\Backend\DxDevice.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Backend\DxPhysicalDevice.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Backend\DxSwapchain.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\DxAllocator.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\DxContext.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\DxDeviceQueue.cpp" />
     <ClCompile Include="src\Hydra\API\Factory.cpp" />
@@ -221,7 +229,11 @@
     <ClCompile Include="src\Hydra\Platform\WindowsWindow.cpp" />
     <ClCompile Include="src\Hydra\Rendering\GraphicsContext.cpp" />
     <ClCompile Include="src\Hydra\Utils\Log.cpp" />
-    <ClCompile Include="vendor\dx12Helpers\D3D12MemAlloc.cpp" />
+    <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp" />
+    <ClCompile Include="vendor\dx12Helpers\D3D12MemAlloc.cpp">
+      <ObjectFileName>$(IntDir)\D3D12MemAlloc1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanImage.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

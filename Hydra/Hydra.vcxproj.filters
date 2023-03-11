@@ -16,6 +16,9 @@
     <Filter Include="src\Hydra\API\DX12\Backend">
       <UniqueIdentifier>{22E2E13A-0EF2-8D0B-77AB-F22963DA7CA4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Hydra\API\DX12\CommandSubmiting">
+      <UniqueIdentifier>{4B5F4147-B718-ACF1-4078-C6CBAC306261}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Hydra\API\Vulkan">
       <UniqueIdentifier>{DD62F905-C9F1-82CF-7210-97CA5E7E9375}</UniqueIdentifier>
     </Filter>
@@ -40,6 +43,9 @@
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\dma">
+      <UniqueIdentifier>{D492C5A8-C04A-07F6-2952-E0511529A2E6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor\dx12Helpers">
       <UniqueIdentifier>{74621B21-6046-DC76-C9A6-D6C9B5A9C6F8}</UniqueIdentifier>
     </Filter>
@@ -50,6 +56,9 @@
   <ItemGroup>
     <ClInclude Include="src\HYpch.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\ApiUtils.h">
+      <Filter>src\Hydra\API</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\CommandBuffer.h">
       <Filter>src\Hydra\API</Filter>
@@ -68,6 +77,15 @@
     </ClInclude>
     <ClInclude Include="src\Hydra\API\DX12\Backend\DxSwapchain.h">
       <Filter>src\Hydra\API\DX12\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.h">
+      <Filter>src\Hydra\API\DX12\CommandSubmiting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.h">
+      <Filter>src\Hydra\API\DX12\CommandSubmiting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\DX12\DxAllocator.h">
+      <Filter>src\Hydra\API\DX12</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\DX12\DxContext.h">
       <Filter>src\Hydra\API\DX12</Filter>
@@ -165,12 +183,17 @@
     <ClInclude Include="src\Hydra\Window.h">
       <Filter>src\Hydra</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\dma\D3D12MemAlloc.h">
+      <Filter>vendor\dma</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\vma\vk_mem_alloc.h">
       <Filter>vendor\vma</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hydra\API\ApiUtils.h" />
-    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.h" />
-    <ClInclude Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.h" />
+    <ClInclude Include="src\Hydra\API\Image.h" />
+    <ClInclude Include="src\Hydra\API\ImageView.h" />
+    <ClInclude Include="src\Hydra\API\Resource.h" />
+    <ClInclude Include="src\Hydra\API\Buffer.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanImage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -184,6 +207,15 @@
     </ClCompile>
     <ClCompile Include="src\Hydra\API\DX12\Backend\DxSwapchain.cpp">
       <Filter>src\Hydra\API\DX12\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.cpp">
+      <Filter>src\Hydra\API\DX12\CommandSubmiting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.cpp">
+      <Filter>src\Hydra\API\DX12\CommandSubmiting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\DX12\DxAllocator.cpp">
+      <Filter>src\Hydra\API\DX12</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\API\DX12\DxContext.cpp">
       <Filter>src\Hydra\API\DX12</Filter>
@@ -236,10 +268,12 @@
     <ClCompile Include="src\Hydra\Utils\Log.cpp">
       <Filter>src\Hydra\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp">
+      <Filter>vendor\dma</Filter>
+    </ClCompile>
     <ClCompile Include="vendor\dx12Helpers\D3D12MemAlloc.cpp">
       <Filter>vendor\dx12Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandQueue.cpp" />
-    <ClCompile Include="src\Hydra\API\DX12\CommandSubmiting\DxCommandBuffer.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanImage.cpp" />
   </ItemGroup>
 </Project>

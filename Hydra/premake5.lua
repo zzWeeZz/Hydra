@@ -18,6 +18,8 @@ project "Hydra"
         "src/**.h", 
         "vendor/dx12Helpers/**.cpp",
         FileDir["VMA_H"],
+        FileDir["DMA_H"],
+        FileDir["DMA_CPP"]
     }
     
     includedirs

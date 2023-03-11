@@ -22,7 +22,7 @@
 
 #ifndef AMD_VULKAN_MEMORY_ALLOCATOR_H
 #define AMD_VULKAN_MEMORY_ALLOCATOR_H
-
+#pragma warning(push, 0)
 /** \mainpage Vulkan Memory Allocator
 
 <b>Version 3.0.1 (2022-05-26)</b>
@@ -19556,3 +19556,4 @@ Features deliberately excluded from the scope of this library:
 -# This is a C++ library with C interface. **Bindings or ports to any other programming languages** are welcome as external projects but
    are not going to be included into this repository.
 */
+#pragma warning(pop)

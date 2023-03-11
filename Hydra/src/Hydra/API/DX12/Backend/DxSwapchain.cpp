@@ -47,7 +47,7 @@ namespace Hydra
 		auto dxPhysicalDevice = std::reinterpret_pointer_cast<DxPhysicalDevice>(context.lock()->GetPhyicalDevice().lock());
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(context.lock()->GetDevice().lock());
 
-		IDXGISwapChain* transferSwapchain = nullptr; // create a dummy swapchain0 inorder to move it to later version.
+		IDXGISwapChain* transferSwapchain = nullptr; // create a dummy swapchain0 inorder to move it to newer version.
 		auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(dxDevice->GetQueue(QueueType::Graphics).lock());
 		HRESULT hr = dxPhysicalDevice->GetFactory()->CreateSwapChain(dxQueue->Get(), &scDesc, &transferSwapchain);
 
