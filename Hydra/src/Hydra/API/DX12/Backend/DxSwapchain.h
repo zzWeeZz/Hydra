@@ -19,7 +19,11 @@ namespace Hydra
 
 	private:
 		WinRef<IDXGISwapChain3> m_Swapchain;
+		WinRef<ID3D12DescriptorHeap> m_RTVDescriptorHeap;
+		PerFrameInFlight<WinRef<ID3D12Resource2>> m_RenderTargets;
+		PerFrameInFlight<size_t> m_FenceValues;
+		PerFrameInFlight<WinRef<ID3D12Fence1>> m_Fences;
 
-		// Inherited via Swapchain
+		HANDLE m_FenceEvent;
 	};
 }

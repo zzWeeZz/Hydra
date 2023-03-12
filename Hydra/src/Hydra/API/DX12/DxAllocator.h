@@ -3,6 +3,22 @@
 #include <dxgi1_6.h>
 namespace Hydra
 {
+	struct AllocatedBuffer
+	{
+		uint32_t id;
+		ID3D12Resource2* buffer;
+		D3D12MA::Allocation allocation;
+		size_t sizeOfBuffer;
+	};
+
+	struct AllocatedImage
+	{
+		uint32_t id;
+		ID3D12Resource2* texture;
+		D3D12MA::Allocation allocation;
+		size_t sizeOfBuffer;
+	};
+
 	class DxAllocator
 	{
 	public:

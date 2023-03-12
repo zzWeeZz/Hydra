@@ -6,6 +6,7 @@ namespace Hydra
 	class Resource
 	{
 	public:
+		virtual ~Resource() {}
 		[[nodiscard]] FORCEINLINE bool IsValid() const { return m_ResourceID != InvalidResourceID; }
 		[[nodiscard]] FORCEINLINE size_t GetResourceID() const { return m_ResourceID; }
 	protected:

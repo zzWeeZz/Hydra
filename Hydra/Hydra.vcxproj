@@ -151,12 +151,12 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Hydra\API\Buffer.h" />
-    <ClInclude Include="src\Hydra\API\Image.h" />
-    <ClInclude Include="src\Hydra\API\ImageView.h" />
-    <ClInclude Include="src\Hydra\API\Resource.h" />
+    <ClInclude Include="src\Hydra\API\ApiFormats.h" />
+    <ClInclude Include="src\Hydra\API\DX12\Resources\DxImageView.h" />
+    <ClInclude Include="src\Hydra\API\DX12\Resources\DxImage.h" />
     <ClInclude Include="src\HYpch.h" />
     <ClInclude Include="src\Hydra\API\ApiUtils.h" />
+    <ClInclude Include="src\Hydra\API\Buffer.h" />
     <ClInclude Include="src\Hydra\API\CommandBuffer.h" />
     <ClInclude Include="src\Hydra\API\CommandQueue.h" />
     <ClInclude Include="src\Hydra\API\Context.h" />
@@ -172,13 +172,18 @@
     <ClInclude Include="src\Hydra\API\Device.h" />
     <ClInclude Include="src\Hydra\API\DeviceQueue.h" />
     <ClInclude Include="src\Hydra\API\Factory.h" />
+    <ClInclude Include="src\Hydra\API\Image.h" />
+    <ClInclude Include="src\Hydra\API\ImageView.h" />
     <ClInclude Include="src\Hydra\API\PhysicalDevice.h" />
+    <ClInclude Include="src\Hydra\API\Resource.h" />
     <ClInclude Include="src\Hydra\API\Swapchain.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanDevice.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanPhysicalDevice.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanSwapchain.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandBuffer.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanImage.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanImageView.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\VulkanAllocator.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\VulkanContext.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\VulkanDeviceQueue.h" />
@@ -200,9 +205,10 @@
     <ClInclude Include="src\Hydra\Window.h" />
     <ClInclude Include="vendor\dma\D3D12MemAlloc.h" />
     <ClInclude Include="vendor\vma\vk_mem_alloc.h" />
-    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanImage.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Hydra\API\DX12\Resources\DxImageView.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\Resources\DxImage.cpp" />
     <ClCompile Include="src\HYpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -220,6 +226,8 @@
     <ClCompile Include="src\Hydra\API\Vulkan\Backend\VulkanSwapchain.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandBuffer.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanImage.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanImageView.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\VulkanAllocator.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\VulkanContext.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\VulkanDeviceQueue.cpp" />
@@ -230,10 +238,6 @@
     <ClCompile Include="src\Hydra\Rendering\GraphicsContext.cpp" />
     <ClCompile Include="src\Hydra\Utils\Log.cpp" />
     <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp" />
-    <ClCompile Include="vendor\dx12Helpers\D3D12MemAlloc.cpp">
-      <ObjectFileName>$(IntDir)\D3D12MemAlloc1.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanImage.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

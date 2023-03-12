@@ -2,7 +2,8 @@
 
 #include <Array>
 #include "Hydra/API/ApiUtils.h"
-
+#include "Hydra/API/ApiFormats.h"
+#include "Hydra/API/Vulkan/VulkanAllocator.h"
 inline std::string errorString(VkResult errorCode)
 {
 	switch (errorCode)
@@ -38,3 +39,72 @@ inline std::string errorString(VkResult errorCode)
 }
 
 #define HY_VK_CHECK(X) do { VkResult error = X; if(error) { HY_CORE_ERROR("Fatal : VkResult is {0} in {1} at line {2}", errorString(error).c_str(), __FILE__, __LINE__); exit(1); } } while(0)
+
+namespace Hydra
+{
+	VkFormat GetVkFormat(ImageFormat image)
+	{
+		VkFormat format = {};
+		switch (image)
+		{
+		case Hydra::ImageFormat::R8UN:
+			format = VK_FORMAT_R8_UNORM;
+			break;
+		case Hydra::ImageFormat::RGBA8UN:
+			format = VK_FORMAT_R8G8B8A8_UNORM;
+			break;
+		case Hydra::ImageFormat::R32UI:
+			format = VK_FORMAT_R32_UINT;
+			break;
+		case Hydra::ImageFormat::R32F:
+			format = VK_FORMAT_R32_SFLOAT;
+			break;
+		case Hydra::ImageFormat::R32S:
+			format = VK_FORMAT_R32_SINT;
+			break;
+		case Hydra::ImageFormat::RG32F:
+			format = VK_FORMAT_R32G32_SFLOAT;
+			break;
+		case Hydra::ImageFormat::RG32S:
+			format = VK_FORMAT_R32G32_SINT;
+			break;
+		case Hydra::ImageFormat::RG32UI:
+			format = VK_FORMAT_R32G32_UINT;
+			break;
+		case Hydra::ImageFormat::RGB32F:
+			format = VK_FORMAT_R32G32B32_SFLOAT;
+			break;
+		case Hydra::ImageFormat::RGB32S:
+			format = VK_FORMAT_R32G32B32_SINT;
+			break;
+		case Hydra::ImageFormat::RGB32UI:
+			format = VK_FORMAT_R32G32B32_UINT;
+			break;
+		case Hydra::ImageFormat::RGBA32F:
+			format = VK_FORMAT_R32G32B32A32_SFLOAT;
+			break;
+		case Hydra::ImageFormat::RGBA32UI:
+			format = VK_FORMAT_R32G32B32A32_UINT;
+			break;
+		case Hydra::ImageFormat::RGBA32SI:
+			format = VK_FORMAT_R32G32B32A32_SINT;
+			break;
+		case Hydra::ImageFormat::RGBA16F:
+			break;
+		case Hydra::ImageFormat::RGBA16UN:
+			break;
+		case Hydra::ImageFormat::RGBA16UI:
+			break;
+		case Hydra::ImageFormat::RGBA16SN:
+			break;
+		case Hydra::ImageFormat::RGBA16SI:
+			break;
+		case Hydra::ImageFormat::Depth32:
+			break;
+		case Hydra::ImageFormat::Depth24:
+			break;
+		default:
+			break;
+		}
+	}
+}

@@ -3,7 +3,7 @@
 #include "Hydra/API/Context.h"
 #include <Hydra/API/DX12/Backend/DxDevice.h>
 #include "Hydra/API/DX12/Backend/DxPhysicalDevice.h"
-
+#include "dx12helpers/d3dx12.h"
 #include "Hydra/Application.h"
 
 #include <GLFW/glfw3.h>
@@ -59,6 +59,39 @@ namespace Hydra
 		HY_CORE_INFO("DX12: Successfully created swapchain!");
 		m_Swapchain = reinterpret_cast<IDXGISwapChain3*>(transferSwapchain);
 		m_CurrentImage = m_Swapchain->GetCurrentBackBufferIndex();
+
+		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
+		rtvHeapDesc.NumDescriptors = g_FramesInFlight;
+		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+		rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+
+		HY_DX_CHECK(dxDevice->Get()->CreateDescriptorHeap(&rtvHeapDesc, HY_DX_ID(m_RTVDescriptorHeap)));
+
+		auto rtvDescriptorSize = dxDevice->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+		for (size_t i = 0; i < g_FramesInFlight; ++i)
+		{
+			HY_DX_CHECK(m_Swapchain->GetBuffer(static_cast<UINT>(i), HY_DX_ID(m_RenderTargets[i])));
+			dxDevice->Get()->CreateRenderTargetView(m_RenderTargets[i].Get(), nullptr, rtvHandle);
+
+			rtvHandle.Offset(1, rtvDescriptorSize);
+		}
+		
+		for (size_t i = 0; i < g_FramesInFlight; ++i)
+		{
+			HY_DX_CHECK(dxDevice->Get()->CreateFence(0, D3D12_FENCE_FLAG_NONE, HY_DX_ID(m_Fences[i])));
+
+			m_FenceValues[i] = 0;
+		}
+
+		m_FenceEvent = CreateEvent(nullptr, false, false, nullptr);
+		if (m_FenceEvent == nullptr)
+		{
+			HY_CORE_ASSERT(false, "Could not create Fence Event!");
+		}
+
 	}
 	
 	void DxSwapchain::Resize(uint32_t width, uint32_t height)
