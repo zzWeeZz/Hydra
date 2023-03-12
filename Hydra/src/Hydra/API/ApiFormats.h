@@ -105,4 +105,14 @@ namespace Hydra
 		Count,
 	};
 #pragma endregion
+
+#pragma region AllocationFlags
+	enum class MemoryUsage
+	{
+		GPU_Only,
+		CPU_Only,
+		CPU_To_GPU,
+		GPU_To_CPU,
+	};
+#pragma endregion
 }

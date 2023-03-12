@@ -14,6 +14,8 @@ namespace Hydra
 		uint32_t arrayLayers;
 		ImageFormat format;
 		ImageUsage usage;
+
+		MemoryUsage memoryUsage;
 	};
 
 	class Image : public Resource

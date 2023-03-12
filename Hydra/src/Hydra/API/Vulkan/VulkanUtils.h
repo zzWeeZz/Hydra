@@ -90,21 +90,52 @@ namespace Hydra
 			format = VK_FORMAT_R32G32B32A32_SINT;
 			break;
 		case Hydra::ImageFormat::RGBA16F:
+			format = VK_FORMAT_R16G16B16A16_SFLOAT;
 			break;
 		case Hydra::ImageFormat::RGBA16UN:
+			format = VK_FORMAT_R16G16B16A16_UNORM;
 			break;
 		case Hydra::ImageFormat::RGBA16UI:
+			format = VK_FORMAT_R16G16B16A16_UINT;
 			break;
 		case Hydra::ImageFormat::RGBA16SN:
+			format = VK_FORMAT_R16G16B16A16_SNORM;
 			break;
 		case Hydra::ImageFormat::RGBA16SI:
+			format = VK_FORMAT_R16G16B16A16_SINT;
 			break;
 		case Hydra::ImageFormat::Depth32:
+			format = VK_FORMAT_D32_SFLOAT_S8_UINT;
 			break;
 		case Hydra::ImageFormat::Depth24:
+			format = VK_FORMAT_D24_UNORM_S8_UINT;
 			break;
 		default:
 			break;
 		}
+		return format;
+	}
+
+	VmaMemoryUsage GetVmaMemoryUsage(MemoryUsage usage)
+	{
+		VmaMemoryUsage vma = {};
+		switch (usage)
+		{
+		case Hydra::MemoryUsage::GPU_Only:
+			vma = VMA_MEMORY_USAGE_GPU_ONLY;
+			break;
+		case Hydra::MemoryUsage::CPU_Only:
+			vma = VMA_MEMORY_USAGE_CPU_ONLY;
+			break;
+		case Hydra::MemoryUsage::CPU_To_GPU:
+			vma = VMA_MEMORY_USAGE_CPU_TO_GPU;
+			break;
+		case Hydra::MemoryUsage::GPU_To_CPU:
+			vma = VMA_MEMORY_USAGE_GPU_TO_CPU;
+			break;
+		default:
+			break;
+		}
+		return vma;
 	}
 }
