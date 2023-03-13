@@ -12,6 +12,8 @@ namespace Hydra
 		// Inherited via Device
 		void Create(Ptr<PhysicalDevice> phycicalDevice);
 		
+		void CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer) override;
+
 		[[nodiscard]] FORCEINLINE ID3D12Device2* Get() { return m_Device.Get(); }
 		[[nodiscard]] FORCEINLINE ID3D12Device2* Get() const { return m_Device.Get(); }
 		[[nodiscard]] FORCEINLINE ID3D12Device2** GetAddressOf() { return m_Device.GetAddressOf(); }

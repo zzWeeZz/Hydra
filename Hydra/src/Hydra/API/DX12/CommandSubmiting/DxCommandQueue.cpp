@@ -37,4 +37,15 @@ namespace Hydra
 		commandBufferSpecs.level = level;
 		return std::make_shared<DxCommandBuffer>(commandBufferSpecs);
 	}
+	void DxCommandQueue::Reset()
+	{
+		m_CommandAllocator->Reset();
+	}
+	void DxCommandQueue::Submit(Ptr<Swapchain> swapchain)
+	{
+		auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(m_Queue.lock());
+		auto dxCommandbuffer = std::reinterpret_pointer_cast<DxCommandBuffer>(m_CommandBuffer);
+		dxQueue->Get()->ExecuteCommandLists(1, dxCommandbuffer->GetAddressOf());
+
+	}
 }

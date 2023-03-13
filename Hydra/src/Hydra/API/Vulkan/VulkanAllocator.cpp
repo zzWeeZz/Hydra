@@ -5,8 +5,8 @@
 #include <Hydra/API/Vulkan/VulkanUtils.h>
 
 
-#if TN_ALLOCATOR_TRACE
-#define TN_ALLOC_PRINT(...) TN_CORE_INFO(__VA_ARGS__)
+#if 1
+#define TN_ALLOC_PRINT(...) HY_CORE_INFO(__VA_ARGS__)
 #else
 #define TN_ALLOC_PRINT(...)
 #endif
@@ -25,7 +25,6 @@ namespace Hydra
 
 	void VulkanAllocator::Allocate(AllocatedBuffer& allocation, VkBufferCreateInfo* bufferInfo, VmaAllocationCreateInfo* allocationInfo)
 	{
-		std::scoped_lock lock(s_AllocationMutex);
 
 		allocation.id = s_ID;
 		TN_ALLOC_PRINT("TitanAllocator: id {0} Allocating buffer: {1} bytes", allocation.id, bufferInfo->size);
@@ -39,8 +38,6 @@ namespace Hydra
 
 	void VulkanAllocator::Allocate(AllocatedImage& allocation, VkImageCreateInfo* imageInfo, VmaAllocationCreateInfo* allocationInfo)
 	{
-		std::scoped_lock lock(s_AllocationMutex);
-
 		allocation.id = s_ID;
 		HY_VK_CHECK(vmaCreateImage(s_Allocator, imageInfo, allocationInfo, &allocation.Image, &allocation.allocation, nullptr));
 		VmaAllocationInfo allocInfo{};
@@ -52,13 +49,11 @@ namespace Hydra
 		// inorder to track and manage the allocations that VMA does. and this gives a deallocation function to the map.
 		s_DestroyFunctions[allocation.id] = [&, allocation]() {TN_ALLOC_PRINT("TitanAllocator: id {0} Deallocating image: {1} bytes", allocation.id, allocation.sizeOfBuffer); vmaDestroyImage(s_Allocator, allocation.Image, allocation.allocation); };
 
-
 		s_ID++;
 	}
 
 	void VulkanAllocator::DeAllocate(AllocatedBuffer& allocation)
 	{
-		std::scoped_lock lock(s_AllocationMutex);
 
 		TN_ALLOC_PRINT("TitanAllocator: id {0} Deallocating buffer: {1} bytes", allocation.id, allocation.sizeOfBuffer);
 		vmaDestroyBuffer(s_Allocator, allocation.buffer, allocation.allocation);
@@ -72,8 +67,6 @@ namespace Hydra
 
 	void VulkanAllocator::DeAllocate(AllocatedImage& allocation)
 	{
-		std::scoped_lock lock(s_AllocationMutex);
-
 		TN_ALLOC_PRINT("TitanAllocator: id {0} Deallocating image: {1} bytes", allocation.id, allocation.sizeOfBuffer);
 		vmaDestroyImage(s_Allocator, allocation.Image, allocation.allocation);
 		s_DestroyFunctions.erase(allocation.id);
@@ -101,7 +94,6 @@ namespace Hydra
 
 	void VulkanAllocator::Flush()
 	{
-		std::scoped_lock lock(s_AllocationMutex);
 
 		for (int32_t Index = static_cast<int32_t>(s_AllocateDestructorOrder.size() - 1u); Index >= 0; Index--)
 		{	

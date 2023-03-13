@@ -4,7 +4,7 @@
 #include <set>
 #include <Hydra/API/Vulkan/VulkanUtils.h>
 #include <Hydra/API/Vulkan/CommandSubmiting/VulkanCommandQueue.h>
-
+#include "Hydra/API/Vulkan/Resources/VulkanFramebuffer.h"
 namespace Hydra
 {
 
@@ -12,6 +12,7 @@ namespace Hydra
 	{
 		
 	}
+
 	void VulkanDevice::Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer)
 	{
 		auto indices = physicalDevice->GetFamilyIndices();
@@ -93,10 +94,23 @@ namespace Hydra
 
 		CreateCommandPools(physicalDevice);
 	}
+
+	void VulkanDevice::CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer)
+	{
+		auto vkFrameBuffer = std::make_shared<VulkanFramebuffer>(frameBufferSpecs, shared_from_this());
+		framebuffer = std::move(vkFrameBuffer);
+	}
+	
+	void VulkanDevice::DestroyFramebuffer(Ref<Framebuffer> framebuffer)
+	{
+		std::reinterpret_pointer_cast<VulkanFramebuffer>(framebuffer)->CleanUp();
+	}
+
 	void VulkanDevice::Shutdown()
 	{
 		vkDestroyDevice(m_Device, nullptr);
 	}
+
 	void VulkanDevice::CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, size_t amount)
 	{
 		auto indices = physicalDevice->GetFamilyIndices();
@@ -125,6 +139,7 @@ namespace Hydra
 		}
 
 	}
+
 	bool VulkanDevice::CheckDeviceExtensionSupport(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> deviceExtensions)
 	{
 		uint32_t extensionCount;

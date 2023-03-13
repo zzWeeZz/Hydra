@@ -8,11 +8,17 @@
 #include <unordered_map>
 namespace Hydra
 {
+	struct FramebufferSpecification;
+	class Framebuffer;
 	class Device : public std::enable_shared_from_this<Device>
 	{
 	public:
 		Device(Ptr<PhysicalDevice> physicalDevice) {}
 		virtual ~Device(){}
+
+		virtual void CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer){}
+
+		virtual void DestroyFramebuffer(Ref<Framebuffer> framebuffer){}
 
 	 	[[nodiscard]] FORCEINLINE Ptr<DeviceQueue> GetQueue(QueueType type) { return m_DeviceQueues[type]; }
 		[[nodiscard]] FORCEINLINE Ptr<CommandQueue> GetCommandQueue(QueueType queueType) { return m_CommandQueues[queueType][0]; } // TODO_Niklas: Fix Indexing for perframe in flight.

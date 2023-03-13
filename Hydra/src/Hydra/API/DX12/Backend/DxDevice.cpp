@@ -4,6 +4,7 @@
 #include <Hydra/API/DX12/DxDeviceQueue.h>
 #include "Hydra/API/DX12/CommandSubmiting/DxCommandBuffer.h"
 #include "Hydra/API/DX12/CommandSubmiting/DxCommandQueue.h"
+#include <Hydra/API/DX12/Resources/DxFramebuffer.h>
 namespace Hydra
 {
 	DxDevice::DxDevice(Ptr<PhysicalDevice> physicalDevice) : Device(physicalDevice)
@@ -45,6 +46,11 @@ namespace Hydra
 			m_DeviceQueues[QueueType::Compute] = std::make_shared<DxDeviceQueue>(m_Device.Get(), cqDesc);
 		}
 
+	}
+	void DxDevice::CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer)
+	{
+		auto dxFramebuffer = std::make_shared<DxFramebuffer>(frameBufferSpecs, shared_from_this());
+		framebuffer = std::move(dxFramebuffer);
 	}
 	void DxDevice::CreateCommandLists(Ptr<DxPhysicalDevice> physicalDevice)
 	{

@@ -9,6 +9,8 @@ namespace Hydra
 		Ptr<DeviceQueue> deviceQueue;
 	};
 
+	class Swapchain;
+
 	class CommandQueue : public std::enable_shared_from_this<CommandQueue>
 	{
 	public:
@@ -16,8 +18,13 @@ namespace Hydra
 		virtual ~CommandQueue(){}
 		virtual Ref<CommandBuffer> AllocateCommandBuffer(Ptr<Device> device, CommandBufferLevel level) = 0;
 
+		virtual void Reset() = 0;
+		virtual void Submit(Ptr<Swapchain> swapchain) = 0;
+
+
 		[[nodiscard]] FORCEINLINE Ptr<CommandBuffer> GetCommandBuffer() { return m_CommandBuffer; }
  
+
 		inline void FetchCommandQueueData(CommandQueueFetchData& outFetchData)
 		{
 			outFetchData.deviceQueue = m_Queue;

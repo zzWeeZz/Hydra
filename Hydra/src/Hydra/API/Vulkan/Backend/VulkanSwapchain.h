@@ -21,6 +21,12 @@ namespace Hydra
 		void Resize(uint32_t width, uint32_t height) override;
 		void Create(Ptr<Context> context) override;
 		void Validate(Ptr<Context> context) override;
+		void PrepareNewFrame() override;
+
+		[[nodiscard]] FORCEINLINE VkSemaphore& GetImageAvailableSemaphore() { return m_ImageAvailableSemaphores[m_CurrentImage]; }
+		[[nodiscard]] FORCEINLINE VkSemaphore& GetRenderFinishedSemaphore() { return m_RenderFinishedSemaphores[m_CurrentFrame]; }
+		[[nodiscard]] FORCEINLINE VkFence& GetInFlightFence() { return m_InFlightFences[m_CurrentFrame]; }
+
 		void Present() override;
 		void CleanUp();
 		void Shutdown(bool destroyRenderTarget);
@@ -28,6 +34,8 @@ namespace Hydra
 	
 	private:
 
+		void GetCurrentImageIndex();
+		
 		// Resizes the swapchain after width and height.
 		// 
 		// HOW IT WORKS:
@@ -64,5 +72,7 @@ namespace Hydra
 		PerFrameInFlight<VkSemaphore> m_ImageAvailableSemaphores;
 		PerFrameInFlight<VkSemaphore> m_RenderFinishedSemaphores;
 		PerFrameInFlight<VkFence> m_InFlightFences;
+
+		// Inherited via Swapchain
 	};
 }

@@ -11,6 +11,9 @@ namespace Hydra
 
 		void Create(Ptr<VulkanDevice> device, Ptr<VulkanDeviceQueue> queue);
 
+		void Reset() override;
+		void Submit(Ptr<Swapchain> swapchain) override;
+
 		[[nodiscard]] FORCEINLINE VkCommandPool GetHandle() { return m_CommandPool; }
 
 		Ref<CommandBuffer> AllocateCommandBuffer(Ptr<Device> device, CommandBufferLevel level) override;
@@ -19,5 +22,7 @@ namespace Hydra
 
 	private:
 		VkCommandPool m_CommandPool;
+		Ptr<VulkanDevice> m_VulkanDevice;
+	
 	};
 }

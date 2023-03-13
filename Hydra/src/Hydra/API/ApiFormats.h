@@ -63,6 +63,8 @@ namespace Hydra
 	{
 		RenderTarget,
 		DepthTarget,
+		TransferDest,
+		TransferSrc,
 	};
 
 	enum class ImageFormat

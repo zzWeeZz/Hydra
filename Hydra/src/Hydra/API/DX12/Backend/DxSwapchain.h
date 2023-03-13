@@ -8,6 +8,8 @@ namespace Hydra
 	{
 	public:
 		DxSwapchain(const SwapchainSpecfications& specs);
+		
+		void PrepareNewFrame() override;
 
 		// Inherited via Swapchain
 		void Resize(uint32_t width, uint32_t height) override;
@@ -25,5 +27,7 @@ namespace Hydra
 		PerFrameInFlight<WinRef<ID3D12Fence1>> m_Fences;
 
 		HANDLE m_FenceEvent;
+
+		// Inherited via Swapchain
 	};
 }

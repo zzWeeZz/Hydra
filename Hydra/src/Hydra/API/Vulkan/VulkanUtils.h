@@ -42,7 +42,7 @@ inline std::string errorString(VkResult errorCode)
 
 namespace Hydra
 {
-	VkFormat GetVkFormat(ImageFormat image)
+	inline VkFormat GetVkFormat(ImageFormat image)
 	{
 		VkFormat format = {};
 		switch (image)
@@ -116,7 +116,7 @@ namespace Hydra
 		return format;
 	}
 
-	VmaMemoryUsage GetVmaMemoryUsage(MemoryUsage usage)
+	inline VmaMemoryUsage GetVmaMemoryUsage(MemoryUsage usage)
 	{
 		VmaMemoryUsage vma = {};
 		switch (usage)

@@ -16,6 +16,10 @@ namespace Hydra
 
 		void Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer);
 		VkDevice GetHandle() { return m_Device; }
+
+		void CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer);
+
+		void DestroyFramebuffer(Ref<Framebuffer> framebuffer);
 		void Shutdown();
 	private:
 		void CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, size_t amount = 1);

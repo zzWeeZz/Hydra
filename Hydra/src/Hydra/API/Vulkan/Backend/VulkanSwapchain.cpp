@@ -11,6 +11,8 @@ namespace Hydra
 	VulkanSwapchain::VulkanSwapchain(const SwapchainSpecfications& specs) : Swapchain(specs)
 	{
 		m_Specs = specs;
+		m_CurrentImage = 0;
+		m_CurrentFrame = 0;
 	}
 	void VulkanSwapchain::Resize(uint32_t width, uint32_t height)
 	{
@@ -100,22 +102,30 @@ namespace Hydra
 		}
 		HY_CORE_INFO("Vulkan: Successfully created swapchain images and views!");
 	}
+
 	void VulkanSwapchain::Present()
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
+
+		VkSemaphore signalSemaphores[] = { m_RenderFinishedSemaphores[m_CurrentImage]};
+		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
 		presentInfo.waitSemaphoreCount = 1;
-		//presentInfo.pWaitSemaphores = signalSemaphores;
+		presentInfo.pWaitSemaphores = signalSemaphores;
 
 		VkSwapchainKHR swapChains[] = { m_Swapchain };
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
-		//presentInfo.pImageIndices = &imageIndex;
+		presentInfo.pImageIndices = &m_CurrentImage;
 		auto vulkanQueue = std::reinterpret_pointer_cast<VulkanDeviceQueue>(vulkanDevice->GetQueue(QueueType::Graphics).lock());
 		vkQueuePresentKHR(vulkanQueue->GetHandle(), &presentInfo);
+		
+		m_CurrentFrame = (m_CurrentFrame + 1) % g_FramesInFlight;
+
 	}
+
 	void VulkanSwapchain::CleanUp()
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
@@ -130,6 +140,7 @@ namespace Hydra
 		}
 		vkDestroySwapchainKHR(device, m_Swapchain, nullptr);
 	}
+
 	void VulkanSwapchain::Shutdown(bool destroyRenderTarget)
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
@@ -144,9 +155,27 @@ namespace Hydra
 			vkDestroyFence(device, m_InFlightFences[i], nullptr);
 		}
 	}
+
+	void VulkanSwapchain::GetCurrentImageIndex()
+	{
+		uint32_t imageIndex;
+		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
+		auto result = vkAcquireNextImageKHR(vulkanDevice->GetHandle(), m_Swapchain, UINT64_MAX, m_ImageAvailableSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
+		/*if (result == VK_ERROR_OUT_OF_DATE_KHR)
+		{
+			InternalResize();
+			m_Width = m_SwapchainExtent.width;
+			m_Height = m_SwapchainExtent.height;
+			m_NeedsToResize = false;
+			return -1;
+		}*/
+		m_CurrentImage = imageIndex;
+	}
+
 	void VulkanSwapchain::InternalResize()
 	{
 	}
+
 	void VulkanSwapchain::CreateSyncObject()
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
@@ -166,6 +195,7 @@ namespace Hydra
 		}
 		HY_CORE_INFO("Vulkan: Successfully created swapchain syncObjects!");
 	}
+
 	void VulkanSwapchain::CreateRenderPass()
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
@@ -199,6 +229,7 @@ namespace Hydra
 		HY_VK_CHECK(vkCreateRenderPass(device, &renderPassInfo, nullptr, &m_SwapchainRenderPass));
 		HY_CORE_INFO("Vulkan: Successfully created swapchain Renderpass!");
 	}
+
 	void VulkanSwapchain::CreateFrameBuffer()
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
@@ -222,6 +253,7 @@ namespace Hydra
 		}
 		HY_CORE_INFO("Vulkan: Successfully created swapchain framebuffer!");
 	}
+
 	VkSurfaceFormatKHR VulkanSwapchain::ChooseSwapchainFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
 	{
 		for (const auto& availableFormat : availableFormats)
@@ -234,6 +266,7 @@ namespace Hydra
 		}
 		return availableFormats[0];
 	}
+
 	VkPresentModeKHR VulkanSwapchain::ChooseSwapchainPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
 	{
 		for (const auto& availablePresentMode : availablePresentModes)
@@ -246,6 +279,7 @@ namespace Hydra
 		}
 		return VK_PRESENT_MODE_FIFO_KHR;
 	}
+
 	VkExtent2D VulkanSwapchain::ChooseSwapchainExtent(const VkSurfaceCapabilitiesKHR& capabilities)
 	{
 		if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
@@ -263,5 +297,11 @@ namespace Hydra
 			actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
 			return actualExtent;
 		}
+	}
+	void VulkanSwapchain::PrepareNewFrame()
+	{
+		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
+		GetCurrentImageIndex();
+		vkResetFences(vulkanDevice->GetHandle(), 1, &m_InFlightFences[m_CurrentFrame]);
 	}
 }

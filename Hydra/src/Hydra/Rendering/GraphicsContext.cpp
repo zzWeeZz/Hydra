@@ -18,4 +18,16 @@ namespace Hydra
 		s_Context->Shutdown();
 		s_Context.reset();
 	}
+	Ptr<Device> GraphicsContext::GetDevice()
+	{
+		return s_Context->GetDevice();
+	}
+	Ptr<PhysicalDevice> GraphicsContext::GetPhysicalDevice()
+	{
+		return s_Context->GetPhyicalDevice();
+	}
+	Ptr<Swapchain> GraphicsContext::GetSwapchain()
+	{
+		return s_Context->GetSwapchain();
+	}
 }

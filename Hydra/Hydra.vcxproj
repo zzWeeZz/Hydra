@@ -151,12 +151,17 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Hydra\API\DX12\Resources\DxFramebuffer.h" />
+    <ClInclude Include="src\Hydra\Rendering\Renderer.h" />
     <ClInclude Include="src\Hydra\API\ApiFormats.h" />
     <ClInclude Include="src\Hydra\API\DX12\Resources\DxImageView.h" />
     <ClInclude Include="src\Hydra\API\DX12\Resources\DxImage.h" />
+    <ClInclude Include="src\Hydra\API\Framebuffer.h" />
+    <ClInclude Include="src\Hydra\API\PipelineInterface\GraphicsPipeline.h" />
+    <ClInclude Include="src\Hydra\API\PipelineInterface\Pipeline.h" />
     <ClInclude Include="src\HYpch.h" />
     <ClInclude Include="src\Hydra\API\ApiUtils.h" />
-    <ClInclude Include="src\Hydra\API\Buffer.h" />
+    <ClInclude Include="src\Hydra\API\ResourceInterface\Buffer.h" />
     <ClInclude Include="src\Hydra\API\CommandBuffer.h" />
     <ClInclude Include="src\Hydra\API\CommandQueue.h" />
     <ClInclude Include="src\Hydra\API\Context.h" />
@@ -172,8 +177,8 @@
     <ClInclude Include="src\Hydra\API\Device.h" />
     <ClInclude Include="src\Hydra\API\DeviceQueue.h" />
     <ClInclude Include="src\Hydra\API\Factory.h" />
-    <ClInclude Include="src\Hydra\API\Image.h" />
-    <ClInclude Include="src\Hydra\API\ImageView.h" />
+    <ClInclude Include="src\Hydra\API\ResourceInterface\Image.h" />
+    <ClInclude Include="src\Hydra\API\ResourceInterface\ImageView.h" />
     <ClInclude Include="src\Hydra\API\PhysicalDevice.h" />
     <ClInclude Include="src\Hydra\API\Resource.h" />
     <ClInclude Include="src\Hydra\API\Swapchain.h" />
@@ -205,8 +210,11 @@
     <ClInclude Include="src\Hydra\Window.h" />
     <ClInclude Include="vendor\dma\D3D12MemAlloc.h" />
     <ClInclude Include="vendor\vma\vk_mem_alloc.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Hydra\API\DX12\Resources\DxFramebuffer.cpp" />
+    <ClCompile Include="src\Hydra\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Resources\DxImageView.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Resources\DxImage.cpp" />
     <ClCompile Include="src\HYpch.cpp">
@@ -238,6 +246,7 @@
     <ClCompile Include="src\Hydra\Rendering\GraphicsContext.cpp" />
     <ClCompile Include="src\Hydra\Utils\Log.cpp" />
     <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

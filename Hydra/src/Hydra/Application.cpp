@@ -6,12 +6,14 @@
 #include "Events/ApplicationEvent.h"
 #include "Hydra/Utils/Log.h"
 #include "Hydra/Rendering/GraphicsContext.h"
+#include "Hydra/Rendering/Renderer.h"
 Hydra::Application::Application() : m_Running(true)
 {
 	s_Window = Ref<Window>(Window::Create());
 	s_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	Log::Initialize();
-	GraphicsContext::Intitalize(API::Dx12);
+	GraphicsContext::Intitalize(API::Vulkan);
+	Renderer::Initialize();
 }
 
 void Hydra::Application::Run()
@@ -23,8 +25,9 @@ void Hydra::Application::Run()
 			layer->OnUpdate();
 		}
 		s_Window->OnUpdate();
+		Renderer::Begin();
 	}
-
+	Renderer::Shutdown();
 	GraphicsContext::Shutdown();
 }
 

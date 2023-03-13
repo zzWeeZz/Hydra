@@ -34,6 +34,8 @@ namespace Hydra
 	void DxContext::Shutdown()
 	{
 		HY_CORE_INFO("Dx12: Shutdown protocall initalized...");
-		HY_CORE_INFO("Dx12: Shutdown successfull!");
+		DxAllocator::Flush();
+		DxAllocator::Shutdown();
+		HY_CORE_INFO("Dx12: Shutdown successful!");
 	}
 }

@@ -13,9 +13,16 @@ namespace Hydra
 		[[nodiscard]] FORCEINLINE ID3D12CommandAllocator* Get() { return m_CommandAllocator.Get(); }
 		[[nodiscard]] FORCEINLINE ID3D12CommandAllocator* Get() const { return m_CommandAllocator.Get(); }
 		[[nodiscard]] FORCEINLINE ID3D12CommandAllocator** GetAddressOf() { return m_CommandAllocator.GetAddressOf(); }
+
+		// Inherited via CommandQueue
+		virtual void Reset() override;
+		virtual void Submit(Ptr<Swapchain> swapchain) override;
+
 		// Inherited via CommandQueue
 		virtual Ref<CommandBuffer> AllocateCommandBuffer(Ptr<Device> device, CommandBufferLevel level) override;
 	private:
 		WinRef<ID3D12CommandAllocator> m_CommandAllocator;
+
+	
 	};
 }

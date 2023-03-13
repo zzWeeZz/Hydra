@@ -138,13 +138,17 @@ namespace Hydra
 	{
 		HY_CORE_INFO("Vulkan: Shutdown protocall initalized...");
 		VulkanAllocator::Flush();
+		VulkanAllocator::Shutdown();
 		std::reinterpret_pointer_cast<VulkanSwapchain>(m_Swapchain)->CleanUp();
 		std::reinterpret_pointer_cast<VulkanSwapchain>(m_Swapchain)->Shutdown(true);
-		std::reinterpret_pointer_cast<VulkanDevice>(m_Device)->Shutdown();
+
 		DestroyDebugMessanger();
+		
+		std::reinterpret_pointer_cast<VulkanDevice>(m_Device)->Shutdown();
+		
 		vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
 		vkDestroyInstance(m_Instance, nullptr);
-		HY_CORE_INFO("Vulkan: Shutdown successfull!");
+		HY_CORE_INFO("Vulkan: Shutdown successful!");
 	}
 
 	void VulkanContext::QuerySwapchainSupport(SwapChainSupportDetails& swapchainDetails)
