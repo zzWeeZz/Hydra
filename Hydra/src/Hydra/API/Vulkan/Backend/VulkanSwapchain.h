@@ -21,7 +21,7 @@ namespace Hydra
 		void Resize(uint32_t width, uint32_t height) override;
 		void Create(Ptr<Context> context) override;
 		void Validate(Ptr<Context> context) override;
-		void PrepareNewFrame() override;
+		uint32_t PrepareNewFrame() override;
 
 		[[nodiscard]] FORCEINLINE VkSemaphore& GetImageAvailableSemaphore() { return m_ImageAvailableSemaphores[m_CurrentImage]; }
 		[[nodiscard]] FORCEINLINE VkSemaphore& GetRenderFinishedSemaphore() { return m_RenderFinishedSemaphores[m_CurrentFrame]; }

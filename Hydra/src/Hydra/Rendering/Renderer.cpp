@@ -26,9 +26,14 @@ namespace Hydra
 	void Renderer::Begin()
 	{
 		auto swapchain = GraphicsContext::GetSwapchain().lock();
-		auto commandQueue = GraphicsContext::GetDevice().lock()->GetCommandQueue(QueueType::Graphics).lock();
-		swapchain->PrepareNewFrame();
+
+		auto frameIndex = swapchain->PrepareNewFrame();
+
+		auto commandQueue = GraphicsContext::GetDevice().lock()->GetCommandQueue(QueueType::Graphics, frameIndex).lock();
+		auto commandBuffer = commandQueue->GetCommandBuffer();
 		commandQueue->Reset();
+
+
 
 
 		commandQueue->Submit(swapchain);

@@ -19,7 +19,7 @@ namespace Hydra
 	public:
 		Swapchain(const SwapchainSpecfications& specs) { m_Specs = specs; }
 		virtual ~Swapchain(){}
-		virtual void PrepareNewFrame() = 0;
+		virtual uint32_t PrepareNewFrame() = 0;
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 		virtual void Create(Ptr<Context> context) = 0;
 		virtual void Present() = 0;

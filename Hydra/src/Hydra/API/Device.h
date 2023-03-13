@@ -21,8 +21,8 @@ namespace Hydra
 		virtual void DestroyFramebuffer(Ref<Framebuffer> framebuffer){}
 
 	 	[[nodiscard]] FORCEINLINE Ptr<DeviceQueue> GetQueue(QueueType type) { return m_DeviceQueues[type]; }
-		[[nodiscard]] FORCEINLINE Ptr<CommandQueue> GetCommandQueue(QueueType queueType) { return m_CommandQueues[queueType][0]; } // TODO_Niklas: Fix Indexing for perframe in flight.
-		[[nodiscard]] FORCEINLINE Ptr<CommandBuffer> GetCommandBuffer(QueueType queueType) { return m_CommandQueues[queueType][0]->GetCommandBuffer(); } // TODO_Niklas: Fix Indexing for perframe in flight.
+		[[nodiscard]] FORCEINLINE Ptr<CommandQueue> GetCommandQueue(QueueType queueType, uint32_t frameIndex) { return m_CommandQueues[queueType][frameIndex]; } // TODO_Niklas: Fix Indexing for perframe in flight.
+		[[nodiscard]] FORCEINLINE Ptr<CommandBuffer> GetCommandBuffer(QueueType queueType, uint32_t frameIndex) { return m_CommandQueues[queueType][frameIndex]->GetCommandBuffer(); } // TODO_Niklas: Fix Indexing for perframe in flight.
 
 	protected:
 		std::unordered_map<QueueType, Ref<DeviceQueue>> m_DeviceQueues;

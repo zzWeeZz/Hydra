@@ -104,13 +104,15 @@ namespace Hydra
 	void DxSwapchain::Present()
 	{
 		m_Swapchain->Present(0, 0);
+		m_CurrentFrame = (m_CurrentFrame + 1) % g_FramesInFlight;
 	}
-	void DxSwapchain::PrepareNewFrame()
+	uint32_t DxSwapchain::PrepareNewFrame()
 	{
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(m_Specs.context.lock()->GetDevice().lock());
 		auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(dxDevice->GetQueue(QueueType::Graphics).lock());
 		m_CurrentImage = m_Swapchain->GetCurrentBackBufferIndex();
 		m_FenceValues[m_CurrentFrame]++;
-		//dxQueue->Get()->Signal(m_Fences[m_CurrentFrame].Get(), m_FenceValues[m_CurrentFrame]);
+		dxQueue->Get()->Signal(m_Fences[m_CurrentFrame].Get(), m_FenceValues[m_CurrentFrame]);
+		return m_CurrentFrame;
 	}
 }

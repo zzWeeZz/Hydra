@@ -298,10 +298,11 @@ namespace Hydra
 			return actualExtent;
 		}
 	}
-	void VulkanSwapchain::PrepareNewFrame()
+	uint32_t VulkanSwapchain::PrepareNewFrame()
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
 		GetCurrentImageIndex();
 		vkResetFences(vulkanDevice->GetHandle(), 1, &m_InFlightFences[m_CurrentFrame]);
+		return m_CurrentFrame;
 	}
 }
