@@ -32,10 +32,13 @@ namespace Hydra
 		auto commandQueue = GraphicsContext::GetDevice().lock()->GetCommandQueue(QueueType::Graphics, frameIndex).lock();
 		auto commandBuffer = commandQueue->GetCommandBuffer();
 		commandQueue->Reset();
+		commandBuffer.lock()->Begin();
 
+		commandBuffer.lock()->BeginFramebuffer(frameIndex, cache->framebuffer);
 
+		commandBuffer.lock()->EndFramebuffer(frameIndex, cache->framebuffer);
 
-
+		commandBuffer.lock()->End();
 		commandQueue->Submit(swapchain);
 		swapchain->Present();
 	}

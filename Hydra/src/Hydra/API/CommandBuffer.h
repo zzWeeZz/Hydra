@@ -28,12 +28,15 @@ namespace Hydra
 		CommandBuffer() = default;
 		CommandBuffer(CommandBufferSpecification& specs) { m_Specs = specs; }
 
-		virtual void ClearFramebuffer(Ref<Framebuffer>& framebuffer, float color[4]){}
-		virtual void BeginFramebuffer(Ref<Framebuffer>& framebuffer){}
-		virtual void EndFramebuffer(Ref<Framebuffer>& framebuffer){}
+		virtual void Begin(){}
+		virtual void End(){}
 
-		virtual void BindPipeline(Ref<Pipeline>& pipeline){}
-		virtual void UnbindPipeline(Ref<Pipeline>& pipeline){}
+		virtual void ClearFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, float color[4]){}
+		virtual void BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer){}
+		virtual void EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer){}
+
+		virtual void BindPipeline(uint32_t frameIndex, Ref<Pipeline>& pipeline){}
+		virtual void UnbindPipeline(uint32_t frameIndex, Ref<Pipeline>& pipeline){}
 
 		virtual void DrawInstanced(){}
 		virtual void DrawIndexedInstanced(){}

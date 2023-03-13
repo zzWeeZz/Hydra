@@ -107,14 +107,13 @@ namespace Hydra
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
 
-		VkSemaphore signalSemaphores[] = { m_RenderFinishedSemaphores[m_CurrentImage]};
+		VkSemaphore signalSemaphores[] = { m_RenderFinishedSemaphores[m_CurrentFrame]};
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = signalSemaphores;
-
 		VkSwapchainKHR swapChains[] = { m_Swapchain };
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
@@ -302,6 +301,10 @@ namespace Hydra
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
 		GetCurrentImageIndex();
+		vkWaitForFences(vulkanDevice->GetHandle(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
+
+		vkDeviceWaitIdle(vulkanDevice->GetHandle());
+
 		vkResetFences(vulkanDevice->GetHandle(), 1, &m_InFlightFences[m_CurrentFrame]);
 		return m_CurrentFrame;
 	}

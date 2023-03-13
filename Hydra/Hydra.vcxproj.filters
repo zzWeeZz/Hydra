@@ -305,4 +305,7 @@
     <ClCompile Include="src\Hydra\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Resources\DxFramebuffer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
 </Project>

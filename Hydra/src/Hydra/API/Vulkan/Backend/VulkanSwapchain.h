@@ -23,7 +23,7 @@ namespace Hydra
 		void Validate(Ptr<Context> context) override;
 		uint32_t PrepareNewFrame() override;
 
-		[[nodiscard]] FORCEINLINE VkSemaphore& GetImageAvailableSemaphore() { return m_ImageAvailableSemaphores[m_CurrentImage]; }
+		[[nodiscard]] FORCEINLINE VkSemaphore& GetImageAvailableSemaphore() { return m_ImageAvailableSemaphores[m_CurrentFrame]; }
 		[[nodiscard]] FORCEINLINE VkSemaphore& GetRenderFinishedSemaphore() { return m_RenderFinishedSemaphores[m_CurrentFrame]; }
 		[[nodiscard]] FORCEINLINE VkFence& GetInFlightFence() { return m_InFlightFences[m_CurrentFrame]; }
 

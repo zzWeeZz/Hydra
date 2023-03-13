@@ -248,6 +248,9 @@
     <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

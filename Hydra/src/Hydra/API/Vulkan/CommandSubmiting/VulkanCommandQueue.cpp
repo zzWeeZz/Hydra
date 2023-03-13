@@ -8,7 +8,7 @@ namespace Hydra
 	void VulkanCommandQueue::Shutdown(Ptr<VulkanDevice> device)
 	{
 		vkDestroyCommandPool(device.lock()->GetHandle(), m_CommandPool, nullptr);
-		m_VulkanDevice = device;
+		
 	}
 	void VulkanCommandQueue::Create(Ptr<VulkanDevice> device, Ptr<VulkanDeviceQueue> queue)
 	{
@@ -19,6 +19,8 @@ namespace Hydra
 
 		HY_VK_CHECK(vkCreateCommandPool(device.lock()->GetHandle(), &poolInfo, nullptr, &m_CommandPool));
 		m_CommandBuffer = AllocateCommandBuffer(device, CommandBufferLevel::Primary);
+		m_VulkanDevice = device;
+		m_Queue = queue;
 		VulkanAllocator::CustomDeletion([this, device]() { Shutdown(device); });
 	}
 

@@ -8,7 +8,11 @@ namespace Hydra
 	public:
 		VulkanCommandBuffer(CommandBufferSpecification& specs);
 
+		void Begin() override;
+		void End() override;
 
+		void BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer) override;
+		void EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer) override;
 
 
 		[[nodiscard]] FORCEINLINE VkCommandBuffer GetHandle() const { return m_CommandBuffer; }
