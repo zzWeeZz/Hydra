@@ -21,6 +21,7 @@
 //
 #include "HYpch.h"
 #include "D3D12MemAlloc.h"
+
 #include <combaseapi.h>
 #include <mutex>
 #include <algorithm>
@@ -31,7 +32,6 @@
 #ifndef _WIN32
     #include <shared_mutex>
 #endif
-#pragma warning(push, 0)
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -10542,5 +10542,3 @@ VirtualBlock::~VirtualBlock()
 #endif // _D3D12MA_VIRTUAL_BLOCK_FUNCTIONS
 #endif // _D3D12MA_PUBLIC_INTERFACE
 } // namespace D3D12MA
-
-#pragma warning(pop)

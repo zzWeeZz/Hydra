@@ -12,7 +12,7 @@ namespace Hydra
 		s_ClientLogger = spdlog::stdout_color_mt("CLIENT");
 		s_ClientLogger->set_level(spdlog::level::trace);
 
-		s_CoreLogger = spdlog::stdout_color_mt("TITAN");
+		s_CoreLogger = spdlog::stdout_color_mt("HYDRA");
 		s_CoreLogger->set_level(spdlog::level::trace);
 	}
 }

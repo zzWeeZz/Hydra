@@ -15,6 +15,10 @@ namespace Hydra
 	{
 		auto dxPhyiscalDevice = std::reinterpret_pointer_cast<DxPhysicalDevice>(phycicalDevice.lock());
 
+		WinRef<ID3D12Debug> spDebugController;
+		HY_DX_CHECK(D3D12GetDebugInterface(HY_DX_ID(spDebugController)));
+		spDebugController->EnableDebugLayer();
+
 		const int32_t adapterIndex = dxPhyiscalDevice->GetAdapterIndex();
 		const auto adapter = dxPhyiscalDevice->GetAdapter();
 
@@ -26,6 +30,10 @@ namespace Hydra
 			return;
 		}
 		HY_CORE_INFO("DX12: Successfully created device!");
+		
+		m_Device->QueryInterface(m_InfoQueue.GetAddressOf());
+
+
 		auto& physicalDeviceSpecs = dxPhyiscalDevice->GetSpecifications();
 
 		D3D12_COMMAND_QUEUE_DESC cqDesc = {};
@@ -76,6 +84,41 @@ namespace Hydra
 				commandQueues[i] = std::make_shared<DxCommandQueue>();
 				std::reinterpret_pointer_cast<DxCommandQueue>(commandQueues[i])->Create(std::reinterpret_pointer_cast<DxDevice>(shared_from_this()), dxQueue);
 			}
+		}
+	}
+	void DxDevice::UpdateValidationLayer()
+	{
+		if (!m_InfoQueue) return;
+
+		SIZE_T messageLength = 0;
+		HRESULT hr = m_InfoQueue->GetMessage(0, NULL, &messageLength);
+
+		// Allocate space and get the message
+		if (messageLength)
+		{
+			D3D12_MESSAGE* pMessage = nullptr;
+			pMessage = (D3D12_MESSAGE*)malloc(messageLength);
+			hr = m_InfoQueue->GetMessage(0, pMessage, &messageLength);
+
+			switch (pMessage->Severity)
+			{
+			case D3D12_MESSAGE_SEVERITY_INFO:
+				HY_CORE_INFO(pMessage->pDescription);
+				break;
+			case D3D12_MESSAGE_SEVERITY_WARNING:
+				HY_CORE_WARN(pMessage->pDescription);
+				break;
+			case D3D12_MESSAGE_SEVERITY_ERROR:
+				HY_CORE_ERROR(pMessage->pDescription);
+				break;
+			case D3D12_MESSAGE_SEVERITY_MESSAGE:
+				HY_CORE_TRACE(pMessage->pDescription);
+				break;
+			default:
+				break;
+			}
+
+			free(pMessage);
 		}
 	}
 }

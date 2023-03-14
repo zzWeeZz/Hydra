@@ -19,6 +19,15 @@
     <Filter Include="src\Hydra\API\DX12\CommandSubmiting">
       <UniqueIdentifier>{4B5F4147-B718-ACF1-4078-C6CBAC306261}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Hydra\API\DX12\Resources">
+      <UniqueIdentifier>{9587CD4D-8142-BDF9-2AFA-35441694078A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Hydra\API\PipelineInterface">
+      <UniqueIdentifier>{D3859335-3F69-A275-486C-D0B1B4CE68C6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Hydra\API\ResourceInterface">
+      <UniqueIdentifier>{0510B52C-71F3-C36C-7AF6-F1A8E6588ABD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Hydra\API\Vulkan">
       <UniqueIdentifier>{DD62F905-C9F1-82CF-7210-97CA5E7E9375}</UniqueIdentifier>
     </Filter>
@@ -57,10 +66,10 @@
     <ClInclude Include="src\HYpch.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hydra\API\ApiUtils.h">
+    <ClInclude Include="src\Hydra\API\ApiFormats.h">
       <Filter>src\Hydra\API</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hydra\API\ResourceInterface\Buffer.h">
+    <ClInclude Include="src\Hydra\API\ApiUtils.h">
       <Filter>src\Hydra\API</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\CommandBuffer.h">
@@ -99,6 +108,15 @@
     <ClInclude Include="src\Hydra\API\DX12\DxUtils.h">
       <Filter>src\Hydra\API\DX12</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\API\DX12\Resources\DxFramebuffer.h">
+      <Filter>src\Hydra\API\DX12\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\DX12\Resources\DxImage.h">
+      <Filter>src\Hydra\API\DX12\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\DX12\Resources\DxImageView.h">
+      <Filter>src\Hydra\API\DX12\Resources</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\API\Device.h">
       <Filter>src\Hydra\API</Filter>
     </ClInclude>
@@ -108,17 +126,29 @@
     <ClInclude Include="src\Hydra\API\Factory.h">
       <Filter>src\Hydra\API</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hydra\API\ResourceInterface\Image.h">
-      <Filter>src\Hydra\API</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hydra\API\ResourceInterface\ImageView.h">
+    <ClInclude Include="src\Hydra\API\Framebuffer.h">
       <Filter>src\Hydra\API</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\PhysicalDevice.h">
       <Filter>src\Hydra\API</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\API\PipelineInterface\GraphicsPipeline.h">
+      <Filter>src\Hydra\API\PipelineInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\PipelineInterface\Pipeline.h">
+      <Filter>src\Hydra\API\PipelineInterface</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\API\Resource.h">
       <Filter>src\Hydra\API</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\ResourceInterface\Buffer.h">
+      <Filter>src\Hydra\API\ResourceInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\ResourceInterface\Image.h">
+      <Filter>src\Hydra\API\ResourceInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\ResourceInterface\ImageView.h">
+      <Filter>src\Hydra\API\ResourceInterface</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\Swapchain.h">
       <Filter>src\Hydra\API</Filter>
@@ -137,6 +167,9 @@
     </ClInclude>
     <ClInclude Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.h">
       <Filter>src\Hydra\API\Vulkan\CommandSubmiting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.h">
+      <Filter>src\Hydra\API\Vulkan\Resources</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanImage.h">
       <Filter>src\Hydra\API\Vulkan\Resources</Filter>
@@ -186,6 +219,9 @@
     <ClInclude Include="src\Hydra\Rendering\GraphicsContext.h">
       <Filter>src\Hydra\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\Rendering\Renderer.h">
+      <Filter>src\Hydra\Rendering</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Utils\EnumUtils.h">
       <Filter>src\Hydra\Utils</Filter>
     </ClInclude>
@@ -207,15 +243,6 @@
     <ClInclude Include="vendor\vma\vk_mem_alloc.h">
       <Filter>vendor\vma</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hydra\API\DX12\Resources\DxImage.h" />
-    <ClInclude Include="src\Hydra\API\DX12\Resources\DxImageView.h" />
-    <ClInclude Include="src\Hydra\API\ApiFormats.h" />
-    <ClInclude Include="src\Hydra\API\PipelineInterface\Pipeline.h" />
-    <ClInclude Include="src\Hydra\API\PipelineInterface\GraphicsPipeline.h" />
-    <ClInclude Include="src\Hydra\API\Framebuffer.h" />
-    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.h" />
-    <ClInclude Include="src\Hydra\Rendering\Renderer.h" />
-    <ClInclude Include="src\Hydra\API\DX12\Resources\DxFramebuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -245,6 +272,15 @@
     <ClCompile Include="src\Hydra\API\DX12\DxDeviceQueue.cpp">
       <Filter>src\Hydra\API\DX12</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\API\DX12\Resources\DxFramebuffer.cpp">
+      <Filter>src\Hydra\API\DX12\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\DX12\Resources\DxImage.cpp">
+      <Filter>src\Hydra\API\DX12\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\DX12\Resources\DxImageView.cpp">
+      <Filter>src\Hydra\API\DX12\Resources</Filter>
+    </ClCompile>
     <ClCompile Include="src\Hydra\API\Factory.cpp">
       <Filter>src\Hydra\API</Filter>
     </ClCompile>
@@ -262,6 +298,9 @@
     </ClCompile>
     <ClCompile Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.cpp">
       <Filter>src\Hydra\API\Vulkan\CommandSubmiting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.cpp">
+      <Filter>src\Hydra\API\Vulkan\Resources</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanImage.cpp">
       <Filter>src\Hydra\API\Vulkan\Resources</Filter>
@@ -293,19 +332,14 @@
     <ClCompile Include="src\Hydra\Rendering\GraphicsContext.cpp">
       <Filter>src\Hydra\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\Rendering\Renderer.cpp">
+      <Filter>src\Hydra\Rendering</Filter>
+    </ClCompile>
     <ClCompile Include="src\Hydra\Utils\Log.cpp">
       <Filter>src\Hydra\Utils</Filter>
     </ClCompile>
     <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp">
       <Filter>vendor\dma</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hydra\API\DX12\Resources\DxImage.cpp" />
-    <ClCompile Include="src\Hydra\API\DX12\Resources\DxImageView.cpp" />
-    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.cpp" />
-    <ClCompile Include="src\Hydra\Rendering\Renderer.cpp" />
-    <ClCompile Include="src\Hydra\API\DX12\Resources\DxFramebuffer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

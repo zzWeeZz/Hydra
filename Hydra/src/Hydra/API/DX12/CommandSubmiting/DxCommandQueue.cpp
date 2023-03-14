@@ -4,6 +4,7 @@
 
 #include "Hydra/API/DX12/Backend/DxDevice.h"
 #include <Hydra/API/DX12/CommandSubmiting/DxCommandBuffer.h>
+#include <Hydra/API/DX12/Backend/DxSwapchain.h>
 
 namespace Hydra
 {
@@ -44,8 +45,10 @@ namespace Hydra
 	void DxCommandQueue::Submit(Ptr<Swapchain> swapchain)
 	{
 		auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(m_Queue.lock());
+		auto dxSwapchain = std::reinterpret_pointer_cast<DxSwapchain>(swapchain.lock());
 		auto dxCommandbuffer = std::reinterpret_pointer_cast<DxCommandBuffer>(m_CommandBuffer);
-		dxQueue->Get()->ExecuteCommandLists(1, dxCommandbuffer->GetAddressOf());
+		dxQueue->Get()->ExecuteCommandLists(1, dxCommandbuffer->GetListAddress());
 
+		dxQueue->Get()->Signal(dxSwapchain->GetFence(), dxSwapchain->GetFenceValue());
 	}
 }

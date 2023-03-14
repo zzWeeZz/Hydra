@@ -7,7 +7,7 @@ namespace Hydra
 	struct AllocatedBuffer
 	{
 		uint32_t id;
-		ID3D12Resource2* buffer;
+		ID3D12Resource* buffer;
 		D3D12MA::Allocation* allocation;
 		size_t sizeOfBuffer;
 	};
@@ -15,7 +15,7 @@ namespace Hydra
 	struct AllocatedImage
 	{
 		uint32_t id;
-		ID3D12Resource2* texture;
+		ID3D12Resource* texture;
 		D3D12MA::Allocation* allocation;
 		size_t sizeOfBuffer;
 	};
@@ -24,12 +24,13 @@ namespace Hydra
 	{
 	public:
 		static void Initialize(IDXGIAdapter1* adapter, ID3D12Device2* device);
-		static void Allocate(AllocatedImage& image, D3D12_RESOURCE_DESC1& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc);
+		static void Allocate(AllocatedImage& image, D3D12_RESOURCE_DESC& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc, D3D12_CLEAR_VALUE& clearValue);
 		static void DeAllocate(AllocatedImage& image);
 		static void Flush();
 		static void Shutdown();
 	private:
 		static inline D3D12MA::Allocator* s_Allcator;
+		static inline D3D12MA::Pool* s_Pool;
 		inline static uint32_t s_ID;
 		inline static std::unordered_map<uint32_t, std::function<void()>> s_DestroyFunctions;
 		inline static std::vector<uint32_t> s_AllocateDestructorOrder;

@@ -20,15 +20,15 @@ namespace Hydra
 		s_ID = 14124;
 	}
 
-	void DxAllocator::Allocate(AllocatedImage& image, D3D12_RESOURCE_DESC1& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc)
+	void DxAllocator::Allocate(AllocatedImage& image, D3D12_RESOURCE_DESC& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc, D3D12_CLEAR_VALUE& clearValue)
 	{
 		HY_DX_CHECK(
-			s_Allcator->CreateResource2(
-				&allocationDesc, 
-				&resourceDesc, 
-				D3D12_RESOURCE_STATE_COPY_DEST,
-				nullptr, 
-				&image.allocation, 
+			s_Allcator->CreateResource(
+				&allocationDesc,
+				&resourceDesc,
+				D3D12_RESOURCE_STATE_COMMON,
+				nullptr,
+				&image.allocation,
 				IID_PPV_ARGS(&image.texture)));
 		image.id = s_ID++;
 		image.sizeOfBuffer = image.allocation->GetSize();

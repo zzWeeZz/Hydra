@@ -73,7 +73,7 @@ Documentation of all members: D3D12MemAlloc.h
         #define D3D12MA_DXGI_1_4 0
     #endif
 #endif
-#pragma warning(push, 0)
+
 /*
 When defined to value other than 0, the library will try to use
 D3D12_SMALL_RESOURCE_PLACEMENT_ALIGNMENT or D3D12_SMALL_MSAA_RESOURCE_PLACEMENT_ALIGNMENT
@@ -1591,7 +1591,7 @@ DEFINE_ENUM_FLAG_OPERATORS(D3D12MA::POOL_FLAGS);
 DEFINE_ENUM_FLAG_OPERATORS(D3D12MA::VIRTUAL_BLOCK_FLAGS);
 DEFINE_ENUM_FLAG_OPERATORS(D3D12MA::VIRTUAL_ALLOCATION_FLAGS);
 /// \endcond
-#pragma warning(pop)
+
 /**
 \page quick_start Quick start
 

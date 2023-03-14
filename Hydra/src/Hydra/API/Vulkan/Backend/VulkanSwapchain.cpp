@@ -303,8 +303,6 @@ namespace Hydra
 		GetCurrentImageIndex();
 		vkWaitForFences(vulkanDevice->GetHandle(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
 
-		vkDeviceWaitIdle(vulkanDevice->GetHandle());
-
 		vkResetFences(vulkanDevice->GetHandle(), 1, &m_InFlightFences[m_CurrentFrame]);
 		return m_CurrentFrame;
 	}

@@ -19,10 +19,12 @@ namespace Hydra
 		[[nodiscard]] FORCEINLINE ID3D12Device2** GetAddressOf() { return m_Device.GetAddressOf(); }
 
 		void CreateCommandLists(Ptr<DxPhysicalDevice> physicalDevice);
-		 
+		
+		void UpdateValidationLayer();
+
 	private:
 
-
+		WinRef<ID3D12InfoQueue> m_InfoQueue;
 		WinRef<ID3D12Device2> m_Device;
 	};
 }

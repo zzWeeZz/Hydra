@@ -6,6 +6,7 @@ namespace Hydra
 {
 	DxCommandBuffer::DxCommandBuffer(CommandBufferSpecification& specs)
 	{
+		m_Specs = specs;
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(specs.device.lock());
 		auto dxCommandQueue = std::reinterpret_pointer_cast<DxCommandQueue>(specs.queue.lock());
 
@@ -30,5 +31,24 @@ namespace Hydra
 		}
 
 		HY_DX_CHECK(dxDevice->Get()->CreateCommandList(0, commandType, dxCommandQueue->Get(), nullptr, HY_DX_ID(m_CommandList)));
+	}
+
+	void DxCommandBuffer::Begin()
+	{
+		if (m_Specs.queue.expired())
+		{
+			return;
+		}
+		auto dxCommandQueue = std::reinterpret_pointer_cast<DxCommandQueue>(m_Specs.queue.lock());
+		m_CommandList->Reset(dxCommandQueue->Get(), nullptr);
+	}
+
+	void DxCommandBuffer::End()
+	{
+		if (m_Specs.queue.expired())
+		{
+			return;
+		}
+		m_CommandList.Get()->Close();
 	}
 }

@@ -19,14 +19,20 @@ namespace Hydra
 		void Validate(Ptr<Context> context) override;
 		void Present() override;
 
+
+		[[nodiscard]] FORCEINLINE ID3D12Fence1* GetFence() { return m_Fences[m_CurrentFrame].Get(); }
+		[[nodiscard]] FORCEINLINE ID3D12Fence1** GetFenceAddress() { return m_Fences[m_CurrentFrame].GetAddressOf(); }
+
+		[[nodiscard]] FORCEINLINE size_t& GetFenceValue() { return m_FenceValues[m_CurrentFrame]; }
+
 	private:
 		WinRef<IDXGISwapChain3> m_Swapchain;
 		WinRef<ID3D12DescriptorHeap> m_RTVDescriptorHeap;
-		PerFrameInFlight<WinRef<ID3D12Resource2>> m_RenderTargets;
+		PerFrameInFlight<WinRef<ID3D12Resource>> m_RenderTargets;
 		PerFrameInFlight<size_t> m_FenceValues;
 		PerFrameInFlight<WinRef<ID3D12Fence1>> m_Fences;
 
-		HANDLE m_FenceEvent;
+		PerFrameInFlight<HANDLE> m_FenceEvent;
 
 		// Inherited via Swapchain
 	};
