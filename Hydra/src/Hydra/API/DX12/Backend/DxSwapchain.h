@@ -20,10 +20,12 @@ namespace Hydra
 		void Present() override;
 
 
-		[[nodiscard]] FORCEINLINE ID3D12Fence1* GetFence() { return m_Fences[m_CurrentFrame].Get(); }
-		[[nodiscard]] FORCEINLINE ID3D12Fence1** GetFenceAddress() { return m_Fences[m_CurrentFrame].GetAddressOf(); }
+		[[nodiscard]] FORCEINLINE ID3D12Resource* GetResource(uint32_t frameindex) { return m_RenderTargets[frameindex].Get(); }
 
-		[[nodiscard]] FORCEINLINE size_t& GetFenceValue() { return m_FenceValues[m_CurrentFrame]; }
+		[[nodiscard]] FORCEINLINE ID3D12Fence1* GetFence() { return m_Fences[m_CurrentImage].Get(); }
+		[[nodiscard]] FORCEINLINE ID3D12Fence1** GetFenceAddress() { return m_Fences[m_CurrentImage].GetAddressOf(); }
+
+		[[nodiscard]] FORCEINLINE size_t& GetFenceValue() { return m_FenceValues[m_CurrentImage]; }
 
 	private:
 		WinRef<IDXGISwapChain3> m_Swapchain;
@@ -32,7 +34,7 @@ namespace Hydra
 		PerFrameInFlight<size_t> m_FenceValues;
 		PerFrameInFlight<WinRef<ID3D12Fence1>> m_Fences;
 
-		PerFrameInFlight<HANDLE> m_FenceEvent;
+		HANDLE m_FenceEvent;
 
 		// Inherited via Swapchain
 	};

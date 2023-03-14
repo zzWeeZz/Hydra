@@ -90,16 +90,11 @@ namespace Hydra
 			m_FenceValues[i] = 0;
 		}
 
-		for (auto& fenceEvent : m_FenceEvent)
+		m_FenceEvent = CreateEvent(nullptr, false, false, nullptr);
+		if (m_FenceEvent == nullptr)
 		{
-			fenceEvent = CreateEvent(nullptr, false, false, nullptr);
-			if (fenceEvent == nullptr)
-			{
-				HY_CORE_ASSERT(false, "Could not create Fence Event!");
-			}
+			HY_CORE_ASSERT(false, "Could not create Fence Event!");
 		}
-		
-
 	}
 
 	void DxSwapchain::Resize(uint32_t width, uint32_t height)
@@ -112,23 +107,24 @@ namespace Hydra
 	void DxSwapchain::Present()
 	{
 		m_Swapchain->Present(0, 0);
-		m_CurrentFrame = (m_CurrentFrame + 1) % g_FramesInFlight;
+		//m_CurrentFrame = (m_CurrentFrame + 1) % g_FramesInFlight;
 	}
 	uint32_t DxSwapchain::PrepareNewFrame()
 	{
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(m_Specs.context.lock()->GetDevice().lock());
 
 		dxDevice->UpdateValidationLayer();
+		m_CurrentImage = m_Swapchain->GetCurrentBackBufferIndex();
+
 
 		auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(dxDevice->GetQueue(QueueType::Graphics).lock());
-		m_CurrentImage = m_Swapchain->GetCurrentBackBufferIndex();
-		if (m_Fences[m_CurrentFrame]->GetCompletedValue() < m_FenceValues[m_CurrentFrame])
+		if (m_Fences[m_CurrentImage]->GetCompletedValue() < m_FenceValues[m_CurrentImage])
 		{
-			m_Fences[m_CurrentFrame]->SetEventOnCompletion(m_FenceValues[m_CurrentFrame], m_FenceEvent[m_CurrentFrame]);
-			WaitForSingleObject(m_FenceEvent[m_CurrentFrame], INFINITE);
+			m_Fences[m_CurrentImage]->SetEventOnCompletion(m_FenceValues[m_CurrentImage], m_FenceEvent);
+			WaitForSingleObject(m_FenceEvent, INFINITE);
 		}
+		m_FenceValues[m_CurrentImage]++;
 
-		m_FenceValues[m_CurrentFrame]++;
-		return m_CurrentFrame;
+		return m_CurrentImage;
 	}
 }

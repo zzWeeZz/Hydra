@@ -3,6 +3,7 @@
 #include <Hydra/API/Vulkan/Backend/VulkanDevice.h>
 #include <Hydra/API/Vulkan/CommandSubmiting/VulkanCommandQueue.h>
 #include <Hydra/API/Vulkan/Resources/VulkanFramebuffer.h>
+#include <Hydra/API/Vulkan/Backend/VulkanSwapchain.h>
 namespace Hydra
 {
 	VulkanCommandBuffer::VulkanCommandBuffer(CommandBufferSpecification& specs) : CommandBuffer(specs)
@@ -48,10 +49,10 @@ namespace Hydra
 		vkEndCommandBuffer(m_CommandBuffer);
 	}
 
-	void VulkanCommandBuffer::BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer)
+	void VulkanCommandBuffer::BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, float color[4])
 	{
 		auto vulkanFramebuffer = std::reinterpret_pointer_cast<VulkanFramebuffer>(framebuffer);
-
+		memcpy(vulkanFramebuffer->m_Attachments[frameIndex][0].clearValue.color.float32, color, sizeof(color));
 		const VkRenderingInfo renderInfo{
 			.sType = VK_STRUCTURE_TYPE_RENDERING_INFO,
 			.renderArea = vulkanFramebuffer->m_Rect,
@@ -66,6 +67,23 @@ namespace Hydra
 	void VulkanCommandBuffer::EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer)
 	{
 		vkCmdEndRendering(m_CommandBuffer);
+	}
+
+	void VulkanCommandBuffer::CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain)
+	{
+		auto vkFramebuffer = std::reinterpret_pointer_cast<VulkanFramebuffer>(framebuffer);
+		auto vkSwapchain = std::reinterpret_pointer_cast<VulkanSwapchain>(swapchain);
+
+		VkImageCopy imageCopyRegion{};
+		imageCopyRegion.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		imageCopyRegion.srcSubresource.layerCount = 1;
+		imageCopyRegion.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		imageCopyRegion.dstSubresource.layerCount = 1;
+		imageCopyRegion.extent.width = 1280;
+		imageCopyRegion.extent.height = 720;
+		imageCopyRegion.extent.depth = 1;
+
+		vkCmdCopyImage(m_CommandBuffer, vkFramebuffer->m_Images[frameIndex][0].Image, VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, vkSwapchain->GetImage(frameIndex), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 1, &imageCopyRegion);
 	}
 
 	void VulkanCommandBuffer::Free()

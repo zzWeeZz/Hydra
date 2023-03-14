@@ -11,9 +11,10 @@ namespace Hydra
 		void Begin() override;
 		void End() override;
 
-		void BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer) override;
+		void BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, float color[4]) override;
 		void EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer) override;
 
+		void CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain) override;
 
 		[[nodiscard]] FORCEINLINE VkCommandBuffer GetHandle() const { return m_CommandBuffer; }
 		[[nodiscard]] FORCEINLINE VkCommandBuffer& GetHandle() { return m_CommandBuffer; }

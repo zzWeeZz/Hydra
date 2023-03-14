@@ -26,7 +26,7 @@ namespace Hydra
 			s_Allcator->CreateResource(
 				&allocationDesc,
 				&resourceDesc,
-				D3D12_RESOURCE_STATE_COMMON,
+				D3D12_RESOURCE_STATE_RENDER_TARGET,
 				nullptr,
 				&image.allocation,
 				IID_PPV_ARGS(&image.texture)));

@@ -2,13 +2,14 @@
 #include "DxFramebuffer.h"
 #include "Hydra/API/DX12/DxUtils.h"
 #include <Hydra/API/DX12/Backend/DxDevice.h>
+#include <d3dx12.h>
 namespace Hydra
 {
 	DxFramebuffer::DxFramebuffer(FramebufferSpecification& specs, Ptr<Device> device) : Framebuffer(specs, device)
 	{
 		for (size_t i = 0; i < g_FramesInFlight; i++)
 		{
-			m_Images[i].resize(m_Specs.formats.size());
+			m_RenderTargets[i].resize(m_Specs.formats.size());
 		}
 		Validate();
 	}
@@ -22,6 +23,8 @@ namespace Hydra
 
 		rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 		HY_DX_CHECK(dxDevice->Get()->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(m_RtvDescriptorHeap.GetAddressOf())));
+
+		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
 		for (size_t i = 0; i < g_FramesInFlight; ++i)
 		{
@@ -40,6 +43,13 @@ namespace Hydra
 				texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 				texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
+				D3D12_HEAP_PROPERTIES HeapProps;
+				HeapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
+				HeapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+				HeapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+				HeapProps.CreationNodeMask = 1;
+				HeapProps.VisibleNodeMask = 1;
+
 				FLOAT clearColor[4] = { 0.32f, 0.32f, 0.32f, 1.f };
 				D3D12_CLEAR_VALUE clrValue{};
 				clrValue.Format = GetDxFormat(m_Specs.formats[j]);
@@ -48,11 +58,18 @@ namespace Hydra
 				clrValue.Color[2] = clearColor[2];
 				clrValue.Color[3] = clearColor[3];
 
-				D3D12MA::ALLOCATION_DESC allocDesc = {};
-				allocDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
-				allocDesc.ExtraHeapFlags = D3D12_HEAP_FLAG_ALLOW_ONLY_RT_DS_TEXTURES;
+				HY_DX_CHECK(dxDevice->Get()->CreateCommittedResource(
+					&HeapProps,
+					D3D12_HEAP_FLAG_NONE,
+					&texDesc,
+					D3D12_RESOURCE_STATE_RENDER_TARGET,
+					&clrValue,
+					IID_PPV_ARGS(m_RenderTargets[i][j].ReleaseAndGetAddressOf())
+				));
 
-				DxAllocator::Allocate(m_Images[i][j], texDesc, allocDesc, clrValue);
+				dxDevice->Get()->CreateRenderTargetView(m_RenderTargets[i][j].Get(), nullptr, rtvHandle);
+
+				rtvHandle.Offset(1, m_RtvDescriptorSize);
 			}
 		}
 	}

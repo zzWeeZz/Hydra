@@ -2,6 +2,9 @@
 #include "DxCommandBuffer.h"
 #include <Hydra/API/DX12/Backend/DxDevice.h>
 #include <Hydra/API/DX12/CommandSubmiting/DxCommandQueue.h>
+#include <Hydra/API/DX12/Resources/DxFramebuffer.h>
+#include <d3dx12.h>
+#include <Hydra/API/DX12/Backend/DxSwapchain.h>
 namespace Hydra
 {
 	DxCommandBuffer::DxCommandBuffer(CommandBufferSpecification& specs)
@@ -50,5 +53,54 @@ namespace Hydra
 			return;
 		}
 		m_CommandList.Get()->Close();
+	}
+
+	void DxCommandBuffer::BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, float color[4])
+	{
+		auto dxFramebuffer = std::reinterpret_pointer_cast<DxFramebuffer>(framebuffer);
+		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(dxFramebuffer->GetHeap()->GetCPUDescriptorHandleForHeapStart(), frameIndex, dxFramebuffer->DescriptorSize());
+
+		m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
+		m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+	}
+
+	void DxCommandBuffer::EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer)
+	{
+	}
+
+	void DxCommandBuffer::CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain)
+	{
+		auto dxFramebuffer = std::reinterpret_pointer_cast<DxFramebuffer>(framebuffer);
+		auto dxSwapchain = std::reinterpret_pointer_cast<DxSwapchain>(swapchain);
+
+		{
+			auto CopyRB = CD3DX12_RESOURCE_BARRIER::Transition(
+				dxFramebuffer->GetResource(frameIndex),
+				D3D12_RESOURCE_STATE_RENDER_TARGET,
+				D3D12_RESOURCE_STATE_COPY_SOURCE);
+			auto dcsRB = CD3DX12_RESOURCE_BARRIER::Transition(
+				dxSwapchain->GetResource(frameIndex),
+				D3D12_RESOURCE_STATE_PRESENT,
+				D3D12_RESOURCE_STATE_COPY_DEST);
+			std::array<CD3DX12_RESOURCE_BARRIER, 2> arr = { CopyRB, dcsRB };
+			m_CommandList->ResourceBarrier(
+				arr.size(),
+				arr.data());
+		}
+		m_CommandList->CopyResource(dxFramebuffer->GetResource(frameIndex), dxSwapchain->GetResource(frameIndex));
+		{
+			auto CopyRB = CD3DX12_RESOURCE_BARRIER::Transition(
+				dxFramebuffer->GetResource(frameIndex),
+				D3D12_RESOURCE_STATE_COPY_SOURCE,
+				D3D12_RESOURCE_STATE_RENDER_TARGET);
+			auto dcsRB = CD3DX12_RESOURCE_BARRIER::Transition(
+				dxSwapchain->GetResource(frameIndex),
+				D3D12_RESOURCE_STATE_COPY_DEST,
+				D3D12_RESOURCE_STATE_PRESENT);
+			std::array<CD3DX12_RESOURCE_BARRIER, 2> arr = { CopyRB, dcsRB };
+			m_CommandList->ResourceBarrier(
+				arr.size(),
+				arr.data());
+		}
 	}
 }

@@ -34,9 +34,13 @@ namespace Hydra
 		commandQueue->Reset();
 		commandBuffer.lock()->Begin();
 
-		commandBuffer.lock()->BeginFramebuffer(frameIndex, cache->framebuffer);
+		float clear[] = { 1.f, 0.f, 0.0f, 1.f };
+
+		commandBuffer.lock()->BeginFramebuffer(frameIndex, cache->framebuffer, clear);
 
 		commandBuffer.lock()->EndFramebuffer(frameIndex, cache->framebuffer);
+		
+		commandBuffer.lock()->CopyFramebufferToSwapchain(frameIndex, cache->framebuffer, GraphicsContext::GetSwapchain().lock());
 
 		commandBuffer.lock()->End();
 		commandQueue->Submit(swapchain);
