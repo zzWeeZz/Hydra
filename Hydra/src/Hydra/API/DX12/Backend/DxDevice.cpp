@@ -124,4 +124,7 @@ namespace Hydra
 			free(pMessage);
 		}
 	}
+	void DxDevice::WaitForIdle()
+	{
+	}
 }

@@ -20,6 +20,8 @@ namespace Hydra
 
 		virtual void DestroyFramebuffer(Ref<Framebuffer> framebuffer){}
 
+		virtual void WaitForIdle() = 0;
+
 	 	[[nodiscard]] FORCEINLINE Ptr<DeviceQueue> GetQueue(QueueType type) { return m_DeviceQueues[type]; }
 		[[nodiscard]] FORCEINLINE Ptr<CommandQueue> GetCommandQueue(QueueType queueType, uint32_t frameIndex) { return m_CommandQueues[queueType][frameIndex]; } // TODO_Niklas: Fix Indexing for perframe in flight.
 		[[nodiscard]] FORCEINLINE Ptr<CommandBuffer> GetCommandBuffer(QueueType queueType, uint32_t frameIndex) { return m_CommandQueues[queueType][frameIndex]->GetCommandBuffer(); } // TODO_Niklas: Fix Indexing for perframe in flight.

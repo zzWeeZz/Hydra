@@ -78,7 +78,7 @@ namespace Hydra
 		VkImageMemoryBarrier image_memory_barrier
 		{
 			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-			.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT,
+			.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT,
 			.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
 			.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 			.image = vkFramebuffer->m_Images[frameIndex][0].Image,
@@ -96,7 +96,7 @@ namespace Hydra
 		VkImageMemoryBarrier imagememorybarrier2
 		{
 			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-			.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT,
+			.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
 			.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
 			.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 			.image = vkSwapchain->GetImage(frameIndex),
@@ -174,7 +174,7 @@ namespace Hydra
 		vkCmdPipelineBarrier(
 			m_CommandBuffer,
 			VK_PIPELINE_STAGE_TRANSFER_BIT,  // srcStageMask
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, // dstStageMask
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, // dstStageMask
 			0,
 			0,
 			nullptr,

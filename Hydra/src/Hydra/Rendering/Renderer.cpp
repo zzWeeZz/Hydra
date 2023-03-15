@@ -48,7 +48,10 @@ namespace Hydra
 	}
 	void Renderer::Shutdown()
 	{
+		
 		auto device = GraphicsContext::GetDevice();
+		device.lock()->WaitForIdle();
+
 		device.lock()->DestroyFramebuffer(cache->framebuffer);
 	}
 }

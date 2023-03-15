@@ -21,10 +21,15 @@ namespace Hydra
 
 		void DestroyFramebuffer(Ref<Framebuffer> framebuffer);
 		void Shutdown();
+
+		void WaitForIdle() override;
+
 	private:
 		void CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, size_t amount = 1);
 		bool CheckDeviceExtensionSupport(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> deviceExtensions);
 
 		VkDevice m_Device;
+
+		// Inherited via Device
 	};
 }

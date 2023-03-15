@@ -156,4 +156,8 @@ namespace Hydra
 
 		return requiredExtensions.empty();
 	}
+	void VulkanDevice::WaitForIdle()
+	{
+		vkDeviceWaitIdle(m_Device);
+	}
 }

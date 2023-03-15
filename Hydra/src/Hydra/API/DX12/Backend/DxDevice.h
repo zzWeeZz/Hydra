@@ -22,9 +22,13 @@ namespace Hydra
 		
 		void UpdateValidationLayer();
 
+		virtual void WaitForIdle() override;
+
 	private:
 
 		WinRef<ID3D12InfoQueue> m_InfoQueue;
 		WinRef<ID3D12Device2> m_Device;
+
+		// Inherited via Device
 	};
 }
