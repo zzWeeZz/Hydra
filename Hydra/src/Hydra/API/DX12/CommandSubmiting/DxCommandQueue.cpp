@@ -47,8 +47,8 @@ namespace Hydra
 		auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(m_Queue.lock());
 		auto dxSwapchain = std::reinterpret_pointer_cast<DxSwapchain>(swapchain.lock());
 		auto dxCommandbuffer = std::reinterpret_pointer_cast<DxCommandBuffer>(m_CommandBuffer);
-		dxQueue->Get()->ExecuteCommandLists(1, dxCommandbuffer->GetListAddress());
-		dxSwapchain->GetFenceValue()++;
-		dxQueue->Get()->Signal(dxSwapchain->GetFence(), dxSwapchain->GetFenceValue());
+		ID3D12CommandList* ppCommandList[] = { dxCommandbuffer->Get() };
+
+		dxQueue->Get()->ExecuteCommandLists(1, ppCommandList);
 	}
 }

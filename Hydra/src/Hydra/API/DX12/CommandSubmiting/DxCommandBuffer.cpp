@@ -34,6 +34,7 @@ namespace Hydra
 		}
 
 		HY_DX_CHECK(dxDevice->Get()->CreateCommandList(0, commandType, dxCommandQueue->Get(), nullptr, HY_DX_ID(m_CommandList)));
+		m_CommandList->Close();
 	}
 
 	void DxCommandBuffer::Begin()
@@ -44,6 +45,15 @@ namespace Hydra
 		}
 		auto dxCommandQueue = std::reinterpret_pointer_cast<DxCommandQueue>(m_Specs.queue.lock());
 		m_CommandList->Reset(dxCommandQueue->Get(), nullptr);
+
+		/*auto beginRB = CD3DX12_RESOURCE_BARRIER::Transition(
+			m_RenderTargets[m_FrameIndex].Get(),
+			D3D12_RESOURCE_STATE_PRESENT,
+			D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+		m_CommandList->ResourceBarrier(
+			1,
+			&beginRB);*/
 	}
 
 	void DxCommandBuffer::End()
@@ -52,7 +62,7 @@ namespace Hydra
 		{
 			return;
 		}
-		m_CommandList.Get()->Close();
+		HY_DX_CHECK(m_CommandList->Close());
 	}
 
 	void DxCommandBuffer::BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, float color[4])
@@ -87,7 +97,7 @@ namespace Hydra
 				arr.size(),
 				arr.data());
 		}
-		m_CommandList->CopyResource(dxFramebuffer->GetResource(frameIndex), dxSwapchain->GetResource(frameIndex));
+		m_CommandList->CopyResource(dxSwapchain->GetResource(frameIndex), dxFramebuffer->GetResource(frameIndex));
 		{
 			auto CopyRB = CD3DX12_RESOURCE_BARRIER::Transition(
 				dxFramebuffer->GetResource(frameIndex),

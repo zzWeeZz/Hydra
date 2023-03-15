@@ -26,6 +26,8 @@ namespace Hydra
 
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
+		m_RtvDescriptorSize = dxDevice->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
 		for (size_t i = 0; i < g_FramesInFlight; ++i)
 		{
 			for (size_t j = 0; j < m_Specs.formats.size(); ++j)
@@ -43,7 +45,7 @@ namespace Hydra
 				texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 				texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
-				D3D12_HEAP_PROPERTIES HeapProps;
+				D3D12_HEAP_PROPERTIES HeapProps = {};
 				HeapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
 				HeapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
 				HeapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;

@@ -85,16 +85,20 @@ namespace Hydra
 
 		for (size_t i = 0; i < m_Specs.frameCount; ++i)
 		{
-			HY_DX_CHECK(dxDevice->Get()->CreateFence(0, D3D12_FENCE_FLAG_NONE, HY_DX_ID(m_Fences[i])));
+			HY_DX_CHECK(dxDevice->Get()->CreateFence(0, D3D12_FENCE_FLAG_SHARED, HY_DX_ID(m_Fences[i])));
 
 			m_FenceValues[i] = 0;
 		}
 
-		m_FenceEvent = CreateEvent(nullptr, false, false, nullptr);
-		if (m_FenceEvent == nullptr)
+		for (auto& fence : m_FenceEvents)
 		{
-			HY_CORE_ASSERT(false, "Could not create Fence Event!");
+			fence = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
+			if (fence == nullptr)
+			{
+				HY_CORE_ASSERT(false, "Could not create Fence Event!");
+			}
 		}
+		
 	}
 
 	void DxSwapchain::Resize(uint32_t width, uint32_t height)
@@ -107,23 +111,27 @@ namespace Hydra
 	void DxSwapchain::Present()
 	{
 		m_Swapchain->Present(0, 0);
-		//m_CurrentFrame = (m_CurrentFrame + 1) % g_FramesInFlight;
+		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(m_Specs.context.lock()->GetDevice().lock());
+		dxDevice->UpdateValidationLayer();
 	}
 	uint32_t DxSwapchain::PrepareNewFrame()
 	{
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(m_Specs.context.lock()->GetDevice().lock());
-
-		dxDevice->UpdateValidationLayer();
-		m_CurrentImage = m_Swapchain->GetCurrentBackBufferIndex();
-
-
 		auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(dxDevice->GetQueue(QueueType::Graphics).lock());
-		if (m_Fences[m_CurrentImage]->GetCompletedValue() < m_FenceValues[m_CurrentImage])
-		{
-			m_Fences[m_CurrentImage]->SetEventOnCompletion(m_FenceValues[m_CurrentImage], m_FenceEvent);
-			WaitForSingleObject(m_FenceEvent, INFINITE);
-		}
+		const UINT64 fence = m_FenceValues[m_CurrentImage];
+		dxQueue->Get()->Signal(m_Fences[m_CurrentImage].Get(), fence);
+
+
 		m_FenceValues[m_CurrentImage]++;
+
+		if (m_Fences[m_CurrentImage]->GetCompletedValue() < fence)
+		{
+			m_FenceEvents[m_CurrentImage] = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
+			HY_DX_CHECK(m_Fences[m_CurrentImage]->SetEventOnCompletion(fence, m_FenceEvents[m_CurrentImage]));
+			WaitForSingleObject(m_FenceEvents[m_CurrentImage], INFINITE);
+			CloseHandle(m_FenceEvents[m_CurrentImage]);
+		}
+		m_CurrentImage = m_Swapchain->GetCurrentBackBufferIndex();
 
 		return m_CurrentImage;
 	}

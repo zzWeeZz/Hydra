@@ -53,6 +53,9 @@ namespace Hydra
 			cqDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
 			m_DeviceQueues[QueueType::Compute] = std::make_shared<DxDeviceQueue>(m_Device.Get(), cqDesc);
 		}
+		//m_InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
+		//m_InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
+		//m_InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, false);
 
 	}
 	void DxDevice::CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer)
