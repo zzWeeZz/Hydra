@@ -38,4 +38,10 @@ namespace Hydra
 		DxAllocator::Shutdown();
 		HY_CORE_INFO("Dx12: Shutdown successful!");
 	}
+	void DxContext::WaitForIdle()
+	{
+		auto dxSwapchain = std::reinterpret_pointer_cast<DxSwapchain>(m_Swapchain);
+
+		dxSwapchain->WaitOnAllFences();
+	}
 }

@@ -22,7 +22,7 @@ namespace Hydra
 		void DestroyFramebuffer(Ref<Framebuffer> framebuffer);
 		void Shutdown();
 
-		void WaitForIdle() override;
+		void WaitForIdle();
 
 	private:
 		void CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, size_t amount = 1);

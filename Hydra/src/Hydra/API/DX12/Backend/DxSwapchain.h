@@ -19,6 +19,7 @@ namespace Hydra
 		void Validate(Ptr<Context> context) override;
 		void Present() override;
 
+		void WaitOnAllFences();
 
 		[[nodiscard]] FORCEINLINE ID3D12Resource* GetResource(uint32_t frameindex) { return m_RenderTargets[frameindex].Get(); }
 

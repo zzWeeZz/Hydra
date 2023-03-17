@@ -10,7 +10,7 @@ namespace Hydra
 		DxFramebuffer(FramebufferSpecification& specs, Ptr<Device> device);
 
 		[[nodiscard]] FORCEINLINE ID3D12DescriptorHeap* GetHeap() { return m_RtvDescriptorHeap.Get(); }
-		[[nodiscard]] FORCEINLINE size_t DescriptorSize() { return m_RtvDescriptorSize; }
+		[[nodiscard]] FORCEINLINE UINT DescriptorSize() { return static_cast<UINT>(m_RtvDescriptorSize); }
 		[[nodiscard]] FORCEINLINE ID3D12Resource* GetResource(uint32_t frameindex) { return m_RenderTargets[frameindex][0].Get(); }
 	private:
 		void Validate();

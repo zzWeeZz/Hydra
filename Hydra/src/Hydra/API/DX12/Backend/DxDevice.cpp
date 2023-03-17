@@ -53,15 +53,19 @@ namespace Hydra
 			cqDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
 			m_DeviceQueues[QueueType::Compute] = std::make_shared<DxDeviceQueue>(m_Device.Get(), cqDesc);
 		}
-		//m_InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
-		//m_InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
-		//m_InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, false);
+		m_InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
+		m_InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
+		m_InfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, false);
 
 	}
 	void DxDevice::CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer)
 	{
 		auto dxFramebuffer = std::make_shared<DxFramebuffer>(frameBufferSpecs, shared_from_this());
 		framebuffer = std::move(dxFramebuffer);
+	}
+	void DxDevice::DestroyFramebuffer(Ref<Framebuffer> framebuffer)
+	{
+		framebuffer.reset();
 	}
 	void DxDevice::CreateCommandLists(Ptr<DxPhysicalDevice> physicalDevice)
 	{
@@ -94,14 +98,14 @@ namespace Hydra
 		if (!m_InfoQueue) return;
 
 		SIZE_T messageLength = 0;
-		HRESULT hr = m_InfoQueue->GetMessage(0, NULL, &messageLength);
+		auto gotMessage = m_InfoQueue->GetMessage(0, NULL, &messageLength);
 
 		// Allocate space and get the message
 		if (messageLength)
 		{
 			D3D12_MESSAGE* pMessage = nullptr;
 			pMessage = (D3D12_MESSAGE*)malloc(messageLength);
-			hr = m_InfoQueue->GetMessage(0, pMessage, &messageLength);
+			gotMessage = m_InfoQueue->GetMessage(0, pMessage, &messageLength);
 
 			switch (pMessage->Severity)
 			{
@@ -123,8 +127,5 @@ namespace Hydra
 
 			free(pMessage);
 		}
-	}
-	void DxDevice::WaitForIdle()
-	{
 	}
 }

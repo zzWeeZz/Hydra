@@ -50,7 +50,8 @@ namespace Hydra
 	{
 		
 		auto device = GraphicsContext::GetDevice();
-		device.lock()->WaitForIdle();
+
+		GraphicsContext::GetContext().lock()->WaitForIdle();
 
 		device.lock()->DestroyFramebuffer(cache->framebuffer);
 	}

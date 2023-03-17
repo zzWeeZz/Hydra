@@ -17,6 +17,9 @@ namespace Hydra
 	public:
 		virtual void Initalize(const ContextSpecification& specs) = 0;
 		virtual void Shutdown() = 0;
+
+		virtual void WaitForIdle() = 0;
+
 		Ptr<Device> GetDevice() { return m_Device; }
 		Ptr<PhysicalDevice> GetPhyicalDevice() { return m_PhysicalDevice; }
 		Ptr<Swapchain> GetSwapchain() { return m_Swapchain; }

@@ -9,6 +9,7 @@ namespace Hydra
 		static void Intitalize(API api);
 		static void Shutdown();
 
+		static Ptr<Context> GetContext();
 		static Ptr<Device> GetDevice(); 
 		static Ptr<PhysicalDevice> GetPhysicalDevice(); 
 		static Ptr<Swapchain> GetSwapchain(); 

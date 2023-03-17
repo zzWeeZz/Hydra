@@ -71,7 +71,7 @@ namespace Hydra
 
 				dxDevice->Get()->CreateRenderTargetView(m_RenderTargets[i][j].Get(), nullptr, rtvHandle);
 
-				rtvHandle.Offset(1, m_RtvDescriptorSize);
+				rtvHandle.Offset(1, static_cast<UINT>(m_RtvDescriptorSize));
 			}
 		}
 	}

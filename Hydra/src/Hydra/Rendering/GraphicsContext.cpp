@@ -18,6 +18,10 @@ namespace Hydra
 		s_Context->Shutdown();
 		s_Context.reset();
 	}
+	Ptr<Context> GraphicsContext::GetContext()
+	{
+		return s_Context;
+	}
 	Ptr<Device> GraphicsContext::GetDevice()
 	{
 		return s_Context->GetDevice();

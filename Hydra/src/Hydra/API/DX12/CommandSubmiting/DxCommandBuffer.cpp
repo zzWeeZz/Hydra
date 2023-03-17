@@ -94,7 +94,7 @@ namespace Hydra
 				D3D12_RESOURCE_STATE_COPY_DEST);
 			std::array<CD3DX12_RESOURCE_BARRIER, 2> arr = { CopyRB, dcsRB };
 			m_CommandList->ResourceBarrier(
-				arr.size(),
+				static_cast<UINT>(arr.size()),
 				arr.data());
 		}
 		m_CommandList->CopyResource(dxSwapchain->GetResource(frameIndex), dxFramebuffer->GetResource(frameIndex));
@@ -109,7 +109,7 @@ namespace Hydra
 				D3D12_RESOURCE_STATE_PRESENT);
 			std::array<CD3DX12_RESOURCE_BARRIER, 2> arr = { CopyRB, dcsRB };
 			m_CommandList->ResourceBarrier(
-				arr.size(),
+				static_cast<UINT>(arr.size()),
 				arr.data());
 		}
 	}

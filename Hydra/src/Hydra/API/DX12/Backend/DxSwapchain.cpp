@@ -61,7 +61,7 @@ namespace Hydra
 		m_CurrentImage = m_Swapchain->GetCurrentBackBufferIndex();
 
 		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-		rtvHeapDesc.NumDescriptors = m_Specs.frameCount;
+		rtvHeapDesc.NumDescriptors = static_cast<UINT>(m_Specs.frameCount);
 		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 		rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
@@ -98,7 +98,7 @@ namespace Hydra
 				HY_CORE_ASSERT(false, "Could not create Fence Event!");
 			}
 		}
-		
+
 	}
 
 	void DxSwapchain::Resize(uint32_t width, uint32_t height)
@@ -113,6 +113,17 @@ namespace Hydra
 		m_Swapchain->Present(0, 0);
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(m_Specs.context.lock()->GetDevice().lock());
 		dxDevice->UpdateValidationLayer();
+	}
+	void DxSwapchain::WaitOnAllFences()
+	{
+		auto frameIndex = PrepareNewFrame();
+
+		for (uint32_t i = 0; auto& fence : m_Fences)
+		{
+			m_CurrentImage = i;
+			frameIndex = PrepareNewFrame();
+			++i;
+		}
 	}
 	uint32_t DxSwapchain::PrepareNewFrame()
 	{

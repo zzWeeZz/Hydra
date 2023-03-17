@@ -37,6 +37,9 @@
     <Filter Include="src\Hydra\API\Vulkan\CommandSubmiting">
       <UniqueIdentifier>{FD934D7D-6958-4C6D-32BE-7C379E41E8A2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Hydra\API\Vulkan\Pipeline">
+      <UniqueIdentifier>{A293772D-0EAC-5E57-D758-EEF04330F3F0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Hydra\API\Vulkan\Resources">
       <UniqueIdentifier>{87804513-73A6-0F7A-5CEC-944548B13446}</UniqueIdentifier>
     </Filter>
@@ -168,6 +171,12 @@
     <ClInclude Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.h">
       <Filter>src\Hydra\API\Vulkan\CommandSubmiting</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\API\Vulkan\Pipeline\VulkanGraphicsPipeline.h">
+      <Filter>src\Hydra\API\Vulkan\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\Shader.h">
+      <Filter>src\Hydra\API\Vulkan\Resources</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.h">
       <Filter>src\Hydra\API\Vulkan\Resources</Filter>
     </ClInclude>
@@ -298,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.cpp">
       <Filter>src\Hydra\API\Vulkan\CommandSubmiting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\API\Vulkan\Pipeline\VulkanGraphicsPipeline.cpp">
+      <Filter>src\Hydra\API\Vulkan\Pipeline</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.cpp">
       <Filter>src\Hydra\API\Vulkan\Resources</Filter>

@@ -12,6 +12,9 @@ namespace Hydra
 		void Initalize(const ContextSpecification& specs) override;
 		void Shutdown() override;
 		void QuerySwapchainSupport(SwapChainSupportDetails& swapchainDetails);
+
+		void WaitForIdle() override;
+
 		VkSurfaceKHR GetSurface() { return m_Surface; }
 
 	private:

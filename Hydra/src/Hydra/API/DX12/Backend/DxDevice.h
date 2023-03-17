@@ -13,6 +13,7 @@ namespace Hydra
 		void Create(Ptr<PhysicalDevice> phycicalDevice);
 		
 		void CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer) override;
+		void DestroyFramebuffer(Ref<Framebuffer> framebuffer) override;
 
 		[[nodiscard]] FORCEINLINE ID3D12Device2* Get() { return m_Device.Get(); }
 		[[nodiscard]] FORCEINLINE ID3D12Device2* Get() const { return m_Device.Get(); }
@@ -21,8 +22,6 @@ namespace Hydra
 		void CreateCommandLists(Ptr<DxPhysicalDevice> physicalDevice);
 		
 		void UpdateValidationLayer();
-
-		virtual void WaitForIdle() override;
 
 	private:
 

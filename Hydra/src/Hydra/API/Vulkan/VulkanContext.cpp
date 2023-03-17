@@ -175,6 +175,12 @@ namespace Hydra
 		}
 	}
 
+	void VulkanContext::WaitForIdle()
+	{
+		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Device);
+		vulkanDevice->WaitForIdle();
+	}
+
 	void VulkanContext::CreateSuface()
 	{
 		auto& glfwWindow = *static_cast<GLFWwindow*>(Application::GetWindow().GetNativeWindow());
