@@ -24,6 +24,11 @@ namespace Hydra
 		glfwSwapBuffers(m_Window);
 	}
 
+	void WindowsWindow::SetWindowName(const std::string& name)
+	{
+		glfwSetWindowTitle(m_Window, name.c_str());
+	}
+
 	void WindowsWindow::Initialize(const WindowCreateInfo& createInfo)
 	{
 		m_WindowInfo.Title = createInfo.Title;
@@ -83,4 +88,5 @@ namespace Hydra
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
 	}
+	
 }

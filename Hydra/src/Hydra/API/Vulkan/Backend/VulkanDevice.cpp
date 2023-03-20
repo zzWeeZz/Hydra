@@ -5,6 +5,7 @@
 #include <Hydra/API/Vulkan/VulkanUtils.h>
 #include <Hydra/API/Vulkan/CommandSubmiting/VulkanCommandQueue.h>
 #include "Hydra/API/Vulkan/Resources/VulkanFramebuffer.h"
+#include "Hydra/API/Vulkan/Pipeline/VulkanGraphicsPipeline.h"
 namespace Hydra
 {
 
@@ -104,6 +105,11 @@ namespace Hydra
 	void VulkanDevice::DestroyFramebuffer(Ref<Framebuffer> framebuffer)
 	{
 		std::reinterpret_pointer_cast<VulkanFramebuffer>(framebuffer)->CleanUp();
+	}
+
+	void VulkanDevice::CreateGraphicsPipeline(GraphicsPipelineSpecification& pipelineSpecs, Ref<GraphicsPipeline>& graphicsPipeline)
+	{
+		graphicsPipeline = std::make_shared<VulkanGraphicsPipeline>(pipelineSpecs, std::reinterpret_pointer_cast<VulkanDevice>(shared_from_this()));
 	}
 
 	void VulkanDevice::Shutdown()

@@ -17,9 +17,11 @@ namespace Hydra
 		void Create(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> validationLayer);
 		VkDevice GetHandle() { return m_Device; }
 
-		void CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer);
+		void CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer) override;
+		void DestroyFramebuffer(Ref<Framebuffer> framebuffer) override;
 
-		void DestroyFramebuffer(Ref<Framebuffer> framebuffer);
+		void CreateGraphicsPipeline(GraphicsPipelineSpecification& pipelineSpecs, Ref<GraphicsPipeline>& graphicsPipeline) override;
+
 		void Shutdown();
 
 		void WaitForIdle();

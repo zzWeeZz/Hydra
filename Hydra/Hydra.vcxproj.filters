@@ -153,6 +153,9 @@
     <ClInclude Include="src\Hydra\API\ResourceInterface\ImageView.h">
       <Filter>src\Hydra\API\ResourceInterface</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\API\ResourceInterface\Shader.h">
+      <Filter>src\Hydra\API\ResourceInterface</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\API\Swapchain.h">
       <Filter>src\Hydra\API</Filter>
     </ClInclude>
@@ -173,9 +176,6 @@
     </ClInclude>
     <ClInclude Include="src\Hydra\API\Vulkan\Pipeline\VulkanGraphicsPipeline.h">
       <Filter>src\Hydra\API\Vulkan\Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hydra\API\Vulkan\Resources\Shader.h">
-      <Filter>src\Hydra\API\Vulkan\Resources</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.h">
       <Filter>src\Hydra\API\Vulkan\Resources</Filter>
@@ -252,6 +252,12 @@
     <ClInclude Include="vendor\vma\vk_mem_alloc.h">
       <Filter>vendor\vma</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanShader.h" />
+    <ClInclude Include="src\Hydra\API\ShaderCompiler.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\VulkanShaderCompiler.h" />
+    <ClInclude Include="src\Hydra\API\DX12\DxShaderCompiler.h" />
+    <ClInclude Include="src\Hydra\API\DX12\Resources\DxShader.h" />
+    <ClInclude Include="src\Hydra\API\DX12\Pipeline\DxGraphicsPipeline.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -353,5 +359,10 @@
     <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp">
       <Filter>vendor\dma</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanShader.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\VulkanShaderCompiler.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\DxShaderCompiler.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\Resources\DxShader.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\Pipeline\DxGraphicsPipeline.cpp" />
   </ItemGroup>
 </Project>

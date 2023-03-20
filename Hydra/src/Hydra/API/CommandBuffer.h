@@ -20,7 +20,7 @@ namespace Hydra
 	};
 
 	class Framebuffer;
-	class Pipeline;
+	class GraphicsPipeline;
 	class Swapchain;
 
 	class CommandBuffer
@@ -36,12 +36,13 @@ namespace Hydra
 		virtual void BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, float color[4]){}
 		virtual void EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer){}
 
-		virtual void BindPipeline(uint32_t frameIndex, Ref<Pipeline>& pipeline){}
-		virtual void UnbindPipeline(uint32_t frameIndex, Ref<Pipeline>& pipeline){}
+
+		virtual void BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline){}
+		virtual void UnbindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline){}
 
 		virtual void CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain){}
 
-		virtual void DrawInstanced(){}
+		virtual void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance){}
 		virtual void DrawIndexedInstanced(){}
 
 		virtual ~CommandBuffer() {}

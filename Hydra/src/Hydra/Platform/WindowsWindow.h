@@ -20,6 +20,7 @@ namespace Hydra
 		inline uint32_t GetHeight() const override{ return m_WindowInfo.Height; }
 		inline void SetVSync(bool enabled) override { m_WindowInfo.VSync = enabled; }
 		inline bool IsVSync() const override {return m_WindowInfo.VSync;}
+		void SetWindowName(const std::string& name) override;
 
 		void SetEventCallback(const EventCallbackFn& callback) override { m_WindowInfo.EventCallback = callback; }
 		inline void* GetNativeWindow() override { return m_Window; }
@@ -38,6 +39,8 @@ namespace Hydra
 
 			EventCallbackFn EventCallback;
 		} m_WindowInfo;
+
+		// Inherited via Window
 	};
 }
 

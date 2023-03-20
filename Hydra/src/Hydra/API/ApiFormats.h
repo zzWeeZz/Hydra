@@ -117,4 +117,34 @@ namespace Hydra
 		GPU_To_CPU,
 	};
 #pragma endregion
+
+#pragma region ShaderFlags
+	enum class OptimazationMode
+	{
+		Debug,
+		Performance,
+		Size,
+	};
+
+	enum class CompilerBehaviorFlag
+	{
+		Default,
+		TreatWarningsAsErrors,
+	};
+
+	enum class CompileErrorFlag
+	{
+		Success,
+		SyntaxError,
+		Warning,
+	};
+
+	enum class ShaderStageFlag
+	{
+		Vertex,
+		Geometry,
+		Pixel,
+	};
+
+#pragma endregion
 }

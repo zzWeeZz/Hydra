@@ -9,6 +9,9 @@ namespace Hydra
 	public:
 		VulkanFramebuffer(FramebufferSpecification& specs, Ptr<Device> device);
 		void CleanUp();
+
+		[[nodiscard]] FORCEINLINE VkRect2D& GetRect() { return m_Rect; }
+
 	private:
 
 		// Inherited via Framebuffer

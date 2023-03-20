@@ -8,8 +8,14 @@
 #include <unordered_map>
 namespace Hydra
 {
+	// Framebuffer Forward.
 	struct FramebufferSpecification;
 	class Framebuffer;
+
+	// Pipeline Forward.
+	struct GraphicsPipelineSpecification;
+	class GraphicsPipeline;
+
 	class Device : public std::enable_shared_from_this<Device>
 	{
 	public:
@@ -17,8 +23,9 @@ namespace Hydra
 		virtual ~Device(){}
 
 		virtual void CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer){}
-
 		virtual void DestroyFramebuffer(Ref<Framebuffer> framebuffer){}
+
+		virtual void CreateGraphicsPipeline(GraphicsPipelineSpecification& pipelineSpecs, Ref<GraphicsPipeline>& graphicsPipeline){}
 
 	 	[[nodiscard]] FORCEINLINE Ptr<DeviceQueue> GetQueue(QueueType type) { return m_DeviceQueues[type]; }
 		[[nodiscard]] FORCEINLINE Ptr<CommandQueue> GetCommandQueue(QueueType queueType, uint32_t frameIndex) { return m_CommandQueues[queueType][frameIndex]; } // TODO_Niklas: Fix Indexing for perframe in flight.

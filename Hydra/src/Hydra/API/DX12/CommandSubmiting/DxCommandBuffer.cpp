@@ -5,6 +5,7 @@
 #include <Hydra/API/DX12/Resources/DxFramebuffer.h>
 #include <d3dx12.h>
 #include <Hydra/API/DX12/Backend/DxSwapchain.h>
+#include <Hydra/API/DX12/Pipeline/DxGraphicsPipeline.h>
 namespace Hydra
 {
 	DxCommandBuffer::DxCommandBuffer(CommandBufferSpecification& specs)
@@ -70,12 +71,33 @@ namespace Hydra
 		auto dxFramebuffer = std::reinterpret_pointer_cast<DxFramebuffer>(framebuffer);
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(dxFramebuffer->GetHeap()->GetCPUDescriptorHandleForHeapStart(), frameIndex, dxFramebuffer->DescriptorSize());
 
+		
+
+		
+
+
 		m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
 		m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+		m_CommandList->RSSetScissorRects(1, &dxFramebuffer->GetRect());
+		m_CommandList->RSSetViewports(1, &dxFramebuffer->GetViewport());
 	}
 
 	void DxCommandBuffer::EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer)
 	{
+	}
+
+	void DxCommandBuffer::BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline)
+	{
+		auto dxGraphicsPipeline = std::reinterpret_pointer_cast<DxGraphicsPipeline>(pipeline);
+		
+		m_CommandList->SetPipelineState(dxGraphicsPipeline->Get());
+		m_CommandList->SetGraphicsRootSignature(dxGraphicsPipeline->GetRoot());
+		m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	}
+
+	void DxCommandBuffer::DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
+	{
+		m_CommandList->DrawInstanced(vertexCount, instanceCount, firstVertex, firstInstance);
 	}
 
 	void DxCommandBuffer::CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain)

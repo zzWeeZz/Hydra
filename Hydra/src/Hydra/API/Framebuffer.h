@@ -23,6 +23,8 @@ namespace Hydra
 			m_Device = device;
 		}
 		
+		[[nodiscard]] FORCEINLINE std::vector<ImageFormat> const& GetFormats() { return m_Specs.formats; }
+
 	protected:
 		FramebufferSpecification m_Specs;
 		Ptr<Device> m_Device;

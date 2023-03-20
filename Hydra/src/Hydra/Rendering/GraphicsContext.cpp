@@ -1,6 +1,6 @@
 #include "HYpch.h"
 #include "GraphicsContext.h"
-
+#include "Hydra/Application.h"
 namespace Hydra
 {
 	void GraphicsContext::Intitalize(API api)
@@ -10,7 +10,22 @@ namespace Hydra
 		contextCSpecs.context = s_Context;
 		contextCSpecs.api = api;
 
-		Factory::ContructContext(contextCSpecs);
+		std::string name = "Hydra Engine running on ";
+		
+		switch (api)
+		{
+		case Hydra::API::Dx12:
+			name += "DirectX 12";
+			break;
+		case Hydra::API::Vulkan:
+			name += "Vulkan 1.3";
+			break;
+		default:
+			break;
+		}
+
+		Application::GetWindow().SetWindowName(name);
+		Factory::ConstructContext(contextCSpecs);
 		s_Context = contextCSpecs.context;
 	}
 	void GraphicsContext::Shutdown()

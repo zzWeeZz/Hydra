@@ -17,6 +17,18 @@ namespace Hydra
 	{
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(m_Device.lock());
 
+		rect.bottom = m_Specs.height;
+		rect.right = m_Specs.width;
+		rect.left = 0;
+		rect.top = 0;
+
+		viewPort = {};
+
+		viewPort.Height = m_Specs.height;
+		viewPort.Width = m_Specs.width;
+		viewPort.MinDepth = 0;
+		viewPort.MaxDepth = 1;
+		
 		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
 		rtvHeapDesc.NumDescriptors = g_FramesInFlight;
 		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;

@@ -4,6 +4,7 @@
 #include <Hydra/API/Vulkan/CommandSubmiting/VulkanCommandQueue.h>
 #include <Hydra/API/Vulkan/Resources/VulkanFramebuffer.h>
 #include <Hydra/API/Vulkan/Backend/VulkanSwapchain.h>
+#include <Hydra/API/Vulkan/Pipeline/VulkanGraphicsPipeline.h>
 namespace Hydra
 {
 	VulkanCommandBuffer::VulkanCommandBuffer(CommandBufferSpecification& specs) : CommandBuffer(specs)
@@ -62,11 +63,32 @@ namespace Hydra
 		};
 
 		vkCmdBeginRendering(m_CommandBuffer, &renderInfo);
+
+		vkCmdSetScissor(m_CommandBuffer, 0, 1, &vulkanFramebuffer->GetRect());
+		VkViewport viewPort = {};
+		viewPort.height = vulkanFramebuffer->GetRect().extent.height;
+		viewPort.width = vulkanFramebuffer->GetRect().extent.width;
+		viewPort.minDepth = 0;
+		viewPort.maxDepth = 1;
+		viewPort.x = 0;
+		viewPort.y = 0;
+		vkCmdSetViewport(m_CommandBuffer, 0, 1, &viewPort);
 	}
 
 	void VulkanCommandBuffer::EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer)
 	{
 		vkCmdEndRendering(m_CommandBuffer);
+	}
+
+	void VulkanCommandBuffer::DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
+	{
+		vkCmdDraw(m_CommandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
+	}
+
+	void VulkanCommandBuffer::BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline)
+	{
+		auto vulkanPipeline = std::reinterpret_pointer_cast<VulkanGraphicsPipeline>(pipeline);
+		vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->GetHandle());
 	}
 
 	void VulkanCommandBuffer::CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain)
