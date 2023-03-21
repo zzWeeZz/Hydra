@@ -20,11 +20,12 @@ VertexOut main(VertexIn inVertex, uint vertexID : SV_VertexID)
     //    float4(0.0f, 1.0f, 0.0f, 1.0f),
     //    float4(1.0f, -1.0f, 0.0f, 1.0f)
     //};
-    float4 colours[3] =
+    float4 colours[4] =
     {
         float4(1.0f, 0.0f, 0.0f, 1.0f),
         float4(0.0f, 1.0f, 0.0f, 1.0f),
-        float4(0.0f, 0.0f, 1.0f, 1.0f)
+        float4(0.0f, 0.0f, 1.0f, 1.0f),
+        float4(1.0f, 0.0f, 1.0f, 1.0f)
     };
     inVertex.Position.x -= 0.5;
     outer.position = inVertex.Position;
