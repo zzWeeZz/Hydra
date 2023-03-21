@@ -12,7 +12,7 @@ Hydra::Application::Application() : m_Running(true)
 	s_Window = Ref<Window>(Window::Create());
 	s_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	Log::Initialize();
-	GraphicsContext::Intitalize(API::Dx12);
+	GraphicsContext::Intitalize(API::Vulkan);
 	Renderer::Initialize();
 }
 
@@ -33,6 +33,7 @@ void Hydra::Application::Run()
 
 void Hydra::Application::OnEvent(Event& e)
 {
+	Renderer::OnEvent(e);
 	if (e.GetEventType() == EventType::WindowClose)
 	{
 		m_Running = false;

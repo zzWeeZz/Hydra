@@ -10,6 +10,8 @@ namespace Hydra
 		VulkanFramebuffer(FramebufferSpecification& specs, Ptr<Device> device);
 		void CleanUp();
 
+		void Resize(const size_t width, const size_t height) override;
+
 		[[nodiscard]] FORCEINLINE VkRect2D& GetRect() { return m_Rect; }
 
 	private:

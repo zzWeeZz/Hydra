@@ -5,6 +5,7 @@
 #include <Hydra/API/Vulkan/Backend/VulkanPhysicalDevice.h>
 #include <Hydra/API/Vulkan/VulkanContext.h>
 #include <Hydra/API/Vulkan/Backend/VulkanDevice.h>
+#include "Hydra/Application.h"
 
 namespace Hydra
 {
@@ -16,10 +17,15 @@ namespace Hydra
 	}
 	void VulkanSwapchain::Resize(uint32_t width, uint32_t height)
 	{
+		m_NeedToResize = true;
+		m_Specs.width = width;
+		m_Specs.height = height;
 	}
 
 	void VulkanSwapchain::Create(Ptr<Context> context)
 	{
+		m_Specs.width = Application::GetWindow().GetWidth();
+		m_Specs.height = Application::GetWindow().GetHeight();
 		Validate(context);
 		CreateSyncObject();
 		CreateRenderPass();
@@ -44,6 +50,7 @@ namespace Hydra
 
 		m_SwapchainExtent = extent;
 		m_SwapchainFormat = surfaceFormat.format;
+
 
 		uint32_t imageCount = supportDetails.capabilities.minImageCount + 1;
 		if (supportDetails.capabilities.maxImageCount > 0 && imageCount > supportDetails.capabilities.maxImageCount)
@@ -101,24 +108,51 @@ namespace Hydra
 			HY_VK_CHECK(vkCreateImageView(vulkanDevice->GetHandle(), &viewCreateInfo, nullptr, &m_SwapchainViews[i]));
 		}
 		HY_CORE_INFO("Vulkan: Successfully created swapchain images and views!");
+
+
+		vulkanDevice->ImmediateSubmit([&](VkCommandBuffer buffer)
+			{
+
+				for (auto& image : m_SwapchainImages)
+				{
+					VkImageSubresourceRange framebufferRange = {};
+					framebufferRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+					framebufferRange.baseArrayLayer = 0;
+					framebufferRange.baseMipLevel = 0;
+					framebufferRange.layerCount = 1;
+					framebufferRange.levelCount = 1;
+
+					TransitionImageLayout(buffer, image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, framebufferRange);
+				}
+			});
 	}
 
 	void VulkanSwapchain::Present()
 	{
+		if (m_CurrentImage < 0)
+		{
+			return;
+		}
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
 
 		VkSemaphore signalSemaphores[] = { m_RenderFinishedSemaphores[m_CurrentFrame]};
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = signalSemaphores;
+
 		VkSwapchainKHR swapChains[] = { m_Swapchain };
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
-		presentInfo.pImageIndices = &m_CurrentImage;
+
+		const uint32_t currentImageIndex = static_cast<uint32_t>(m_CurrentImage);
+		presentInfo.pImageIndices = &currentImageIndex;
+
 		auto vulkanQueue = std::reinterpret_pointer_cast<VulkanDeviceQueue>(vulkanDevice->GetQueue(QueueType::Graphics).lock());
+
 		vkQueuePresentKHR(vulkanQueue->GetHandle(), &presentInfo);
 		
 		m_CurrentFrame = (m_CurrentFrame + 1) % g_FramesInFlight;
@@ -160,19 +194,25 @@ namespace Hydra
 		uint32_t imageIndex;
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
 		auto result = vkAcquireNextImageKHR(vulkanDevice->GetHandle(), m_Swapchain, UINT64_MAX, m_ImageAvailableSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &imageIndex);
-		/*if (result == VK_ERROR_OUT_OF_DATE_KHR)
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || m_NeedToResize)
 		{
+			m_NeedToResize = false;
 			InternalResize();
-			m_Width = m_SwapchainExtent.width;
-			m_Height = m_SwapchainExtent.height;
-			m_NeedsToResize = false;
-			return -1;
-		}*/
+			m_Specs.width = m_SwapchainExtent.width;
+			m_Specs.height = m_SwapchainExtent.height;
+			
+			m_CurrentImage = -1;
+		}
 		m_CurrentImage = imageIndex;
 	}
 
 	void VulkanSwapchain::InternalResize()
 	{
+		m_Specs.context.lock()->WaitForIdle();
+
+		CleanUp();
+		Validate(m_Specs.context);
+		CreateFrameBuffer();
 	}
 
 	void VulkanSwapchain::CreateSyncObject()
@@ -297,13 +337,18 @@ namespace Hydra
 			return actualExtent;
 		}
 	}
-	uint32_t VulkanSwapchain::PrepareNewFrame()
+	int32_t VulkanSwapchain::PrepareNewFrame()
 	{
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.context.lock()->GetDevice().lock());
 		GetCurrentImageIndex();
+		if (m_CurrentImage < 0)
+		{
+			return -1;
+		}
 		vkWaitForFences(vulkanDevice->GetHandle(), 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
 
 		vkResetFences(vulkanDevice->GetHandle(), 1, &m_InFlightFences[m_CurrentFrame]);
+	
 		return m_CurrentFrame;
 	}
 }

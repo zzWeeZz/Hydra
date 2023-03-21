@@ -26,6 +26,8 @@ namespace Hydra
 
 		void WaitForIdle();
 
+		void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& func);
+
 	private:
 		void CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, size_t amount = 1);
 		bool CheckDeviceExtensionSupport(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> deviceExtensions);

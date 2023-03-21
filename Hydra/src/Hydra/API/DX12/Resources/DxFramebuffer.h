@@ -9,6 +9,8 @@ namespace Hydra
 	public:
 		DxFramebuffer(FramebufferSpecification& specs, Ptr<Device> device);
 
+		void Resize(const size_t width, const size_t height) override;
+
 		[[nodiscard]] FORCEINLINE D3D12_VIEWPORT& GetViewport() { return viewPort; }
 		[[nodiscard]] FORCEINLINE D3D12_RECT& GetRect() { return rect; }
 

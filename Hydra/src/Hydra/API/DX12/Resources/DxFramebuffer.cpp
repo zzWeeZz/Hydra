@@ -13,6 +13,12 @@ namespace Hydra
 		}
 		Validate();
 	}
+
+	void DxFramebuffer::Resize(const size_t width, const size_t height)
+	{
+		// TODO: fix!
+	}
+
 	void DxFramebuffer::Validate()
 	{
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(m_Device.lock());

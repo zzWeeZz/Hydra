@@ -7,6 +7,9 @@
 #include "Hydra/API/Factory.h"
 #include "Hydra/API/ResourceInterface/Shader.h"
 #include "Hydra/API/PipelineInterface/GraphicsPipeline.h"
+
+#include "Hydra/Events/ApplicationEvent.h"
+
 namespace Hydra
 {
 	struct Cache
@@ -51,12 +54,23 @@ namespace Hydra
 		GraphicsContext::GetDevice().lock()->CreateGraphicsPipeline(graphicsSpecs, testPipeline);
 
 	}
+	void Renderer::OnEvent(Event& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowResizeEvent>([&] (WindowResizeEvent& e)
+			{
+				cache->framebuffer->Resize(e.GetWidth(), e.GetHeight());
+			});
+	}
 	void Renderer::Begin()
 	{
 		auto swapchain = GraphicsContext::GetSwapchain().lock();
 
 		auto frameIndex = swapchain->PrepareNewFrame();
-
+		if (frameIndex < 0)
+		{
+			return;
+		}
 		auto commandQueue = GraphicsContext::GetDevice().lock()->GetCommandQueue(QueueType::Graphics, frameIndex).lock();
 		auto commandBuffer = commandQueue->GetCommandBuffer();
 		commandQueue->Reset();

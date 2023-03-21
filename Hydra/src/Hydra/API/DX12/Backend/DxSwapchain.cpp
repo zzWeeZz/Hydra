@@ -125,7 +125,7 @@ namespace Hydra
 			++i;
 		}
 	}
-	uint32_t DxSwapchain::PrepareNewFrame()
+	int32_t DxSwapchain::PrepareNewFrame()
 	{
 		auto dxDevice = std::reinterpret_pointer_cast<DxDevice>(m_Specs.context.lock()->GetDevice().lock());
 		auto dxQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(dxDevice->GetQueue(QueueType::Graphics).lock());

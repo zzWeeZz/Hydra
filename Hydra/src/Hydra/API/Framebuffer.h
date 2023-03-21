@@ -23,6 +23,8 @@ namespace Hydra
 			m_Device = device;
 		}
 		
+		virtual void Resize(const size_t width, const size_t height) = 0;
+
 		[[nodiscard]] FORCEINLINE std::vector<ImageFormat> const& GetFormats() { return m_Specs.formats; }
 
 	protected:

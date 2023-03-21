@@ -166,4 +166,51 @@ namespace Hydra
 	{
 		vkDeviceWaitIdle(m_Device);
 	}
+	void VulkanDevice::ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& func)
+	{
+		auto vkcmdQueue = std::reinterpret_pointer_cast<VulkanCommandQueue>(m_CommandQueues[QueueType::Graphics][0]);
+		auto vkDeviceQueue = std::reinterpret_pointer_cast<VulkanDeviceQueue>(m_DeviceQueues[QueueType::Graphics]);
+
+		VkCommandBuffer cmd;
+		VkCommandBufferAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo.commandBufferCount = 1;
+		allocInfo.commandPool = vkcmdQueue->GetHandle();
+		vkAllocateCommandBuffers(m_Device, &allocInfo, &cmd);
+
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; // Optional
+		beginInfo.pInheritanceInfo = nullptr; // Optiona
+
+		VkFence fence;
+		VkFenceCreateInfo fenceCreateInfo{};
+		fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+		fenceCreateInfo.flags = 0;
+		vkCreateFence(m_Device, &fenceCreateInfo, nullptr, &fence);
+
+		HY_VK_CHECK(vkBeginCommandBuffer(cmd, &beginInfo));
+		func(cmd);
+		HY_VK_CHECK(vkEndCommandBuffer(cmd));
+
+		VkSubmitInfo info{};
+		info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		info.pNext = nullptr;
+		info.waitSemaphoreCount = 0;
+		info.pWaitSemaphores = nullptr;
+		info.pWaitDstStageMask = nullptr;
+		info.commandBufferCount = 1;
+		info.pCommandBuffers = &cmd;
+		info.signalSemaphoreCount = 0;
+		info.pSignalSemaphores = nullptr;
+
+		HY_VK_CHECK(vkQueueSubmit(vkDeviceQueue->GetHandle(), 1, &info, fence));
+
+		vkWaitForFences(m_Device, 1, &fence, true, UINT64_MAX);
+		vkResetFences(m_Device, 1, &fence);
+
+		vkResetCommandBuffer(cmd, 0);
+		vkDestroyFence(m_Device, fence, nullptr);
+		vkFreeCommandBuffers(m_Device, vkcmdQueue->GetHandle(), 1, &cmd);
+	}
 }

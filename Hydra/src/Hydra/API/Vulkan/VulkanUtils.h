@@ -138,4 +138,295 @@ namespace Hydra
 		}
 		return vma;
 	}
+
+	inline void AccessMasksFromLayouts(VkImageLayout sourceLayout, VkImageLayout targetLayout, VkImageMemoryBarrier& outBarrier)
+	{
+		// Source layouts (old)
+		// Source access mask controls actions that have to be finished on the old layout
+		// before it will be transitioned to the new layout
+		switch (sourceLayout)
+		{
+		case VK_IMAGE_LAYOUT_UNDEFINED:
+			// Image layout is undefined (or does not matter)
+			// Only valid as initial layout
+			// No flags required, listed only for completeness
+			outBarrier.srcAccessMask = 0;
+			break;
+
+		case VK_IMAGE_LAYOUT_PREINITIALIZED:
+			// Image is preinitialized
+			// Only valid as initial layout for linear images, preserves memory contents
+			// Make sure host writes have been finished
+			outBarrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+			// Image is a color attachment
+			// Make sure any writes to the color buffer have been finished
+			outBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+			// Image is a depth/stencil attachment
+			// Make sure any writes to the depth/stencil buffer have been finished
+			outBarrier.srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL:
+			// Image is a depth/stencil attachment
+			// Make sure any writes to the depth/stencil buffer have been finished
+			outBarrier.srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+			// Image is a transfer source
+			// Make sure any reads from the image have been finished
+			outBarrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+			// Image is a transfer destination
+			// Make sure any writes to the image have been finished
+			outBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+			// Image is read by a shader
+			// Make sure any shader reads from the image have been finished
+			outBarrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+			// Image is read by a shader
+			// Make sure any shader reads from the image have been finished
+			outBarrier.srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL:
+			// Image is read by a shader
+			// Make sure any shader reads from the image have been finished
+			outBarrier.srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_GENERAL:
+			outBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR:
+			outBarrier.dstAccessMask = 0;
+			break;
+		default:
+			HY_CORE_ASSERT(false, "Layouts are not configured!");
+			break;
+		}
+
+		// Target layouts (new)
+		// Destination access mask controls the dependency for the new image layout
+		switch (targetLayout)
+		{
+		case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+			// Image will be used as a transfer destination
+			// Make sure any writes to the image have been finished
+			outBarrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+			// Image will be used as a transfer source
+			// Make sure any reads from the image have been finished
+			outBarrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+			// Image will be used as a color attachment
+			// Make sure any writes to the color buffer have been finished
+			outBarrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL:
+			outBarrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+			// Image layout will be used as a depth/stencil attachment
+			// Make sure any writes to depth/stencil buffer have been finished
+			outBarrier.dstAccessMask = outBarrier.dstAccessMask | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+			// Image will be read in a shader (sampler, input attachment)
+			// Make sure any writes to the image have been finished
+			outBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL:
+			outBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+			outBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_GENERAL:
+			outBarrier.dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+			break;
+
+		case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR:
+			outBarrier.dstAccessMask = 0;
+			break;
+
+		default:
+			HY_CORE_ASSERT(false, "Layouts are not configured!");
+			break;
+		}
+	}
+
+	inline std::pair<VkPipelineStageFlags, VkPipelineStageFlags> GetStageFlagsFromLayouts(VkImageLayout currentLayout, VkImageLayout targetLayout)
+	{
+		VkPipelineStageFlags sourceStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+		VkPipelineStageFlags destStage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+
+		if (currentLayout == VK_IMAGE_LAYOUT_UNDEFINED && targetLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			destStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_UNDEFINED && targetLayout == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			destStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+			destStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			destStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			destStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_GENERAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			destStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+			destStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+			destStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+			destStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+			destStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+			destStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_UNDEFINED && targetLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_GENERAL && targetLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+			destStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_GENERAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			destStage = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_UNDEFINED && targetLayout == VK_IMAGE_LAYOUT_GENERAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destStage = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_UNDEFINED && targetLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_UNDEFINED && targetLayout == VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+			destStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_GENERAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+			destStage = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR && targetLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+		{
+			sourceStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+			destStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && targetLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+		{
+			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			destStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+		}
+		else if (currentLayout == VK_IMAGE_LAYOUT_UNDEFINED && targetLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+		{
+		sourceStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+		destStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+		}
+		else
+		{
+			HY_CORE_ASSERT(false, "Layouts are not configured!");
+		}
+
+		return { sourceStage, destStage };
+	}
+
+	inline void TransitionImageLayout(VkCommandBuffer commandBuffer, VkImage image, VkImageLayout currentLayout, VkImageLayout targetLayout, VkImageSubresourceRange subresource)
+	{
+		VkImageMemoryBarrier imageMemoryBarrier = {};
+		imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		imageMemoryBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		imageMemoryBarrier.oldLayout = currentLayout;
+		imageMemoryBarrier.newLayout = targetLayout;
+		imageMemoryBarrier.image = image;
+		imageMemoryBarrier.subresourceRange = subresource;
+
+		AccessMasksFromLayouts(currentLayout, targetLayout, imageMemoryBarrier);
+		const auto [sourceStage, destStage] = GetStageFlagsFromLayouts(currentLayout, targetLayout);
+
+		vkCmdPipelineBarrier(commandBuffer, sourceStage, destStage, 0, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
+	}
 }

@@ -14,7 +14,7 @@ namespace Hydra
 		}
 		Validate();
 	}
-
+	
 	void VulkanFramebuffer::CleanUp()
 	{
 		for (size_t i = 0; i < g_FramesInFlight; ++i)
@@ -31,6 +31,21 @@ namespace Hydra
 				VulkanAllocator::DeAllocate(m_Images[i][imageFormatIndex]);
 			}
 		}
+	}
+
+	void VulkanFramebuffer::Resize(const size_t width, const size_t height)
+	{
+		if (width == 0 || height == 0)
+		{
+			HY_CORE_ASSERT(false, "resize failed, width or height were 0!");
+		}
+		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Device.lock());
+		vulkanDevice->WaitForIdle();
+
+		m_Specs.height = height;
+		m_Specs.width = width;
+		CleanUp();
+		Validate();
 	}
 
 	void VulkanFramebuffer::Validate()
@@ -74,6 +89,19 @@ namespace Hydra
 				viewInfo.subresourceRange.levelCount = 1;
 				viewInfo.subresourceRange.baseArrayLayer = 0;
 				viewInfo.subresourceRange.layerCount = 1;
+
+				vkDevice->ImmediateSubmit([&](VkCommandBuffer buffer)
+					{
+						VkImageSubresourceRange framebufferRange = {};
+						framebufferRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+						framebufferRange.baseArrayLayer = 0;
+						framebufferRange.baseMipLevel = 0;
+						framebufferRange.layerCount = 1;
+						framebufferRange.levelCount = 1;
+
+						TransitionImageLayout(buffer, m_Images[i][imageFormatIndex].Image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, framebufferRange);
+					});
+
 
 				HY_VK_CHECK(vkCreateImageView(vkDevice->GetHandle(), &viewInfo, nullptr, &m_Views[i][imageFormatIndex]));
 				VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };

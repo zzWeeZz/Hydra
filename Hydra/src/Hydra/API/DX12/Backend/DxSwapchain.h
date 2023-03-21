@@ -9,7 +9,7 @@ namespace Hydra
 	public:
 		DxSwapchain(const SwapchainSpecfications& specs);
 		
-		uint32_t PrepareNewFrame() override;
+		int32_t PrepareNewFrame() override;
 
 		// Inherited via Swapchain
 		void Resize(uint32_t width, uint32_t height) override;

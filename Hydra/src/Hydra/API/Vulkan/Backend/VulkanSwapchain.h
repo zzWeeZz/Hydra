@@ -22,9 +22,11 @@ namespace Hydra
 		void Create(Ptr<Context> context) override;
 		void Validate(Ptr<Context> context) override;
 
+		SwapchainSpecfications const& GetSpecs() { return m_Specs; }
+
 		VkImage GetImage(uint32_t frameindex) { return m_SwapchainImages[frameindex];}
 
-		uint32_t PrepareNewFrame() override;
+		int32_t PrepareNewFrame() override;
 
 		[[nodiscard]] FORCEINLINE VkSemaphore& GetImageAvailableSemaphore() { return m_ImageAvailableSemaphores[m_CurrentFrame]; }
 		[[nodiscard]] FORCEINLINE VkSemaphore& GetRenderFinishedSemaphore() { return m_RenderFinishedSemaphores[m_CurrentFrame]; }
@@ -75,7 +77,7 @@ namespace Hydra
 		PerFrameInFlight<VkSemaphore> m_ImageAvailableSemaphores;
 		PerFrameInFlight<VkSemaphore> m_RenderFinishedSemaphores;
 		PerFrameInFlight<VkFence> m_InFlightFences;
-
+		bool m_NeedToResize = false;
 		// Inherited via Swapchain
 	};
 }
