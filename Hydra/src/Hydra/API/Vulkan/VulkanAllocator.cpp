@@ -27,11 +27,11 @@ namespace Hydra
 	{
 
 		allocation.id = s_ID;
-		TN_ALLOC_PRINT("TitanAllocator: id {0} Allocating buffer: {1} bytes", allocation.id, bufferInfo->size);
+		TN_ALLOC_PRINT("VulkanAllocator: id {0} Allocating buffer: {1} bytes", allocation.id, bufferInfo->size);
 		allocation.sizeOfBuffer = bufferInfo->size;
 		HY_VK_CHECK(vmaCreateBuffer(s_Allocator, bufferInfo, allocationInfo, &allocation.buffer, &allocation.allocation, nullptr));
 		s_AllocateDestructorOrder.push_back(allocation.id);
-		s_DestroyFunctions[allocation.id] = [&, allocation]() {TN_ALLOC_PRINT("TitanAllocator: id {0} Deallocating buffer: {1} bytes", allocation.id, allocation.sizeOfBuffer); vmaDestroyBuffer(s_Allocator, allocation.buffer, allocation.allocation); };
+		s_DestroyFunctions[allocation.id] = [&, allocation]() {TN_ALLOC_PRINT("VulkanAllocator: id {0} Deallocating buffer: {1} bytes", allocation.id, allocation.sizeOfBuffer); vmaDestroyBuffer(s_Allocator, allocation.buffer, allocation.allocation); };
 
 		s_ID++;
 	}
@@ -45,9 +45,9 @@ namespace Hydra
 		allocation.sizeOfBuffer = allocInfo.size;
 		// uses a vector to keep track of the order of the allocations.
 		s_AllocateDestructorOrder.push_back(allocation.id);
-		TN_ALLOC_PRINT("TitanAllocator: id {0} Allocating image: {1} bytes", allocation.id, allocation.sizeOfBuffer);
+		TN_ALLOC_PRINT("VulkanAllocator: id {0} Allocating image: {1} bytes", allocation.id, allocation.sizeOfBuffer);
 		// inorder to track and manage the allocations that VMA does. and this gives a deallocation function to the map.
-		s_DestroyFunctions[allocation.id] = [&, allocation]() {TN_ALLOC_PRINT("TitanAllocator: id {0} Deallocating image: {1} bytes", allocation.id, allocation.sizeOfBuffer); vmaDestroyImage(s_Allocator, allocation.Image, allocation.allocation); };
+		s_DestroyFunctions[allocation.id] = [&, allocation]() {TN_ALLOC_PRINT("VulkanAllocator: id {0} Deallocating image: {1} bytes", allocation.id, allocation.sizeOfBuffer); vmaDestroyImage(s_Allocator, allocation.Image, allocation.allocation); };
 
 		s_ID++;
 	}
@@ -55,7 +55,7 @@ namespace Hydra
 	void VulkanAllocator::DeAllocate(AllocatedBuffer& allocation)
 	{
 
-		TN_ALLOC_PRINT("TitanAllocator: id {0} Deallocating buffer: {1} bytes", allocation.id, allocation.sizeOfBuffer);
+		TN_ALLOC_PRINT("VulkanAllocator: id {0} Deallocating buffer: {1} bytes", allocation.id, allocation.sizeOfBuffer);
 		vmaDestroyBuffer(s_Allocator, allocation.buffer, allocation.allocation);
 		s_DestroyFunctions.erase(allocation.id);
 		auto it = std::find(s_AllocateDestructorOrder.begin(), s_AllocateDestructorOrder.end(), allocation.id);
@@ -67,7 +67,7 @@ namespace Hydra
 
 	void VulkanAllocator::DeAllocate(AllocatedImage& allocation)
 	{
-		TN_ALLOC_PRINT("TitanAllocator: id {0} Deallocating image: {1} bytes", allocation.id, allocation.sizeOfBuffer);
+		TN_ALLOC_PRINT("VulkanAllocator: id {0} Deallocating image: {1} bytes", allocation.id, allocation.sizeOfBuffer);
 		vmaDestroyImage(s_Allocator, allocation.Image, allocation.allocation);
 		s_DestroyFunctions.erase(allocation.id);
 		auto it = std::find(s_AllocateDestructorOrder.begin(), s_AllocateDestructorOrder.end(), allocation.id);

@@ -87,6 +87,11 @@ namespace Hydra
 		vkCmdDraw(m_CommandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
 	}
 
+	void VulkanCommandBuffer::DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance)
+	{
+		vkCmdDrawIndexed(m_CommandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
+	}
+
 	void VulkanCommandBuffer::BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline)
 	{
 		auto vulkanPipeline = std::reinterpret_pointer_cast<VulkanGraphicsPipeline>(pipeline);
@@ -106,7 +111,7 @@ namespace Hydra
 		auto vulkanBuffer = std::reinterpret_pointer_cast<VulkanBuffer>(buffer);
 
 		VkDeviceSize offset = 0;
-		vkCmdBindIndexBuffer(m_CommandBuffer, vulkanBuffer->GetAllocation().buffer, offset, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(m_CommandBuffer, vulkanBuffer->GetAllocation().buffer, offset, VK_INDEX_TYPE_UINT16);
 	}
 
 	void VulkanCommandBuffer::CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain)

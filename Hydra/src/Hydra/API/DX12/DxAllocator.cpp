@@ -20,14 +20,14 @@ namespace Hydra
 		s_ID = 14124;
 	}
 
-	void DxAllocator::Allocate(AllocatedImage& image, D3D12_RESOURCE_DESC& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc, D3D12_CLEAR_VALUE& clearValue)
+	void DxAllocator::Allocate(AllocatedImage& image, D3D12_RESOURCE_DESC& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc, D3D12_CLEAR_VALUE* clearValue)
 	{
 		HY_DX_CHECK(
 			s_Allcator->CreateResource(
 				&allocationDesc,
 				&resourceDesc,
 				D3D12_RESOURCE_STATE_RENDER_TARGET,
-				nullptr,
+				clearValue,
 				&image.allocation,
 				IID_PPV_ARGS(&image.texture)));
 		image.id = s_ID++;
@@ -39,6 +39,28 @@ namespace Hydra
 			image.texture->Release();
 			image.allocation->Release();
 			HY_ALLOC_PRINT("DxAllocator: id {0} Deallocating image: {1} bytes", image.id, image.sizeOfBuffer);
+		};
+	}
+
+	void DxAllocator::Allocate(AllocatedBuffer& image, D3D12_RESOURCE_DESC& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc, D3D12_RESOURCE_STATES intialState)
+	{
+		HY_DX_CHECK(
+			s_Allcator->CreateResource(
+				&allocationDesc,
+				&resourceDesc,
+				intialState,
+				nullptr,
+				&image.allocation,
+				IID_PPV_ARGS(&image.buffer)));
+		image.id = s_ID++;
+		image.sizeOfBuffer = image.allocation->GetSize();
+		HY_ALLOC_PRINT("DxAllocator: id {0} Allocating buffer: {1} bytes", image.id, image.sizeOfBuffer);
+		s_AllocateDestructorOrder.push_back(image.id);
+		s_DestroyFunctions[image.id] = [&, image]()
+		{
+			image.buffer->Release();
+			image.allocation->Release();
+			HY_ALLOC_PRINT("DxAllocator: id {0} Deallocating buffer: {1} bytes", image.id, image.sizeOfBuffer);
 		};
 	}
 

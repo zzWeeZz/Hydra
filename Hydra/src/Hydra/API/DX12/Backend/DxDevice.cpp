@@ -6,6 +6,7 @@
 #include "Hydra/API/DX12/CommandSubmiting/DxCommandQueue.h"
 #include <Hydra/API/DX12/Resources/DxFramebuffer.h>
 #include <Hydra/API/DX12/Pipeline/DxGraphicsPipeline.h>
+#include <Hydra/API/DX12/Resources/DxBuffer.h>
 namespace Hydra
 {
 	DxDevice::DxDevice(Ptr<PhysicalDevice> physicalDevice) : Device(physicalDevice)
@@ -67,6 +68,10 @@ namespace Hydra
 	void DxDevice::DestroyFramebuffer(Ref<Framebuffer> framebuffer)
 	{
 		framebuffer.reset();
+	}
+	void DxDevice::CreateBuffer(BufferCreateSpecification& bufferSpecs, Ref<Buffer>& buffer)
+	{
+		buffer = std::make_shared<DxBuffer>(bufferSpecs, std::reinterpret_pointer_cast<DxDevice>(shared_from_this()));
 	}
 	void DxDevice::CreateGraphicsPipeline(GraphicsPipelineSpecification& pipelineSpecs, Ref<GraphicsPipeline>& graphicsPipeline)
 	{

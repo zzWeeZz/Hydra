@@ -15,6 +15,8 @@ namespace Hydra
 		void CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer) override;
 		void DestroyFramebuffer(Ref<Framebuffer> framebuffer) override;
 
+		void CreateBuffer(BufferCreateSpecification& bufferSpecs, Ref<Buffer>& buffer) override;
+
 		void CreateGraphicsPipeline(GraphicsPipelineSpecification& pipelineSpecs, Ref<GraphicsPipeline>& graphicsPipeline) override;
 
 		[[nodiscard]] FORCEINLINE ID3D12Device2* Get() { return m_Device.Get(); }

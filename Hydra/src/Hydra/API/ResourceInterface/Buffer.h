@@ -17,7 +17,7 @@ namespace Hydra
 	{
 	public:
 		Buffer(BufferCreateSpecification& specs) { m_Specs = specs; }
-
+		virtual ~Buffer(){}
 		virtual void MapMemory(void*& mappedMemory) = 0;
 		virtual void UnmapMemory() = 0;
 

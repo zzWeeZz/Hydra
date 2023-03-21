@@ -46,7 +46,7 @@ namespace Hydra
 		virtual void CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain){}
 
 		virtual void DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance){}
-		virtual void DrawIndexedInstanced(){}
+		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex,	int32_t vertexOffset, uint32_t firstInstance) {}
 
 		virtual ~CommandBuffer() {}
 

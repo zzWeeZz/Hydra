@@ -53,7 +53,7 @@ namespace Hydra
 
 		ShaderSpecification testShaderSpecs = {};
 
-		testShaderSpecs.vertexShaderStage.filepath = "Shaders/Triangle_vs.hlsl";
+		testShaderSpecs.vertexShaderStage.filepath = "Shaders/Triangle2_vs.hlsl";
 		testShaderSpecs.pixelShaderStage.filepath = "Shaders/Triangle_ps.hlsl";
 		std::string str;
 		shaderCompiler->Compile(testShaderSpecs, testShader, str);
@@ -93,12 +93,12 @@ namespace Hydra
 		verts[2].position[2] = 0.f;
 		verts[2].position[3] = 1.f;
 
-		verts[2].position[0] = -0.5f;
-		verts[2].position[1] = 0.5f;
-		verts[2].position[2] = 0.f;
-		verts[2].position[3] = 1.f;
+		verts[3].position[0] = -0.5f;
+		verts[3].position[1] = 0.5f;
+		verts[3].position[2] = 0.f;
+		verts[3].position[3] = 1.f;
 
-		std::array<uint32_t, 6> indices = {0, 1, 2, 2, 3, 0};
+		std::array<uint16_t, 6> indices = {0, 1, 2, 2, 3, 0};
 
 		BufferCreateSpecification bufferSpecs = {};
 
@@ -154,7 +154,7 @@ namespace Hydra
 		commandBuffer.lock()->BindVertexBuffer(frameIndex, testVertexBuffer);
 		commandBuffer.lock()->BindIndexBuffer(frameIndex, testIndexBuffer);
 
-		commandBuffer.lock()->DrawInstanced(4, 1, 0, 0);
+		commandBuffer.lock()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
 
 		commandBuffer.lock()->EndFramebuffer(frameIndex, cache->framebuffer);
