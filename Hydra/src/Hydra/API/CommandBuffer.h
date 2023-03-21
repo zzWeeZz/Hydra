@@ -22,6 +22,7 @@ namespace Hydra
 	class Framebuffer;
 	class GraphicsPipeline;
 	class Swapchain;
+	class Buffer;
 
 	class CommandBuffer
 	{
@@ -36,9 +37,11 @@ namespace Hydra
 		virtual void BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, float color[4]){}
 		virtual void EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer){}
 
-
 		virtual void BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline){}
 		virtual void UnbindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline){}
+
+		virtual void BindVertexBuffer(uint32_t frameindex, Ref<Buffer>& buffer){}
+		virtual void BindIndexBuffer(uint32_t frameindex, Ref<Buffer>& buffer){}
 
 		virtual void CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain){}
 

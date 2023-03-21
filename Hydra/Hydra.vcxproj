@@ -219,6 +219,7 @@
     <ClInclude Include="src\Hydra\Window.h" />
     <ClInclude Include="vendor\dma\D3D12MemAlloc.h" />
     <ClInclude Include="vendor\vma\vk_mem_alloc.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -261,6 +262,7 @@
     <ClCompile Include="src\Hydra\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Hydra\Utils\Log.cpp" />
     <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanBuffer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

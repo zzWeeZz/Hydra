@@ -42,6 +42,7 @@ inline std::string errorString(VkResult errorCode)
 
 namespace Hydra
 {
+#pragma region ConvertFormatFunctions
 	inline VkFormat GetVkFormat(ImageFormat image)
 	{
 		VkFormat format = {};
@@ -139,6 +140,39 @@ namespace Hydra
 		return vma;
 	}
 
+	inline VkBufferUsageFlags GetVkBufferUsage(BufferUsage usage)
+	{
+		VkBufferUsageFlags flags = {};
+
+		switch (usage)
+		{
+		case Hydra::BufferUsage::None:
+			HY_CORE_ASSERT(false, "Buffer Format can not be None!");
+			break;
+		case Hydra::BufferUsage::VertexBuffer:
+			flags = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+			break;
+		case Hydra::BufferUsage::IndexBuffer:
+			flags = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+			break;
+		case Hydra::BufferUsage::ConstantBuffer:
+			flags = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+			break;
+		case Hydra::BufferUsage::StorageBuffer:
+			flags = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+			break;
+		case Hydra::BufferUsage::IndirectBuffer:
+			flags = VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
+			break;
+		default:
+			HY_CORE_ASSERT(false, "Buffer Format is Invalid!");
+			break;
+		}
+		return flags;
+	}
+
+#pragma endregion
+#pragma region TransferUtils
 	inline void AccessMasksFromLayouts(VkImageLayout sourceLayout, VkImageLayout targetLayout, VkImageMemoryBarrier& outBarrier)
 	{
 		// Source layouts (old)
@@ -429,4 +463,5 @@ namespace Hydra
 
 		vkCmdPipelineBarrier(commandBuffer, sourceStage, destStage, 0, 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
 	}
+#pragma endregion
 }

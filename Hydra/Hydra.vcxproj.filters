@@ -273,6 +273,7 @@
     <ClInclude Include="vendor\vma\vk_mem_alloc.h">
       <Filter>vendor\vma</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -389,5 +390,6 @@
     <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp">
       <Filter>vendor\dma</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanBuffer.cpp" />
   </ItemGroup>
 </Project>

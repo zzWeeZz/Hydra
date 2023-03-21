@@ -2,10 +2,16 @@
 #include "VulkanDevice.h"
 
 #include <set>
+
 #include <Hydra/API/Vulkan/VulkanUtils.h>
+
 #include <Hydra/API/Vulkan/CommandSubmiting/VulkanCommandQueue.h>
+
+#include "Hydra/API/Vulkan/Resources/VulkanBuffer.h"
 #include "Hydra/API/Vulkan/Resources/VulkanFramebuffer.h"
+
 #include "Hydra/API/Vulkan/Pipeline/VulkanGraphicsPipeline.h"
+
 namespace Hydra
 {
 
@@ -110,6 +116,11 @@ namespace Hydra
 	void VulkanDevice::CreateGraphicsPipeline(GraphicsPipelineSpecification& pipelineSpecs, Ref<GraphicsPipeline>& graphicsPipeline)
 	{
 		graphicsPipeline = std::make_shared<VulkanGraphicsPipeline>(pipelineSpecs, std::reinterpret_pointer_cast<VulkanDevice>(shared_from_this()));
+	}
+
+	void VulkanDevice::CreateBuffer(BufferCreateSpecification& bufferSpecs, Ref<Buffer>& buffer)
+	{
+		buffer = std::make_shared<VulkanBuffer>(bufferSpecs);
 	}
 
 	void VulkanDevice::Shutdown()

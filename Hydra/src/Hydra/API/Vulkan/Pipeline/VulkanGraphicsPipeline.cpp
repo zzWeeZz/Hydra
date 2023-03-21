@@ -126,12 +126,35 @@ namespace Hydra
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
+
+		VkVertexInputBindingDescription bindingDescription{};
+		bindingDescription.binding = m_Specs.bindingDescription.binding;
+		bindingDescription.stride = m_Specs.bindingDescription.stride;
+		bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+		std::vector<VkVertexInputAttributeDescription> vkBindingDesc(m_Specs.vertexBindingAttributes.size());
+
+		for (size_t i = 0; auto& binding : vkBindingDesc)
+		{
+			auto& specbinding = m_Specs.vertexBindingAttributes[i];
+			binding.binding = specbinding.binding;
+			binding.location = specbinding.location;
+			binding.offset = specbinding.offset;
+			binding.format = GetVkFormat(specbinding.format);
+			i++;
+		}
+
+
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexBindingDescriptionCount = 0;
-		vertexInputInfo.pVertexBindingDescriptions = nullptr; // Optional
-		vertexInputInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
+		vertexInputInfo.vertexBindingDescriptionCount = 1;
+		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription; // Optional
+		vertexInputInfo.vertexAttributeDescriptionCount = vkBindingDesc.size();
+		vertexInputInfo.pVertexAttributeDescriptions = vkBindingDesc.data(); // Optional
+
+
+	
+
 
 		std::vector<VkDescriptorSetLayout> descriptorlayouts;
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -153,6 +176,7 @@ namespace Hydra
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
 		//pipelineInfo.pDepthStencilState = &depthStencil;
+
 		pipelineInfo.layout = m_PipelineLayout;
 		auto vulkanFramebuffer = std::reinterpret_pointer_cast<VulkanFramebuffer>(m_Specs.framebufferObject.lock());
 

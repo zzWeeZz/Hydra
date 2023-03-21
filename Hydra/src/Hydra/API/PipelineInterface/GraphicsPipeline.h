@@ -5,6 +5,21 @@
 #include <Hydra/API/Framebuffer.h>
 namespace Hydra
 {
+	struct BindAttribute
+	{
+		uint32_t binding = 0;
+		uint32_t location = 0;
+		ImageFormat format = ImageFormat::RGBA32F;
+		uint32_t offset = 0;
+	};
+
+	struct VertexBindingDescription
+	{
+		uint32_t binding = 0;
+		uint32_t stride = 0;
+		VertexInputRate inputRate = VertexInputRate::InputRangeVertex;
+	};
+
 	struct GraphicsPipelineSpecification
 	{
 		// Shader needs to be created before creating pipeline.
@@ -12,6 +27,11 @@ namespace Hydra
 
 		// Framebuffer to draw on.
 		Ptr<Framebuffer> framebufferObject;
+
+		// This is the bind map. here you give the pipeline the vertex attrebutes.
+		std::vector<BindAttribute> vertexBindingAttributes;
+
+		VertexBindingDescription bindingDescription;
 
 		// width of the pipeline draw area.
 		size_t width = 1280;

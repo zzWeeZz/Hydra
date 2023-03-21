@@ -22,6 +22,8 @@ namespace Hydra
 
 		void CreateGraphicsPipeline(GraphicsPipelineSpecification& pipelineSpecs, Ref<GraphicsPipeline>& graphicsPipeline) override;
 
+		void CreateBuffer(BufferCreateSpecification& bufferSpecs, Ref<Buffer>& buffer) override;
+
 		void Shutdown();
 
 		void WaitForIdle();

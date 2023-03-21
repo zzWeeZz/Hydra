@@ -3,7 +3,7 @@
 
 namespace Hydra
 {
-#pragma region RenderStates
+#pragma region PipelineFlags
 	enum class DepthState
 	{
 		Off = 0,
@@ -32,6 +32,12 @@ namespace Hydra
 		TriangleListAdj = 8,
 		TriangleStripAdj = 9,
 		PatchList = 10,
+	};
+
+	enum class VertexInputRate
+	{
+		InputRangeVertex,
+		InputRangeInstance,
 	};
 #pragma endregion
 
@@ -106,6 +112,20 @@ namespace Hydra
 		Image3DArray,
 		Count,
 	};
+#pragma endregion
+
+#pragma region BufferFlags
+	enum class BufferUsage
+	{
+		None,
+		VertexBuffer,
+		IndexBuffer,
+		ConstantBuffer,
+		StorageBuffer,
+		IndirectBuffer,
+	};
+
+
 #pragma endregion
 
 #pragma region AllocationFlags

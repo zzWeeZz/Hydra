@@ -19,6 +19,8 @@ namespace Hydra
 	public:
 		Swapchain(const SwapchainSpecfications& specs) { m_Specs = specs; }
 		virtual ~Swapchain(){}
+		// This function will setup all backend systems to a new frame state. OBS: You will need to handle the frame index! if the frame index is -1 that mean that something didnt work when 
+		// making the new frame. you CANT run any other API functions if this function returns -1.
 		virtual int32_t PrepareNewFrame() = 0;
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 		virtual void Create(Ptr<Context> context) = 0;

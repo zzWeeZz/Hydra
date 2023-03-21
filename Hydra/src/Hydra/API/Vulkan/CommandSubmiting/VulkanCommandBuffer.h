@@ -18,6 +18,10 @@ namespace Hydra
 
 		void BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline) override;
 
+		void BindVertexBuffer(uint32_t frameindex, Ref<Buffer>& buffer) override;
+
+		void BindIndexBuffer(uint32_t frameindex, Ref<Buffer>& buffer) override;
+
 		void CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain) override;
 
 		[[nodiscard]] FORCEINLINE VkCommandBuffer GetHandle() const { return m_CommandBuffer; }

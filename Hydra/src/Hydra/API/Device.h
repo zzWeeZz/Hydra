@@ -16,6 +16,10 @@ namespace Hydra
 	struct GraphicsPipelineSpecification;
 	class GraphicsPipeline;
 
+	// Buffer Forward.
+	struct BufferCreateSpecification;
+	class Buffer;
+
 	class Device : public std::enable_shared_from_this<Device>
 	{
 	public:
@@ -26,6 +30,8 @@ namespace Hydra
 		virtual void DestroyFramebuffer(Ref<Framebuffer> framebuffer){}
 
 		virtual void CreateGraphicsPipeline(GraphicsPipelineSpecification& pipelineSpecs, Ref<GraphicsPipeline>& graphicsPipeline){}
+
+		virtual void CreateBuffer(BufferCreateSpecification& bufferSpecs, Ref<Buffer>& buffer){}
 
 	 	[[nodiscard]] FORCEINLINE Ptr<DeviceQueue> GetQueue(QueueType type) { return m_DeviceQueues[type]; }
 		[[nodiscard]] FORCEINLINE Ptr<CommandQueue> GetCommandQueue(QueueType queueType, uint32_t frameIndex) { return m_CommandQueues[queueType][frameIndex]; } // TODO_Niklas: Fix Indexing for perframe in flight.

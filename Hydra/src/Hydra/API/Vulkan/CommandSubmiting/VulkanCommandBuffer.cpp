@@ -6,6 +6,7 @@
 #include <Hydra/API/Vulkan/Backend/VulkanSwapchain.h>
 #include <Hydra/API/Vulkan/Pipeline/VulkanGraphicsPipeline.h>
 #include "Hydra/API/Vulkan/VulkanUtils.h"
+#include "Hydra/API/Vulkan/Resources/VulkanBuffer.h"
 namespace Hydra
 {
 	VulkanCommandBuffer::VulkanCommandBuffer(CommandBufferSpecification& specs) : CommandBuffer(specs)
@@ -90,6 +91,22 @@ namespace Hydra
 	{
 		auto vulkanPipeline = std::reinterpret_pointer_cast<VulkanGraphicsPipeline>(pipeline);
 		vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->GetHandle());
+	}
+
+	void VulkanCommandBuffer::BindVertexBuffer(uint32_t frameindex, Ref<Buffer>& buffer)
+	{
+		auto vulkanBuffer = std::reinterpret_pointer_cast<VulkanBuffer>(buffer);
+
+		VkDeviceSize offset = 0;
+		vkCmdBindVertexBuffers(m_CommandBuffer, 0, 1, &vulkanBuffer->GetAllocation().buffer, &offset);
+	}
+
+	void VulkanCommandBuffer::BindIndexBuffer(uint32_t frameindex, Ref<Buffer>& buffer)
+	{
+		auto vulkanBuffer = std::reinterpret_pointer_cast<VulkanBuffer>(buffer);
+
+		VkDeviceSize offset = 0;
+		vkCmdBindIndexBuffer(m_CommandBuffer, vulkanBuffer->GetAllocation().buffer, offset, VK_INDEX_TYPE_UINT32);
 	}
 
 	void VulkanCommandBuffer::CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain)
