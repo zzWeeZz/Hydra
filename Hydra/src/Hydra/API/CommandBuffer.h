@@ -42,6 +42,7 @@ namespace Hydra
 
 		virtual void BindVertexBuffer(uint32_t frameindex, Ref<Buffer>& buffer){}
 		virtual void BindIndexBuffer(uint32_t frameindex, Ref<Buffer>& buffer){}
+		virtual void BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer){}
 
 		virtual void CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain){}
 

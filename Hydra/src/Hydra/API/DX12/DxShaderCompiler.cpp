@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include "Hydra/API/DX12/Resources/DxShader.h"
+#include <d3dcompiler.h>
+#include <Hydra/API/DX12/DxUtils.h>
 namespace Hydra
 {
 	DxShaderCompiler::DxShaderCompiler(ShaderCompilerCreateSpecification& createSpecs) : ShaderCompiler(createSpecs)
@@ -105,5 +107,135 @@ namespace Hydra
 		compileResult->GetResult(&blob);
 
 		shader->m_BlobMap[stageFlag] = blob;
+
+		if (stageFlag == ShaderStageFlag::Vertex)
+		{
+			ReflectInputLayout(compileResult, shader->m_VertexShaderInputElements);
+		}
+		if (stageFlag == ShaderStageFlag::Vertex)
+		{
+			ReflectRootParameters(compileResult, shader->m_ReflectedRootPrameters);
+		}
+	}
+	void DxShaderCompiler::ReflectInputLayout(Microsoft::WRL::ComPtr<IDxcResult> compileResult, std::vector<D3D12_INPUT_ELEMENT_DESC>& inputLayout)
+	{
+		ID3D12ShaderReflection* pReflector = nullptr;
+		WinRef<IDxcBlob> pReflectionData;
+		compileResult->GetOutput(DXC_OUT_REFLECTION, IID_PPV_ARGS(pReflectionData.GetAddressOf()), 0);
+		DxcBuffer reflectionBuffer{};
+		reflectionBuffer.Ptr = pReflectionData->GetBufferPointer();
+		reflectionBuffer.Size = pReflectionData->GetBufferSize();
+		reflectionBuffer.Encoding = 0;
+		s_Utils->CreateReflection(&reflectionBuffer, IID_PPV_ARGS(&pReflector));
+		D3D12_SHADER_DESC decs;
+		pReflector->GetDesc(&decs);
+
+		std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayoutDesc;
+		for (UINT i = 0; i < decs.InputParameters; i++)
+		{
+			D3D12_SIGNATURE_PARAMETER_DESC paramDesc;
+			pReflector->GetInputParameterDesc(i, &paramDesc);
+			std::string f3C(paramDesc.SemanticName);
+			f3C = f3C.substr(0, 3);
+			if (f3C == "SV_")
+			{
+				continue;
+			}
+			// Fill out input element desc
+			D3D12_INPUT_ELEMENT_DESC elementDesc;
+			elementDesc.SemanticName = paramDesc.SemanticName;
+			elementDesc.SemanticIndex = paramDesc.SemanticIndex;
+			elementDesc.InputSlot = 0;
+			elementDesc.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+			elementDesc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+			elementDesc.InstanceDataStepRate = 0;
+			// determine DXGI format
+			if (paramDesc.Mask == 1)
+			{
+				if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32)
+					elementDesc.Format = DXGI_FORMAT_R32_UINT;
+				else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32)
+					elementDesc.Format = DXGI_FORMAT_R32_SINT;
+				else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32)
+					elementDesc.Format = DXGI_FORMAT_R32_FLOAT;
+			}
+			else if (paramDesc.Mask <= 3)
+			{
+				if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32)
+					elementDesc.Format = DXGI_FORMAT_R32G32_UINT;
+				else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32)
+					elementDesc.Format = DXGI_FORMAT_R32G32_SINT;
+				else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32)
+					elementDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
+			}
+			else if (paramDesc.Mask <= 7)
+			{
+				if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32)
+					elementDesc.Format = DXGI_FORMAT_R32G32B32_UINT;
+				else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32)
+					elementDesc.Format = DXGI_FORMAT_R32G32B32_SINT;
+				else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32)
+					elementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+			}
+			else if (paramDesc.Mask <= 15)
+			{
+				if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32)
+					elementDesc.Format = DXGI_FORMAT_R32G32B32A32_UINT;
+				else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32)
+					elementDesc.Format = DXGI_FORMAT_R32G32B32A32_SINT;
+				else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32)
+					elementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			}
+
+			// Save element desc
+			inputLayout.push_back(elementDesc);
+		}
+	}
+	void DxShaderCompiler::ReflectRootParameters(Microsoft::WRL::ComPtr<IDxcResult> compileResult, std::vector<D3D12_ROOT_PARAMETER>& outRootPrameters)
+	{
+		ID3D12ShaderReflection* pReflector = nullptr;
+		WinRef<IDxcBlob> pReflectionData;
+		compileResult->GetOutput(DXC_OUT_REFLECTION, IID_PPV_ARGS(pReflectionData.GetAddressOf()), 0);
+		DxcBuffer reflectionBuffer{};
+		reflectionBuffer.Ptr = pReflectionData->GetBufferPointer();
+		reflectionBuffer.Size = pReflectionData->GetBufferSize();
+		reflectionBuffer.Encoding = 0;
+		s_Utils->CreateReflection(&reflectionBuffer, IID_PPV_ARGS(&pReflector));
+
+		D3D12_SHADER_DESC desc;
+		pReflector->GetDesc(&desc);
+
+
+		for (size_t i = 0; i < desc.BoundResources; ++i)
+		{
+			D3D12_SHADER_INPUT_BIND_DESC inputBinDesc;
+			pReflector->GetResourceBindingDesc(i, &inputBinDesc);
+			if (inputBinDesc.Type == D3D10_SIT_CBUFFER)
+			{
+				auto& range = outRootPrameters.emplace_back();
+				range.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+				range.Descriptor = { inputBinDesc.BindPoint, inputBinDesc.Space };
+				range.ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_VERTEX;
+			}
+
+			/*else if (inputBinDesc.Type == D3D10_SIT_TEXTURE)
+			{
+				D3D12_DESCRIPTOR_RANGE range{};
+				range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+				range.RegisterSpace = inputBinDesc.Space;
+				range.NumDescriptors = 0;
+				range.BaseShaderRegister = inputBinDesc.BindPoint;
+				range.OffsetInDescriptorsFromTableStart = D3D12_APPEND_ALIGNED_ELEMENT;
+
+				D3D12_ROOT_DESCRIPTOR_TABLE table{};
+				table.NumDescriptorRanges = 1;
+				table.pDescriptorRanges = &range;
+
+				auto& param = outRootPrameters.emplace_back();
+				param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+				param.DescriptorTable = table;
+				param.ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_VERTEX;
+			}*/
+		}
 	}
 }

@@ -15,6 +15,7 @@ namespace Hydra
 
 	private:
 		std::unordered_map<ShaderStageFlag, std::vector<uint32_t>> m_SpirvMap;
+		std::unordered_map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>> m_Layouts;
 		std::vector<VkShaderStageFlagBits> m_VkStages;
 	};
 }

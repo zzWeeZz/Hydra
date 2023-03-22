@@ -6,6 +6,7 @@
 #include <d3dx12.h>
 #include <Hydra/API/DX12/Backend/DxSwapchain.h>
 #include <Hydra/API/DX12/Pipeline/DxGraphicsPipeline.h>
+#include <Hydra/API/DX12/Resources/DxBuffer.h>
 namespace Hydra
 {
 	DxCommandBuffer::DxCommandBuffer(CommandBufferSpecification& specs)
@@ -86,6 +87,38 @@ namespace Hydra
 	{
 	}
 
+	void DxCommandBuffer::BindVertexBuffer(uint32_t frameindex, Ref<Buffer>& buffer)
+	{
+		auto dxbuffer = std::reinterpret_pointer_cast<DxBuffer>(buffer);
+
+		D3D12_VERTEX_BUFFER_VIEW view = {};
+		view.BufferLocation = dxbuffer->GetGPUAddress();
+		view.SizeInBytes = dxbuffer->GetSizeInBytes();
+		view.StrideInBytes = dxbuffer->StrideInBytes();
+
+		m_CommandList->IASetVertexBuffers(0, 1, &view);
+	}
+
+	void DxCommandBuffer::BindIndexBuffer(uint32_t frameindex, Ref<Buffer>& buffer)
+	{
+		auto dxbuffer = std::reinterpret_pointer_cast<DxBuffer>(buffer);
+
+		D3D12_INDEX_BUFFER_VIEW view = {};
+		view.BufferLocation = dxbuffer->GetGPUAddress();
+		view.SizeInBytes = dxbuffer->GetSizeInBytes();
+		view.Format = dxbuffer->IndexFormat();
+
+		m_CommandList->IASetIndexBuffer(&view);
+	}
+
+	void DxCommandBuffer::BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer)
+	{
+		auto dxbuffer = std::reinterpret_pointer_cast<DxBuffer>(buffer);
+		size_t cBufferOffset = (dxbuffer->StrideInBytes() + 255) & ~255;
+
+		m_CommandList->SetGraphicsRootConstantBufferView(0, dxbuffer->GetAllocation(frameindex).buffer->GetGPUVirtualAddress());
+	}
+
 	void DxCommandBuffer::BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline)
 	{
 		auto dxGraphicsPipeline = std::reinterpret_pointer_cast<DxGraphicsPipeline>(pipeline);
@@ -98,6 +131,11 @@ namespace Hydra
 	void DxCommandBuffer::DrawInstanced(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
 	{
 		m_CommandList->DrawInstanced(vertexCount, instanceCount, firstVertex, firstInstance);
+	}
+
+	void DxCommandBuffer::DrawIndexedInstanced(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance)
+	{
+		m_CommandList->DrawIndexedInstanced(indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 	}
 
 	void DxCommandBuffer::CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain)

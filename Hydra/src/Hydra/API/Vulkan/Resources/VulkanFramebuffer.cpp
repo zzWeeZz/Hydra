@@ -42,8 +42,8 @@ namespace Hydra
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Device.lock());
 		vulkanDevice->WaitForIdle();
 
-		m_Specs.height = height;
-		m_Specs.width = width;
+		m_Specs.height = static_cast<uint32_t>(height);
+		m_Specs.width = static_cast<uint32_t>(width);
 		CleanUp();
 		Validate();
 	}

@@ -68,8 +68,8 @@ namespace Hydra
 
 		vkCmdSetScissor(m_CommandBuffer, 0, 1, &vulkanFramebuffer->GetRect());
 		VkViewport viewPort = {};
-		viewPort.height = vulkanFramebuffer->GetRect().extent.height;
-		viewPort.width = vulkanFramebuffer->GetRect().extent.width;
+		viewPort.height = static_cast<float>(vulkanFramebuffer->GetRect().extent.height);
+		viewPort.width = static_cast<float>(vulkanFramebuffer->GetRect().extent.width);
 		viewPort.minDepth = 0;
 		viewPort.maxDepth = 1;
 		viewPort.x = 0;
@@ -112,6 +112,10 @@ namespace Hydra
 
 		VkDeviceSize offset = 0;
 		vkCmdBindIndexBuffer(m_CommandBuffer, vulkanBuffer->GetAllocation().buffer, offset, VK_INDEX_TYPE_UINT16);
+	}
+
+	void VulkanCommandBuffer::BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer)
+	{
 	}
 
 	void VulkanCommandBuffer::CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain)

@@ -27,6 +27,11 @@ namespace Hydra
 		static void Allocate(AllocatedImage& image, D3D12_RESOURCE_DESC& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc, D3D12_CLEAR_VALUE* clearValue);
 		static void Allocate(AllocatedBuffer& image, D3D12_RESOURCE_DESC& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc, D3D12_RESOURCE_STATES intialState);
 		static void DeAllocate(AllocatedImage& image);
+		static void DeAllocate(AllocatedBuffer& buffer);
+
+		static void MapMemory(AllocatedBuffer& buffer, void*& mappedMemory);
+		static void UnMapMemory(AllocatedBuffer& buffer);
+
 		static void Flush();
 		static void Shutdown();
 	private:

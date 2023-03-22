@@ -2,6 +2,7 @@
 #include "VulkanShaderCompiler.h"
 #include <Hydra/API/Vulkan/Resources/VulkanShader.h>
 #include <fstream>
+#include <SPIRV-Reflect/spirv_reflect.h>
 
 namespace Hydra
 {
@@ -109,5 +110,78 @@ namespace Hydra
 		compileResult->GetResult(&blob);
 		shader->m_SpirvMap[stageFlag].resize(blob->GetBufferSize());
 		memcpy(shader->m_SpirvMap[stageFlag].data(), blob->GetBufferPointer(), blob->GetBufferSize());
+
+		Reflect(shader->m_SpirvMap[stageFlag], shader->m_Layouts);
+	}
+
+
+	void VulkanShaderCompiler::Reflect(std::vector<uint32_t> spirv, std::unordered_map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>>& layouts)
+	{
+		SpvReflectShaderModule spvModule;
+		auto reflectResult = spvReflectCreateShaderModule(spirv.size(), reinterpret_cast<void*>(spirv.data()), &spvModule);
+		HY_CORE_ASSERT(reflectResult == SPV_REFLECT_RESULT_SUCCESS, "Could not reflect shader.");
+		VkShaderStageFlagBits stage = VK_SHADER_STAGE_VERTEX_BIT;
+
+		switch (spvModule.shader_stage)
+		{
+		case SPV_REFLECT_SHADER_STAGE_COMPUTE_BIT:
+		{
+			stage = VK_SHADER_STAGE_COMPUTE_BIT;
+			break;
+		}
+		
+		case SPV_REFLECT_SHADER_STAGE_VERTEX_BIT:
+		{
+			stage = VK_SHADER_STAGE_VERTEX_BIT;
+			break;
+		}
+
+	
+		case SPV_REFLECT_SHADER_STAGE_FRAGMENT_BIT:
+		{
+			stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+			break;
+		}
+		}
+
+		uint32_t spvBindingCount = 0;
+
+		spvReflectEnumerateDescriptorBindings(&spvModule, &spvBindingCount, nullptr);
+
+		std::vector<SpvReflectDescriptorBinding*> spvBindings(spvBindingCount);
+		spvReflectEnumerateDescriptorBindings(&spvModule, &spvBindingCount, spvBindings.data());
+
+		layouts.reserve(spvBindingCount);
+		for (uint32_t layoutBindingIndex = 0; layoutBindingIndex < spvBindingCount; ++layoutBindingIndex)
+		{
+			VkDescriptorType descType{};
+			switch (spvBindings[layoutBindingIndex]->descriptor_type)
+			{
+			case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+				descType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+				break;
+			case SPV_REFLECT_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+				descType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+				break;
+
+			case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+				descType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+				break;
+			case SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+				descType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				break;
+			default:
+				break;
+			}
+			VkDescriptorSetLayoutBinding descriptorSetLayoutBinding{};
+			descriptorSetLayoutBinding.binding = spvBindings[layoutBindingIndex]->binding;
+			descriptorSetLayoutBinding.descriptorCount = 1;
+			descriptorSetLayoutBinding.descriptorType = descType;
+			descriptorSetLayoutBinding.stageFlags = stage;
+			descriptorSetLayoutBinding.pImmutableSamplers = nullptr;
+
+			layouts[spvBindings[layoutBindingIndex]->set].push_back(descriptorSetLayoutBinding);
+		}
+		spvReflectDestroyShaderModule(&spvModule);
 	}
 }

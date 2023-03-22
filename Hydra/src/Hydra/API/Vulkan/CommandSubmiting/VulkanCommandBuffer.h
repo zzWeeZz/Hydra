@@ -1,6 +1,8 @@
 #pragma once
 #include "Hydra/API/CommandBuffer.h"
 #include "Vulkan/vulkan.h"
+#include "Hydra/API/Vulkan/Descriptors/DescriptorLayoutCache.h"
+#include "Hydra/API/Vulkan/Descriptors/DescriptorAllocator.h"
 namespace Hydra
 {
 	class VulkanCommandBuffer : public CommandBuffer
@@ -20,8 +22,8 @@ namespace Hydra
 		void BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline) override;
 
 		void BindVertexBuffer(uint32_t frameindex, Ref<Buffer>& buffer) override;
-
 		void BindIndexBuffer(uint32_t frameindex, Ref<Buffer>& buffer) override;
+		void BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer) override;
 
 		void CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain) override;
 
@@ -30,5 +32,7 @@ namespace Hydra
 		void Free();
 	private:
 		VkCommandBuffer m_CommandBuffer;
+		DescriptorLayoutCache m_DescriptorCache;
+		DescriptorAllocator m_DescriptorAllocator;
 	};
 }

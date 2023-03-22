@@ -30,8 +30,8 @@ namespace Hydra
 
 		viewPort = {};
 
-		viewPort.Height = m_Specs.height;
-		viewPort.Width = m_Specs.width;
+		viewPort.Height = static_cast<FLOAT>(m_Specs.height);
+		viewPort.Width = static_cast<FLOAT>(m_Specs.width);
 		viewPort.MinDepth = 0;
 		viewPort.MaxDepth = 1;
 		

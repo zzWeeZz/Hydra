@@ -78,7 +78,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4996;6285;26437;26451;26498;26800;26495;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>_CONSOLE;HY_CONFIG_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.216.0\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.224.1\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -101,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4996;6285;26437;26451;26498;26800;26495;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>_CONSOLE;HY_CONFIG_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.216.0\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.224.1\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -129,7 +129,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4996;6285;26437;26451;26498;26800;26495;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>_CONSOLE;HY_CONFIG_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.216.0\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\GLFW\include;vendor\spdlog\include;C:\VulkanSDK\1.3.224.1\Include;vendor\dx12helpers;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -151,9 +151,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Hydra\API\DX12\Resources\InternalResources\DxVertexBuffer.h" />
-    <ClInclude Include="src\Hydra\API\DX12\Resources\InternalResources\DxBufferBase.h" />
-    <ClInclude Include="src\Hydra\API\DX12\Resources\DxBuffer.h" />
     <ClInclude Include="src\HYpch.h" />
     <ClInclude Include="src\Hydra\API\ApiFormats.h" />
     <ClInclude Include="src\Hydra\API\ApiUtils.h" />
@@ -171,6 +168,7 @@
     <ClInclude Include="src\Hydra\API\DX12\DxShaderCompiler.h" />
     <ClInclude Include="src\Hydra\API\DX12\DxUtils.h" />
     <ClInclude Include="src\Hydra\API\DX12\Pipeline\DxGraphicsPipeline.h" />
+    <ClInclude Include="src\Hydra\API\DX12\Resources\DxBuffer.h" />
     <ClInclude Include="src\Hydra\API\DX12\Resources\DxFramebuffer.h" />
     <ClInclude Include="src\Hydra\API\DX12\Resources\DxImage.h" />
     <ClInclude Include="src\Hydra\API\DX12\Resources\DxImageView.h" />
@@ -194,6 +192,9 @@
     <ClInclude Include="src\Hydra\API\Vulkan\Backend\VulkanSwapchain.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandBuffer.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Descriptors\DescriptorAllocator.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Descriptors\DescriptorBuilder.h" />
+    <ClInclude Include="src\Hydra\API\Vulkan\Descriptors\DescriptorLayoutCache.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\Pipeline\VulkanGraphicsPipeline.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanBuffer.h" />
     <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.h" />
@@ -225,9 +226,6 @@
     <ClInclude Include="vendor\vma\vk_mem_alloc.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Hydra\API\DX12\Resources\InternalResources\DxVertexBuffer.cpp" />
-    <ClCompile Include="src\Hydra\API\DX12\Resources\InternalResources\DxBufferBase.cpp" />
-    <ClCompile Include="src\Hydra\API\DX12\Resources\DxBuffer.cpp" />
     <ClCompile Include="src\HYpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -241,6 +239,7 @@
     <ClCompile Include="src\Hydra\API\DX12\DxDeviceQueue.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\DxShaderCompiler.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Pipeline\DxGraphicsPipeline.cpp" />
+    <ClCompile Include="src\Hydra\API\DX12\Resources\DxBuffer.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Resources\DxFramebuffer.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Resources\DxImage.cpp" />
     <ClCompile Include="src\Hydra\API\DX12\Resources\DxImageView.cpp" />
@@ -251,6 +250,9 @@
     <ClCompile Include="src\Hydra\API\Vulkan\Backend\VulkanSwapchain.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandBuffer.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\CommandSubmiting\VulkanCommandQueue.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Descriptors\DescriptorAllocator.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Descriptors\DescriptorBuilder.cpp" />
+    <ClCompile Include="src\Hydra\API\Vulkan\Descriptors\DescriptorLayoutCache.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\Pipeline\VulkanGraphicsPipeline.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanBuffer.cpp" />
     <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanFramebuffer.cpp" />

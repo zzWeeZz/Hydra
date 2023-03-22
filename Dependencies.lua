@@ -20,6 +20,7 @@ LibDir["Vulkan"] = "%{VULKAN_SDK}/Lib/vulkan-1.lib"
 LibDir["DxC"] = "%{VULKAN_SDK}/Lib/dxcompiler.lib"
 LibDir["Dx12"] = "D3d12.lib"
 LibDir["DXGI"] = "DXGI.lib"
+LibDir["SPIRVReflect"] = "SPIRV-Reflect"
 
 VulkanDebugLibs = 
 {

@@ -13,4 +13,5 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 include "Hydra"
 include "Sandbox"
+include "Hydra/vendor/SPIRV-Reflect"
 include "Hydra/vendor/GLFW"

@@ -77,6 +77,29 @@ namespace Hydra
 		}
 	}
 
+	void DxAllocator::DeAllocate(AllocatedBuffer& buffer)
+	{
+		buffer.buffer->Release();
+		buffer.allocation->Release();
+		s_DestroyFunctions.erase(buffer.id);
+		HY_ALLOC_PRINT("DxAllocator: id {0} Deallocating buffer: {1} bytes", buffer.id, buffer.sizeOfBuffer);
+		auto it = std::find(s_AllocateDestructorOrder.begin(), s_AllocateDestructorOrder.end(), buffer.id);
+		if (it != s_AllocateDestructorOrder.end())
+		{
+			s_AllocateDestructorOrder.erase(it);
+		}
+	}
+
+	void DxAllocator::MapMemory(AllocatedBuffer& buffer, void*& mappedMemory)
+	{
+		buffer.buffer->Map(0, nullptr, &mappedMemory);
+	}
+
+	void DxAllocator::UnMapMemory(AllocatedBuffer& buffer)
+	{
+		buffer.buffer->Unmap(0, nullptr);
+	}
+
 	void DxAllocator::Flush()
 	{
 		for (int32_t Index = static_cast<int32_t>(s_AllocateDestructorOrder.size() - 1u); Index >= 0; Index--)

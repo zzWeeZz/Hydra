@@ -14,21 +14,26 @@ namespace Hydra
 	void DxGraphicsPipeline::Validate()
 	{
 		auto dxShader = std::reinterpret_pointer_cast<DxShader>(m_Specs.shaderObject.lock());
-		std::vector<D3D12_ROOT_PARAMETER> params;
+		std::vector<D3D12_ROOT_PARAMETER> params = dxShader->m_ReflectedRootPrameters;
 
 		CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-		rootSignatureDesc.Init(params.size(),
+		rootSignatureDesc.Init(static_cast<uint32_t>(params.size()),
 			params.data(),
 			0,
 			nullptr,
 			D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+
+
 		ID3DBlob* signature = nullptr;
 		ID3DBlob* errorBlob = nullptr;
 		HY_DX_CHECK(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &signature, &errorBlob));
 		HY_DX_CHECK(m_DeviceHandle.lock()->Get()->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(m_RootSignature.GetAddressOf())));
-		std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayoutDesc;
-		//vsCompiler.GetInputLayout(inputLayoutDesc);
-		D3D12_INPUT_LAYOUT_DESC inputLayout;
+		
+		std::vector<D3D12_INPUT_ELEMENT_DESC> inputLayoutDesc = dxShader->m_VertexShaderInputElements;
+
+
+		D3D12_INPUT_LAYOUT_DESC inputLayout = {};
 		inputLayout.NumElements = static_cast<UINT>(inputLayoutDesc.size());
 		inputLayout.pInputElementDescs = inputLayoutDesc.data();
 
@@ -46,7 +51,7 @@ namespace Hydra
 		//pipelineDesc.DepthStencilState = GetDepthStencilDesc(info.depthState, info.depthCullState);
 
 		pipelineDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-		pipelineDesc.RasterizerState.FrontCounterClockwise = FALSE;
+		pipelineDesc.RasterizerState.FrontCounterClockwise = TRUE;
 		pipelineDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 
 		HY_DX_CHECK(m_DeviceHandle.lock()->Get()->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(m_PipelineStateObject.GetAddressOf())));

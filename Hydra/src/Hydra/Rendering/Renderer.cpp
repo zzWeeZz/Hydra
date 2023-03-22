@@ -28,12 +28,18 @@ namespace Hydra
 	static Ref<Buffer> testVertexBuffer;
 	static Ref<Buffer> testIndexBuffer;
 
+	static Ref<Buffer> testConstantBuffer;
+
 
 	struct Vertex
 	{
 		float position[4];
 	};
 
+	struct CameraData
+	{
+		float view[4];
+	};
 
 	void Renderer::Initialize()
 	{
@@ -117,6 +123,14 @@ namespace Hydra
 		bufferSpecs.allocationUsage = MemoryUsage::CPU_To_GPU;
 
 		GraphicsContext::GetDevice().lock()->CreateBuffer(bufferSpecs, testIndexBuffer);
+
+		bufferSpecs.usage = BufferUsage::ConstantBuffer;
+		bufferSpecs.stride = sizeof(CameraData);
+		bufferSpecs.size = sizeof(CameraData) * 64;
+		bufferSpecs.data = nullptr;
+		bufferSpecs.allocationUsage = MemoryUsage::CPU_To_GPU;
+
+		GraphicsContext::GetDevice().lock()->CreateBuffer(bufferSpecs, testConstantBuffer);
 	}
 	void Renderer::OnEvent(Event& e)
 	{
@@ -143,6 +157,11 @@ namespace Hydra
 
 		commandQueue->Reset();
 		commandBuffer.lock()->Begin();
+		static float time = 0;
+		time += 0.0003;
+		float data[4] = { (cosf(time) + 1 / 2.f),0,(sinf(time * 2) + 1 / 2.f),1};
+
+		testConstantBuffer->CopyBuffer(frameIndex, &data, sizeof(data));
 
 		float clear[] = { 0.32f, 0.32f, 0.32f, 1.f };
 
@@ -150,6 +169,8 @@ namespace Hydra
 
 
 		commandBuffer.lock()->BindGraphicsPipeline(frameIndex, testPipeline);
+		
+		commandBuffer.lock()->BindConstantBuffer(frameIndex, 0, 0, testConstantBuffer);
 
 		commandBuffer.lock()->BindVertexBuffer(frameIndex, testVertexBuffer);
 		commandBuffer.lock()->BindIndexBuffer(frameIndex, testIndexBuffer);

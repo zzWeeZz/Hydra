@@ -149,17 +149,27 @@ namespace Hydra
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexBindingDescriptionCount = 1;
 		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription; // Optional
-		vertexInputInfo.vertexAttributeDescriptionCount = vkBindingDesc.size();
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(vkBindingDesc.size());
 		vertexInputInfo.pVertexAttributeDescriptions = vkBindingDesc.data(); // Optional
 
 
-	
-
-
 		std::vector<VkDescriptorSetLayout> descriptorlayouts;
+		for (auto& binding : vulkanShader->m_Layouts)
+		{
+			auto& bindings = binding.second;
+			VkDescriptorSetLayoutCreateInfo layoutInfo{};
+			layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+			layoutInfo.pBindings = bindings.data();
+			auto& descriptorLayout = descriptorlayouts.emplace_back();
+			HY_VK_CHECK(vkCreateDescriptorSetLayout(m_DeviceHandle.lock()->GetHandle(), &layoutInfo, nullptr, &descriptorLayout));
+			VulkanAllocator::CustomDeletion([=]() {vkDestroyDescriptorSetLayout(m_DeviceHandle.lock()->GetHandle(), descriptorLayout, nullptr); });
+		}
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo;
+		pipelineLayoutInfo.pSetLayouts = descriptorlayouts.data();
+		pipelineLayoutInfo.setLayoutCount = descriptorlayouts.size();
 		HY_VK_CHECK(vkCreatePipelineLayout(m_DeviceHandle.lock()->GetHandle(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout));
 		VulkanAllocator::CustomDeletion([&]() { vkDestroyPipelineLayout(m_DeviceHandle.lock()->GetHandle(), m_PipelineLayout, nullptr); });
 
