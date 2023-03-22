@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPIRV-Reflect", "Hydra\vend
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SandBox", "Sandbox\SandBox.vcxproj", "{D43924E3-4019-A37E-4931-2E55B58F09E0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glm", "Hydra\vendor\glm\glm.vcxproj", "{6577880B-D180-887C-5AFC-9E7CC604947C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -40,6 +42,12 @@ Global
 		{D43924E3-4019-A37E-4931-2E55B58F09E0}.Dist|x64.Build.0 = Dist|x64
 		{D43924E3-4019-A37E-4931-2E55B58F09E0}.Release|x64.ActiveCfg = Release|x64
 		{D43924E3-4019-A37E-4931-2E55B58F09E0}.Release|x64.Build.0 = Release|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Debug|x64.ActiveCfg = Debug|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Debug|x64.Build.0 = Debug|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Dist|x64.ActiveCfg = Dist|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Dist|x64.Build.0 = Dist|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Release|x64.ActiveCfg = Release|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

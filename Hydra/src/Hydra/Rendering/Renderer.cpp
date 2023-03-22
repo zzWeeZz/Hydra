@@ -9,7 +9,8 @@
 #include "Hydra/API/PipelineInterface/GraphicsPipeline.h"
 #include "Hydra/API/ResourceInterface/Buffer.h"
 #include "Hydra/Events/ApplicationEvent.h"
-
+#include "glm/glm/glm.hpp"
+#include <glm/glm/gtx/quaternion.hpp>
 namespace Hydra
 {
 	struct Cache
@@ -33,12 +34,14 @@ namespace Hydra
 
 	struct Vertex
 	{
-		float position[4];
+		glm::vec4 position;
 	};
 
 	struct CameraData
 	{
-		float view[4];
+		glm::mat4 view;
+		glm::mat4 proj;
+		glm::mat4 objectSpace;
 	};
 
 	void Renderer::Initialize()
@@ -82,42 +85,40 @@ namespace Hydra
 		GraphicsContext::GetDevice().lock()->CreateGraphicsPipeline(graphicsSpecs, testPipeline);
 		
 		
-		std::array<Vertex, 4> verts = {};
+		std::vector<Vertex> vertices = {
+		{glm::vec4(-1.0f, -1.0f,  1.0f, 1.0f)}, // Front Bottom Left
+		{glm::vec4(1.0f, -1.0f,  1.0f, 1.0f)}, // Front Bottom Right
+		{glm::vec4(1.0f,  1.0f,  1.0f, 1.0f)}, // Front Top Right
+		{glm::vec4(-1.0f,  1.0f,  1.0f, 1.0f)}, // Front Top Left
+		{glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f)}, // Back Bottom Left
+		{glm::vec4(1.0f, -1.0f, -1.0f, 1.0f)}, // Back Bottom Right
+		{glm::vec4(1.0f,  1.0f, -1.0f, 1.0f)}, // Back Top Right
+		{glm::vec4(-1.0f,  1.0f, -1.0f, 1.0f)}  // Back Top Left
+		};
 
-		verts[0].position[0] = -0.5f;
-		verts[0].position[1] = -0.5f;
-		verts[0].position[2] = 0.f;
-		verts[0].position[3] = 1.f;
+		
 
-		verts[1].position[0] = 0.5f;
-		verts[1].position[1] = -0.5f;
-		verts[1].position[2] = 0.f;
-		verts[1].position[3] = 1.f;
-
-		verts[2].position[0] = 0.5f;
-		verts[2].position[1] = 0.5f;
-		verts[2].position[2] = 0.f;
-		verts[2].position[3] = 1.f;
-
-		verts[3].position[0] = -0.5f;
-		verts[3].position[1] = 0.5f;
-		verts[3].position[2] = 0.f;
-		verts[3].position[3] = 1.f;
-
-		std::array<uint16_t, 6> indices = {0, 1, 2, 2, 3, 0};
+		std::vector<uint16_t> indices = {
+	0, 1, 2, 2, 3, 0, // Front Face
+	1, 5, 6, 6, 2, 1, // Right Face
+	4, 7, 6, 6, 5, 4, // Back Face
+	0, 3, 7, 7, 4, 0, // Left Face
+	3, 2, 6, 6, 7, 3, // Top Face
+	0, 4, 5, 5, 1, 0  // Bottom Face
+		};
 
 		BufferCreateSpecification bufferSpecs = {};
 
 		bufferSpecs.usage = BufferUsage::VertexBuffer;
 		bufferSpecs.stride = sizeof(Vertex);
-		bufferSpecs.size = verts.size();
-		bufferSpecs.data = verts.data();
+		bufferSpecs.size = vertices.size();
+		bufferSpecs.data = vertices.data();
 		bufferSpecs.allocationUsage = MemoryUsage::CPU_To_GPU;
 
 		GraphicsContext::GetDevice().lock()->CreateBuffer(bufferSpecs, testVertexBuffer);
 
 		bufferSpecs.usage = BufferUsage::IndexBuffer;
-		bufferSpecs.stride = sizeof(uint32_t);
+		bufferSpecs.stride = sizeof(uint16_t);
 		bufferSpecs.size = indices.size();
 		bufferSpecs.data = indices.data();
 		bufferSpecs.allocationUsage = MemoryUsage::CPU_To_GPU;
@@ -126,7 +127,7 @@ namespace Hydra
 
 		bufferSpecs.usage = BufferUsage::ConstantBuffer;
 		bufferSpecs.stride = sizeof(CameraData);
-		bufferSpecs.size = sizeof(CameraData) * 64;
+		bufferSpecs.size = sizeof(CameraData);
 		bufferSpecs.data = nullptr;
 		bufferSpecs.allocationUsage = MemoryUsage::CPU_To_GPU;
 
@@ -153,36 +154,45 @@ namespace Hydra
 		}
 
 		auto commandQueue = GraphicsContext::GetDevice().lock()->GetCommandQueue(QueueType::Graphics, frameIndex).lock();
-		auto commandBuffer = commandQueue->GetCommandBuffer();
+		auto commandBuffer = commandQueue->GetCommandBuffer().lock();
 
 		commandQueue->Reset();
-		commandBuffer.lock()->Begin();
+		commandBuffer->Begin();
 		static float time = 0;
-		time += 0.0003;
-		float data[4] = { (cosf(time) + 1 / 2.f),0,(sinf(time * 2) + 1 / 2.f),1};
+		time += 0.003f;
+		CameraData data = {};
+		data.proj = glm::perspective(glm::radians(90.f), 16.f/9.f, 1.f, 20000.f);
 
-		testConstantBuffer->CopyBuffer(frameIndex, &data, sizeof(data));
+		data.view = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 10));
+		data.view = glm::inverse(data.view);
+		
+
+		const auto pos = glm::translate(glm::mat4(1.0f), glm::vec3());
+		const auto rot = glm::mat4_cast(glm::tquat<float>(glm::vec3(time, time * 2, time / 2.f)));
+		const auto scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.f));
+		data.objectSpace = pos * rot * scale;
+
+		testConstantBuffer->CopyToBuffer(frameIndex, &data, sizeof(CameraData));
 
 		float clear[] = { 0.32f, 0.32f, 0.32f, 1.f };
 
-		commandBuffer.lock()->BeginFramebuffer(frameIndex, cache->framebuffer, clear);
+		commandBuffer->BeginFramebuffer(frameIndex, cache->framebuffer, clear);
 
-
-		commandBuffer.lock()->BindGraphicsPipeline(frameIndex, testPipeline);
+		commandBuffer->BindGraphicsPipeline(frameIndex, testPipeline);
 		
-		commandBuffer.lock()->BindConstantBuffer(frameIndex, 0, 0, testConstantBuffer);
+		commandBuffer->BindConstantBuffer(frameIndex, 0, 0, testConstantBuffer);
 
-		commandBuffer.lock()->BindVertexBuffer(frameIndex, testVertexBuffer);
-		commandBuffer.lock()->BindIndexBuffer(frameIndex, testIndexBuffer);
+		commandBuffer->BindVertexBuffer(frameIndex, testVertexBuffer);
+		commandBuffer->BindIndexBuffer(frameIndex, testIndexBuffer);
 
-		commandBuffer.lock()->DrawIndexedInstanced(6, 1, 0, 0, 0);
+		commandBuffer->DrawIndexedInstanced(testIndexBuffer->GetBufferSize(), 1, 0, 0, 0);
 
 
-		commandBuffer.lock()->EndFramebuffer(frameIndex, cache->framebuffer);
+		commandBuffer->EndFramebuffer(frameIndex, cache->framebuffer);
 
-		commandBuffer.lock()->CopyFramebufferToSwapchain(frameIndex, cache->framebuffer, GraphicsContext::GetSwapchain().lock());
+		commandBuffer->CopyFramebufferToSwapchain(frameIndex, cache->framebuffer, GraphicsContext::GetSwapchain().lock());
 
-		commandBuffer.lock()->End();
+		commandBuffer->End();
 
 		commandQueue->Submit(swapchain);
 

@@ -20,7 +20,7 @@ namespace Hydra
 		virtual ~Buffer(){}
 		virtual void MapMemory(void*& mappedMemory) = 0;
 		virtual void UnmapMemory() = 0;
-		virtual void CopyBuffer(int32_t frameIndex, void* data, size_t sizeOfData) = 0;
+		virtual void CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData) = 0;
 
 		[[nodiscard]] FORCEINLINE uint32_t GetBufferSize() { return static_cast<uint32_t>(m_Specs.size); }
 

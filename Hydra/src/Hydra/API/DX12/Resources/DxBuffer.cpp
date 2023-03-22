@@ -18,7 +18,7 @@ namespace Hydra
 	{
 		DxAllocator::UnMapMemory(m_Buffer[0]);
 	}
-	void DxBuffer::CopyBuffer(int32_t frameIndex, void* data, size_t sizeOfData)
+	void DxBuffer::CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData)
 	{
 		auto& currentAlloc = m_Buffer[frameIndex];
 

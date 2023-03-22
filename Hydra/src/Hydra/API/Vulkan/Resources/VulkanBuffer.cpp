@@ -17,8 +17,12 @@ namespace Hydra
 		HY_CORE_ASSERT(m_Buffer.buffer != nullptr, "The buffer needs to be allocated before you try to unmap it!");
 		VulkanAllocator::UnMapMemory(m_Buffer);
 	}
-	void VulkanBuffer::CopyBuffer(int32_t frameIndex, void* data, size_t sizeOfData)
+	void VulkanBuffer::CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData)
 	{
+		void* mappedMemory = nullptr;
+		VulkanAllocator::MapMemory(m_Buffer, mappedMemory);
+		memcpy_s(mappedMemory, sizeOfData, data, sizeOfData);
+		VulkanAllocator::UnMapMemory(m_Buffer);
 	}
 	void VulkanBuffer::Allocate()
 	{

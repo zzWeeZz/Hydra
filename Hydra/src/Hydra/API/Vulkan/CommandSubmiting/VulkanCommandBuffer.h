@@ -5,6 +5,8 @@
 #include "Hydra/API/Vulkan/Descriptors/DescriptorAllocator.h"
 namespace Hydra
 {
+	class VulkanGraphicsPipeline;
+
 	class VulkanCommandBuffer : public CommandBuffer
 	{
 	public:
@@ -34,5 +36,8 @@ namespace Hydra
 		VkCommandBuffer m_CommandBuffer;
 		DescriptorLayoutCache m_DescriptorCache;
 		DescriptorAllocator m_DescriptorAllocator;
+		Ptr<VulkanGraphicsPipeline> m_CurrentPipeline;
+
+		PFN_vkCmdPushDescriptorSetKHR vkCmdPushDescriptorSetKHR;
 	};
 }

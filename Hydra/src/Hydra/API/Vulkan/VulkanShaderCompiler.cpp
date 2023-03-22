@@ -80,7 +80,7 @@ namespace Hydra
 			break;
 		}
 
-		arguments.push_back(DXC_ARG_PACK_MATRIX_ROW_MAJOR);
+		arguments.push_back(DXC_ARG_PACK_MATRIX_COLUMN_MAJOR);
 		if (stageFlag != ShaderStageFlag::Pixel)
 		{
 			arguments.push_back(L"-fvk-invert-y");

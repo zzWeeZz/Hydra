@@ -15,8 +15,9 @@ namespace Hydra
 		VulkanGraphicsPipeline(const GraphicsPipelineSpecification& specs, Ptr<VulkanDevice> device);
 
 
-		[[nodiscard]] FORCEINLINE VkPipeline GetHandle() { return m_Pipeline; }
-		[[nodiscard]] FORCEINLINE VkPipeline GetHandle() const { return m_Pipeline; }
+		HY_GET_INLINE VkPipeline GetHandle() { return m_Pipeline; }
+		HY_GET_INLINE VkPipeline GetHandle() const { return m_Pipeline; }
+		HY_GET_INLINE VkPipelineLayout GetLayout() { return m_PipelineLayout; }
 
 	private:
 		void Validate();

@@ -34,6 +34,7 @@ project "SandBox"
         LibDir["Dx12"],
         LibDir["DXGI"],
         LibDir["SPIRVReflect"],
+        LibDir["glm"]
     }
     linkoptions 
 	{

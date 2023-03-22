@@ -36,6 +36,10 @@ namespace Hydra
 		allocInfo.level = vklevel;
 		allocInfo.commandBufferCount = 1;
 		HY_VK_CHECK(vkAllocateCommandBuffers(vulkanDevice->GetHandle(), &allocInfo, &m_CommandBuffer));
+
+		vkCmdPushDescriptorSetKHR = (PFN_vkCmdPushDescriptorSetKHR)vkGetDeviceProcAddr(vulkanDevice->GetHandle(), "vkCmdPushDescriptorSetKHR");
+		if (!vkCmdPushDescriptorSetKHR) {
+		}
 	}
 
 	void VulkanCommandBuffer::Begin()
@@ -95,6 +99,7 @@ namespace Hydra
 	void VulkanCommandBuffer::BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline)
 	{
 		auto vulkanPipeline = std::reinterpret_pointer_cast<VulkanGraphicsPipeline>(pipeline);
+		m_CurrentPipeline = vulkanPipeline;
 		vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->GetHandle());
 	}
 
@@ -116,6 +121,22 @@ namespace Hydra
 
 	void VulkanCommandBuffer::BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer)
 	{
+		auto vulkanBuffer = std::reinterpret_pointer_cast<VulkanBuffer>(buffer);
+
+		VkDescriptorBufferInfo info = {};
+		info.buffer = vulkanBuffer->GetAllocation().buffer;
+		info.offset = 0;
+		info.range = vulkanBuffer->GetAllocation().sizeOfBuffer;
+
+		VkWriteDescriptorSet set = {};
+		set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		set.dstSet = 0;
+		set.dstBinding = bindPoint;
+		set.descriptorCount = 1;
+		set.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		set.pBufferInfo = &info;
+
+		vkCmdPushDescriptorSetKHR(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_CurrentPipeline.lock()->GetLayout(), space, 1, &set);
 	}
 
 	void VulkanCommandBuffer::CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain)
