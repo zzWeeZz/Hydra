@@ -59,7 +59,9 @@ namespace Hydra
 	void VulkanCommandBuffer::BeginFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, float color[4])
 	{
 		auto vulkanFramebuffer = std::reinterpret_pointer_cast<VulkanFramebuffer>(framebuffer);
-		memcpy(vulkanFramebuffer->m_Attachments[frameIndex][0].clearValue.color.float32, color, sizeof(color));
+
+		vulkanFramebuffer->m_Attachments[frameIndex][0].clearValue = { {{color[0], color[1], color[2], color[3]}} };
+
 		const VkRenderingInfo renderInfo{
 			.sType = VK_STRUCTURE_TYPE_RENDERING_INFO,
 			.renderArea = vulkanFramebuffer->m_Rect,
