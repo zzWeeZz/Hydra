@@ -163,7 +163,7 @@ namespace Hydra
 		CameraData data = {};
 		data.proj = glm::perspective(glm::radians(90.f), 16.f/9.f, 1.f, 20000.f);
 
-		data.view = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 10));
+		data.view = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 10 + sin(time)));
 		data.view = glm::inverse(data.view);
 		
 
