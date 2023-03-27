@@ -112,10 +112,7 @@ namespace Hydra
 		{
 			ReflectInputLayout(compileResult, shader->m_VertexShaderInputElements);
 		}
-		if (stageFlag == ShaderStageFlag::Vertex)
-		{
-			ReflectRootParameters(compileResult, shader->m_ReflectedRootPrameters);
-		}
+		ReflectRootParameters(compileResult, shader->m_ReflectedRootPrameters);
 	}
 	void DxShaderCompiler::ReflectInputLayout(Microsoft::WRL::ComPtr<IDxcResult> compileResult, std::vector<D3D12_INPUT_ELEMENT_DESC>& inputLayout)
 	{

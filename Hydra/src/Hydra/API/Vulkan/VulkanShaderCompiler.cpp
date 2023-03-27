@@ -144,9 +144,18 @@ namespace Hydra
 		}
 		}
 
-		uint32_t spvBindingCount = 0;
+		uint32_t var_count = 0;
+		spvReflectEnumerateInputVariables(&spvModule, &var_count, NULL);
+		std::vector<SpvReflectInterfaceVariable*> inputVars(var_count);
+		spvReflectEnumerateInputVariables(&spvModule, &var_count, inputVars.data());
 
+		uint32_t spvBindingCount = 0;
 		spvReflectEnumerateDescriptorBindings(&spvModule, &spvBindingCount, nullptr);
+
+		for (auto& inputVar : inputVars)
+		{
+			
+		}
 
 		std::vector<SpvReflectDescriptorBinding*> spvBindings(spvBindingCount);
 		spvReflectEnumerateDescriptorBindings(&spvModule, &spvBindingCount, spvBindings.data());
