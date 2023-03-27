@@ -37,7 +37,7 @@ namespace Hydra
 	{
 		if (width == 0 || height == 0)
 		{
-			HY_CORE_ASSERT(false, "resize failed, width or height were 0!");
+			return;
 		}
 		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Device.lock());
 		vulkanDevice->WaitForIdle();
