@@ -202,7 +202,7 @@ namespace Hydra
 			glfwGetFramebufferSize(&glfwWindow, &width, &height);
 			if (width == 0 || height == 0)
 			{
-				m_CurrentImage = imageIndex;
+				m_CurrentImage = -1;
 				return;
 			}
 			InternalResize();
