@@ -26,6 +26,7 @@ namespace Hydra
 		void BindVertexBuffer(uint32_t frameindex, Ref<Buffer>& buffer) override;
 		void BindIndexBuffer(uint32_t frameindex, Ref<Buffer>& buffer) override;
 		void BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer, size_t offsetIndex = 0) override;
+		void BindImage(uint32_t frameIndex, uint32_t bindPoint, uint32_t space, Ref<Image>& image) override;
 
 		void CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain) override;
 

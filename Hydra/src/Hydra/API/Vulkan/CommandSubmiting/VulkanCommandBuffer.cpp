@@ -7,6 +7,7 @@
 #include <Hydra/API/Vulkan/Pipeline/VulkanGraphicsPipeline.h>
 #include "Hydra/API/Vulkan/VulkanUtils.h"
 #include "Hydra/API/Vulkan/Resources/VulkanBuffer.h"
+#include <Hydra/API/Vulkan/Resources/VulkanImage.h>
 namespace Hydra
 {
 	VulkanCommandBuffer::VulkanCommandBuffer(CommandBufferSpecification& specs) : CommandBuffer(specs)
@@ -135,6 +136,25 @@ namespace Hydra
 		set.descriptorCount = 1;
 		set.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		set.pBufferInfo = &info;
+
+		vkCmdPushDescriptorSetKHR(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_CurrentPipeline.lock()->GetLayout(), space, 1, &set);
+	}
+
+	void VulkanCommandBuffer::BindImage(uint32_t frameIndex, uint32_t bindPoint, uint32_t space, Ref<Image>& image)
+	{
+		auto vulkanImage = std::reinterpret_pointer_cast<VulkanImage>(image);
+		VkDescriptorImageInfo info = {};
+		info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		info.imageView = vulkanImage->GetView();
+		info.sampler = nullptr;
+
+		VkWriteDescriptorSet set = {};
+		set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		set.dstSet = 0;
+		set.dstBinding = bindPoint;
+		set.descriptorCount = 1;
+		set.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+		set.pImageInfo = &info;
 
 		vkCmdPushDescriptorSetKHR(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_CurrentPipeline.lock()->GetLayout(), space, 1, &set);
 	}

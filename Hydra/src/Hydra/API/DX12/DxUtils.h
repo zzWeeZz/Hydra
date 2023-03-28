@@ -49,8 +49,92 @@ HRESULT hr__ = (x); \
 std::string str = __FILE__; \
 std::wstring wfn(str.begin(), str.end()); \
 if(FAILED(hr__)) {  DxException ex(hr__, L#x, wfn,__LINE__); HY_CORE_ERROR("{}", ex.ToString()); } } \
-
-
+//
+//inline void MemcpySubresource(
+//	_In_ const D3D12_MEMCPY_DEST* pDest,
+//	_In_ const D3D12_SUBRESOURCE_DATA* pSrc,
+//	SIZE_T RowSizeInBytes,
+//	UINT NumRows,
+//	UINT NumSlices)
+//{
+//	for (UINT z = 0; z < NumSlices; ++z)
+//	{
+//		BYTE* pDestSlice = reinterpret_cast<BYTE*>(pDest->pData) + pDest->SlicePitch * z;
+//		const BYTE* pSrcSlice = reinterpret_cast<const BYTE*>(pSrc->pData) + pSrc->SlicePitch * z;
+//		for (UINT y = 0; y < NumRows; ++y)
+//		{
+//			memcpy(pDestSlice + pDest->RowPitch * y,
+//				pSrcSlice + pSrc->RowPitch * y,
+//				RowSizeInBytes);
+//		}
+//	}
+//}
+//
+//inline UINT64 UpdateSubresources(
+//	_In_ ID3D12GraphicsCommandList* pCmdList,
+//	_In_ ID3D12Resource* pDestinationResource,
+//	_In_ ID3D12Resource* pIntermediate,
+//	_In_range_(0, D3D12_REQ_SUBRESOURCES) UINT FirstSubresource,
+//	_In_range_(0, D3D12_REQ_SUBRESOURCES - FirstSubresource) UINT NumSubresources,
+//	UINT64 RequiredSize,
+//	_In_reads_(NumSubresources) const D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts,
+//	_In_reads_(NumSubresources) const UINT* pNumRows,
+//	_In_reads_(NumSubresources) const UINT64* pRowSizesInBytes,
+//	_In_reads_(NumSubresources) const D3D12_SUBRESOURCE_DATA* pSrcData)
+//{
+//	// Minor validation
+//	D3D12_RESOURCE_DESC IntermediateDesc = pIntermediate->GetDesc();
+//	D3D12_RESOURCE_DESC DestinationDesc = pDestinationResource->GetDesc();
+//	if (IntermediateDesc.Dimension != D3D12_RESOURCE_DIMENSION_BUFFER ||
+//		IntermediateDesc.Width < RequiredSize + pLayouts[0].Offset ||
+//		RequiredSize >(SIZE_T) - 1 ||
+//		(DestinationDesc.Dimension == D3D12_RESOURCE_DIMENSION_BUFFER &&
+//			(FirstSubresource != 0 || NumSubresources != 1)))
+//	{
+//		return 0;
+//	}
+//
+//	BYTE* pData;
+//	
+//	HRESULT hr = pIntermediate->Map(0, nullptr, reinterpret_cast<void**>(&pData));
+//	if (FAILED(hr))
+//	{
+//		return 0;
+//	}
+//
+//	for (UINT i = 0; i < NumSubresources; ++i)
+//	{
+//		if (pRowSizesInBytes[i] > (SIZE_T)-1) return 0;
+//		D3D12_MEMCPY_DEST DestData = { pData + pLayouts[i].Offset, pLayouts[i].Footprint.RowPitch, pLayouts[i].Footprint.RowPitch * pNumRows[i] };
+//		MemcpySubresource(&DestData, &pSrcData[i], (SIZE_T)pRowSizesInBytes[i], pNumRows[i], pLayouts[i].Footprint.Depth);
+//	}
+//	pIntermediate->Unmap(0, NULL);
+//
+//	if (DestinationDesc.Dimension == D3D12_RESOURCE_DIMENSION_BUFFER)
+//	{
+//		D3D12_BOX SrcBox = {
+//			UINT(pLayouts[0].Offset), 0, 0,
+//			UINT(pLayouts[0].Offset + pLayouts[0].Footprint.Width), 0, 0 };
+//		pCmdList->CopyBufferRegion(
+//			pDestinationResource, 0, pIntermediate, pLayouts[0].Offset, pLayouts[0].Footprint.Width);
+//	}
+//	else
+//	{
+//		for (UINT i = 0; i < NumSubresources; ++i)
+//		{
+//			D3D12_TEXTURE_COPY_LOCATION Dst = {};
+//			Dst.pResource = pDestinationResource;
+//			Dst.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+//			Dst.SubresourceIndex = i + FirstSubresource;
+//			D3D12_TEXTURE_COPY_LOCATION Src = {};
+//			Src.pResource = pIntermediate;
+//			Src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+//			Src.PlacedFootprint = pLayouts[i];
+//			pCmdList->CopyTextureRegion(&Dst, 0, 0, 0, &Src, nullptr);
+//		}
+//	}
+//	return RequiredSize;
+//}
 namespace Hydra
 {
 	inline DXGI_FORMAT GetDxFormat(ImageFormat format)

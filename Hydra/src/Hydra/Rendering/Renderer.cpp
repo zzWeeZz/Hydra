@@ -42,6 +42,7 @@ namespace Hydra
 	{
 		glm::vec4 position;
 		glm::vec4 color = glm::vec4(1.f);
+		glm::vec2 uv = glm::vec2(0.f);
 	};
 
 	struct CameraData
@@ -103,14 +104,14 @@ namespace Hydra
 		
 		
 		std::vector<Vertex> vertices = {
-		{glm::vec4(-1.0f, -1.0f,  1.0f, 1.0f)}, // Front Bottom Left
-		{glm::vec4(1.0f, -1.0f,  1.0f, 1.0f)}, // Front Bottom Right
-		{glm::vec4(1.0f,  1.0f,  1.0f, 1.0f)}, // Front Top Right
-		{glm::vec4(-1.0f,  1.0f,  1.0f, 1.0f)}, // Front Top Left
-		{glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f)}, // Back Bottom Left
-		{glm::vec4(1.0f, -1.0f, -1.0f, 1.0f)}, // Back Bottom Right
-		{glm::vec4(1.0f,  1.0f, -1.0f, 1.0f)}, // Back Top Right
-		{glm::vec4(-1.0f,  1.0f, -1.0f, 1.0f)}  // Back Top Left
+	{glm::vec4(-1.0f, -1.0f,  1.0f, 1.0f), glm::vec4(1.f, 0.f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, // Front Bottom Left
+	{glm::vec4(1.0f, -1.0f,  1.0f, 1.0f), glm::vec4(0.f, 1.f, 0.f, 1.f), glm::vec2(1.f, 0.f)}, // Front Bottom Right
+	{glm::vec4(1.0f,  1.0f,  1.0f, 1.0f), glm::vec4(0.f, 0.f, 1.f, 1.f), glm::vec2(1.f, 1.f)}, // Front Top Right
+	{glm::vec4(-1.0f,  1.0f,  1.0f, 1.0f), glm::vec4(1.f, 1.f, 1.f, 1.f), glm::vec2(0.f, 1.f)}, // Front Top Left
+	{glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f), glm::vec4(1.f, 1.f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, // Back Bottom Left
+	{glm::vec4(1.0f, -1.0f, -1.0f, 1.0f), glm::vec4(0.f, 1.f, 1.f, 1.f), glm::vec2(1.f, 0.f)}, // Back Bottom Right
+	{glm::vec4(1.0f,  1.0f, -1.0f, 1.0f), glm::vec4(1.f, 0.f, 1.f, 1.f), glm::vec2(1.f, 1.f)}, // Back Top Right
+	{glm::vec4(-1.0f,  1.0f, -1.0f, 1.0f), glm::vec4(0.f, 0.f, 0.f, 1.f), glm::vec2(0.f, 1.f)}  // Back Top Left
 		};
 
 		
@@ -195,16 +196,15 @@ namespace Hydra
 
 		commandBuffer->BeginFramebuffer(frameIndex, cache->framebuffer, clear);
 
-		//commandBuffer->BindGraphicsPipeline(frameIndex, testPipeline);
-		//
-		//commandBuffer->BindConstantBuffer(frameIndex, 0, 0, testConstantBuffer, 0);
+		commandBuffer->BindGraphicsPipeline(frameIndex, testPipeline);
+		
+		commandBuffer->BindConstantBuffer(frameIndex, 0, 0, testConstantBuffer, 0);
 
-		//commandBuffer->BindVertexBuffer(frameIndex, testVertexBuffer);
+		commandBuffer->BindVertexBuffer(frameIndex, testVertexBuffer);
 
-		//commandBuffer->BindIndexBuffer(frameIndex, testIndexBuffer);
+		commandBuffer->BindIndexBuffer(frameIndex, testIndexBuffer);
 
-		//commandBuffer->DrawIndexedInstanced(testIndexBuffer->GetBufferSize(), 1, 0, 0, 0);
-
+		commandBuffer->DrawIndexedInstanced(testIndexBuffer->GetBufferSize(), 1, 0, 0, 0);
 
 		commandBuffer->BindGraphicsPipeline(frameIndex, testPipeline2);
 
@@ -217,7 +217,7 @@ namespace Hydra
 
 		commandBuffer->BindConstantBuffer(frameIndex, 0, 0, testConstantBuffer, 1);
 
-		commandBuffer->BindImage(frameIndex, 0, 0, testImage);
+		commandBuffer->BindImage(frameIndex, 1, 0, testImage);
 
 		commandBuffer->BindVertexBuffer(frameIndex, testVertexBuffer);
 

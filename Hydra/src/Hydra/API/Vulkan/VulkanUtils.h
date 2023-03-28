@@ -242,6 +242,23 @@ namespace Hydra
 	}
 
 #pragma endregion
+#pragma region Samplers
+
+	
+	inline VkSamplerMipmapMode FormatToVkFormat(const VulkanMipmapMode& address)
+	{
+		return static_cast<VkSamplerMipmapMode>(address);
+	}
+	inline VkFilter FormatToVkFormat(const VulkanFilter& address)
+	{
+		return static_cast<VkFilter>(address);
+	}
+	inline VkSamplerAddressMode FormatToVkFormat(const VulkanAddress& address)
+	{
+		return static_cast<VkSamplerAddressMode>(address);
+	}
+
+#pragma endregion
 #pragma region TransferUtils
 	inline void AccessMasksFromLayouts(VkImageLayout sourceLayout, VkImageLayout targetLayout, VkImageMemoryBarrier& outBarrier)
 	{

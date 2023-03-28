@@ -154,24 +154,10 @@ namespace Hydra
 		layouts.reserve(spvBindingCount);
 		for (uint32_t layoutBindingIndex = 0; layoutBindingIndex < spvBindingCount; ++layoutBindingIndex)
 		{
-			VkDescriptorType descType{};
-			switch (spvBindings[layoutBindingIndex]->descriptor_type)
+			VkDescriptorType descType = static_cast<VkDescriptorType>(spvBindings[layoutBindingIndex]->descriptor_type);
+			if (descType == VK_DESCRIPTOR_TYPE_SAMPLER)
 			{
-			case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER:
-				descType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-				break;
-			case SPV_REFLECT_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
-				descType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-				break;
-
-			case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE:
-				descType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-				break;
-			case SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
-				descType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-				break;
-			default:
-				break;
+				continue;
 			}
 			VkDescriptorSetLayoutBinding descriptorSetLayoutBinding{};
 			descriptorSetLayoutBinding.binding = spvBindings[layoutBindingIndex]->binding;

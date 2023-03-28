@@ -43,12 +43,12 @@ namespace Hydra
 
 #pragma region Samplers
 
-	enum class Filter
+	enum class VulkanFilter
 	{
 		Nearest = 0,
 		Linear = 1,
 	};
-	enum class Address
+	enum class VulkanAddress
 	{
 		Repeat = 0,
 		MirroredRepeat = 1,
@@ -56,7 +56,7 @@ namespace Hydra
 		ClampToBorder = 3,
 		MirrorClampToEdge = 4,
 	};
-	enum class MipmapMode
+	enum class VulkanMipmapMode
 	{
 		Nearest = 0,
 		Linear = 1,

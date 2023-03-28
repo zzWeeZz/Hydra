@@ -68,10 +68,10 @@ namespace Hydra
 
 		const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME, "VK_KHR_push_descriptor"};
 		bool extensionsSupported = CheckDeviceExtensionSupport(physicalDevice, deviceExtensions);
-	/*	if (!(indices.HasValue() && extensionsSupported && GraphicsContext::SwapchainAdequate()))
+		if (!(extensionsSupported))
 		{
-			TN_CORE_ASSERT(false, "Device does not support a vulkan swapchain!");
-		}*/
+			HY_CORE_ASSERT(false, "Device does not support a vulkan swapchain!");
+		}
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
@@ -102,6 +102,13 @@ namespace Hydra
 		}
 
 		CreateCommandPools(physicalDevice);
+		m_SamplerLib.Initalize(std::reinterpret_pointer_cast<VulkanDevice>(shared_from_this()));
+		m_SamplerLib.Add("0", VulkanFilter::Nearest, VulkanAddress::Repeat, VulkanMipmapMode::Nearest, false);
+		m_SamplerLib.Add("1", VulkanFilter::Nearest, VulkanAddress::ClampToEdge, VulkanMipmapMode::Nearest, false);
+		m_SamplerLib.Add("2", VulkanFilter::Linear, VulkanAddress::Repeat, VulkanMipmapMode::Linear, false);
+		m_SamplerLib.Add("3", VulkanFilter::Linear, VulkanAddress::ClampToEdge, VulkanMipmapMode::Linear, false);
+		//m_SamplerLib.Add("4", VulkanFilter::Nearest, VulkanAddress::Repeat, VulkanMipmapMode::Nearest, true);
+		//m_SamplerLib.Add("5", VulkanFilter::Nearest, VulkanAddress::ClampToEdge, VulkanMipmapMode::Nearest, true);
 	}
 
 	void VulkanDevice::CreateFramebuffer(FramebufferSpecification& frameBufferSpecs, Ref<Framebuffer>& framebuffer)

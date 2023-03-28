@@ -7,6 +7,7 @@
 #include <Hydra/API/Vulkan/VulkanAllocator.h>
 #include "Hydra/API/Vulkan/VulkanUtils.h"
 #include <Hydra/API/Vulkan/VulkanDeviceQueue.h>
+#include <Hydra/API/Vulkan/SamplerLibrary/SamplerLibrary.h>
 namespace Hydra
 {
 	class VulkanDevice : public Device
@@ -37,7 +38,7 @@ namespace Hydra
 		bool CheckDeviceExtensionSupport(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> deviceExtensions);
 
 		VkDevice m_Device;
-
+		SamplerLibrary m_SamplerLib;
 		// Inherited via Device
 	};
 }

@@ -27,6 +27,8 @@ namespace Hydra
 
 		void CreateCommandLists(Ptr<DxPhysicalDevice> physicalDevice);
 		
+		void ImmediateSubmit(std::function<void(ID3D12GraphicsCommandList* cmd)>&& func);
+
 		void UpdateValidationLayer();
 
 	private:

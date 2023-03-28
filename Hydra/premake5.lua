@@ -20,7 +20,8 @@ project "Hydra"
         FileDir["VMA_H"],
         FileDir["DMA_H"],
         FileDir["DMA_CPP"],
-        FileDir["STB_IMAGE"]
+        FileDir["STB_IMAGE"],
+        FileDir["TINYGLTF"]
     }
     
     includedirs

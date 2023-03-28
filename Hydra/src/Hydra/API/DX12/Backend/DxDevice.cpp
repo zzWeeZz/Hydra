@@ -108,6 +108,21 @@ namespace Hydra
 			}
 		}
 	}
+	void DxDevice::ImmediateSubmit(std::function<void(ID3D12GraphicsCommandList* cmd)>&& func)
+	{
+		auto dxCommandQueue = std::reinterpret_pointer_cast<DxCommandQueue>(m_CommandQueues[QueueType::Graphics][0]);
+		auto dxDeviceQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(m_DeviceQueues[QueueType::Graphics]);
+		auto dxCommandBuffer = std::reinterpret_pointer_cast<DxCommandBuffer>(m_CommandQueues[QueueType::Graphics][0]->GetCommandBuffer().lock());
+
+
+		dxCommandQueue->Reset();
+		dxCommandBuffer->Begin();
+		func(dxCommandBuffer->Get());
+		dxCommandBuffer->End();
+		ID3D12CommandList* ppCommandList[] = { dxCommandBuffer->Get() };
+		dxDeviceQueue->Get()->ExecuteCommandLists(1, ppCommandList);
+
+	}
 	void DxDevice::UpdateValidationLayer()
 	{
 		if (!m_InfoQueue) return;

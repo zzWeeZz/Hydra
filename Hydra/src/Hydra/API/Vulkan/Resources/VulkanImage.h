@@ -15,6 +15,8 @@ namespace Hydra
 		[[nodiscard]] FORCEINLINE AllocatedImage GetAllocatedImage() { return m_Image; }
 		[[nodiscard]] FORCEINLINE AllocatedImage GetAllocatedImage() const { return m_Image; }
 
+		[[nodiscard]] FORCEINLINE VkImageView GetView() { return m_View; }
+
 	private:
 		void Validate();
 		AllocatedImage m_Image;
