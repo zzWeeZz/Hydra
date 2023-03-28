@@ -132,25 +132,12 @@ namespace Hydra
 		bindingDescription.stride = m_Specs.bindingDescription.stride;
 		bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-		std::vector<VkVertexInputAttributeDescription> vkBindingDesc(m_Specs.vertexBindingAttributes.size());
-
-		for (size_t i = 0; auto& binding : vkBindingDesc)
-		{
-			auto& specbinding = m_Specs.vertexBindingAttributes[i];
-			binding.binding = specbinding.binding;
-			binding.location = specbinding.location;
-			binding.offset = specbinding.offset;
-			binding.format = GetVkFormat(specbinding.format);
-			i++;
-		}
-
-
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexBindingDescriptionCount = 1;
 		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription; // Optional
-		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(vkBindingDesc.size());
-		vertexInputInfo.pVertexAttributeDescriptions = vkBindingDesc.data(); // Optional
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(vulkanShader->m_VertexInputAttributes.size());
+		vertexInputInfo.pVertexAttributeDescriptions = vulkanShader->m_VertexInputAttributes.data(); // Optional
 
 
 		std::vector<VkDescriptorSetLayout> descriptorlayouts;

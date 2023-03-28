@@ -20,14 +20,14 @@ namespace Hydra
 		s_ID = 14124;
 	}
 
-	void DxAllocator::Allocate(AllocatedImage& image, D3D12_RESOURCE_DESC& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc, D3D12_CLEAR_VALUE* clearValue)
+	void DxAllocator::Allocate(AllocatedImage& image, D3D12_RESOURCE_DESC& resourceDesc, D3D12MA::ALLOCATION_DESC& allocationDesc, D3D12_RESOURCE_STATES intialState)
 	{
 		HY_DX_CHECK(
 			s_Allcator->CreateResource(
 				&allocationDesc,
 				&resourceDesc,
-				D3D12_RESOURCE_STATE_RENDER_TARGET,
-				clearValue,
+				intialState,
+				nullptr,
 				&image.allocation,
 				IID_PPV_ARGS(&image.texture)));
 		image.id = s_ID++;

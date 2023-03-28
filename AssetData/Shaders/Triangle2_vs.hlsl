@@ -9,6 +9,7 @@ struct VertexOut
 struct VertexIn
 {
     float4 Position : POSTION;
+    float4 Color : COLOR;
 };
 
 struct CameraData
@@ -16,9 +17,9 @@ struct CameraData
     float4x4 view;
     float4x4 proj;
     float4x4 modelSpaco;
-    float4x4 GetModel()
+    float4x4 GetMVP()
     {
-        return modelSpaco;
+        return mul(proj, mul(view, modelSpaco));
     }
 };
 
@@ -28,20 +29,8 @@ VertexOut main(VertexIn inVertex, uint vertexID : SV_VertexID)
 {
     VertexOut outer = (VertexOut) 0;
   
-    float4 colours[8] =
-    {
-        float4(1.0f, 0.0f, 0.0f, 1.0f),
-        float4(0.0f, 1.0f, 0.0f, 1.0f),
-        float4(0.0f, 0.0f, 1.0f, 1.0f),
-        float4(1.0f, 0.0f, 1.0f, 1.0f),
-        float4(1.0f, 1.0f, 1.0f, 1.0f),
-        float4(1.0f, 0.0f, 0.0f, 1.0f),
-        float4(0.0f, 1.0f, 0.0f, 1.0f),
-        float4(0.0f, 0.0f, 1.0f, 1.0f),
-    };
-    float4x4 mvp = mul(u_CamData.proj, mul(u_CamData.view, u_CamData.GetModel()));
-    outer.position = mul(mvp, inVertex.Position);
-    outer.color = colours[vertexID];
+    outer.position = mul(u_CamData.GetMVP(), inVertex.Position);
+    outer.color = inVertex.Color;
     
     return outer;
 }

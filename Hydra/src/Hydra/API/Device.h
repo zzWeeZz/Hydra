@@ -20,6 +20,10 @@ namespace Hydra
 	struct BufferCreateSpecification;
 	class Buffer;
 
+	// Image Forward.
+	struct ImageSpecification;
+	class Image;
+
 	class Device : public std::enable_shared_from_this<Device>
 	{
 	public:
@@ -32,6 +36,8 @@ namespace Hydra
 		virtual void CreateGraphicsPipeline(GraphicsPipelineSpecification& pipelineSpecs, Ref<GraphicsPipeline>& graphicsPipeline){}
 
 		virtual void CreateBuffer(BufferCreateSpecification& bufferSpecs, Ref<Buffer>& buffer){}
+
+		virtual void CreateImage(ImageSpecification& imageSpecs, Ref<Image>& image){}
 
 	 	[[nodiscard]] FORCEINLINE Ptr<DeviceQueue> GetQueue(QueueType type) { return m_DeviceQueues[type]; }
 		[[nodiscard]] FORCEINLINE Ptr<CommandQueue> GetCommandQueue(QueueType queueType, uint32_t frameIndex) { return m_CommandQueues[queueType][frameIndex]; } // TODO_Niklas: Fix Indexing for perframe in flight.

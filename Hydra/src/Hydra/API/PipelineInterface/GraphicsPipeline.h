@@ -28,8 +28,6 @@ namespace Hydra
 		// Framebuffer to draw on.
 		Ptr<Framebuffer> framebufferObject;
 
-		// This is the bind map. here you give the pipeline the vertex attrebutes.
-		std::vector<BindAttribute> vertexBindingAttributes;
 
 		VertexBindingDescription bindingDescription;
 

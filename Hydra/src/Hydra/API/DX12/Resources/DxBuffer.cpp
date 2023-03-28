@@ -18,16 +18,16 @@ namespace Hydra
 	{
 		DxAllocator::UnMapMemory(m_Buffer[0]);
 	}
-	void DxBuffer::CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData)
+	void DxBuffer::CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData, size_t offsetIndex)
 	{
 		auto& currentAlloc = m_Buffer[frameIndex];
 
 		CD3DX12_RANGE readRange(0, 0);    // We do not intend to read from this resource on the CPU. (End is less than or equal to begin)
 		size_t cBufferOffset = (sizeOfData + 255) & ~255;
 
-		void* mappedMemory = nullptr;
-		DxAllocator::MapMemory(m_Buffer[frameIndex], mappedMemory);
-		memcpy(mappedMemory, data, sizeOfData);
+		uint8_t* mappedMemory = nullptr;
+		DxAllocator::MapMemory(m_Buffer[frameIndex], reinterpret_cast<void*&>(mappedMemory));
+		memcpy_s(mappedMemory + offsetIndex * cBufferOffset, sizeOfData, data, sizeOfData);
 		DxAllocator::UnMapMemory(m_Buffer[frameIndex]);
 	}
 	D3D12_RESOURCE_STATES DxBuffer::GetStateFromUsage(BufferUsage usage)
@@ -72,7 +72,7 @@ namespace Hydra
 	}
 	void DxBuffer::CreateTypeVertexBufferIndexBuffer()
 	{
-		const size_t sizeOfBuffer = m_Specs.size * m_Specs.stride;
+		const size_t sizeOfBuffer = m_Specs.count * m_Specs.stride;
 		D3D12_RESOURCE_DESC desc = {
 			.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER,
 			.Width = sizeOfBuffer,
@@ -112,7 +112,7 @@ namespace Hydra
 	}
 	void DxBuffer::CreateConstantBuffer()
 	{
-		const size_t sizeOfBuffer = m_Specs.size * m_Specs.stride;
+		const size_t sizeOfBuffer = m_Specs.count * m_Specs.stride;
 		m_StrideInBytes = static_cast<UINT>(m_Specs.stride);
 
 		D3D12_RESOURCE_DESC desc = {

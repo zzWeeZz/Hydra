@@ -5,6 +5,7 @@ FileDir["VMA_H"] = "%{wks.location}/Hydra/vendor/vma/vk_mem_alloc.h"
 FileDir["VMA_CPP"] = "%{wks.location}/Hydra/vendor/vma/vk_mem_alloc.cpp"
 FileDir["DMA_H"] = "%{wks.location}/Hydra/vendor/dma/D3D12MemAlloc.h"
 FileDir["DMA_CPP"] = "%{wks.location}/Hydra/vendor/dma/D3D12MemAlloc.cpp"
+FileDir["STB_IMAGE"] = "%{wks.location}/Hydra/vendor/stb_image/stb_image.h"
 
 IncludeDir = {};
 

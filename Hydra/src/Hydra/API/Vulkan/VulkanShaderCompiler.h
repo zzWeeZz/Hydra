@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <vector>
 #include "vulkan/vulkan.h"
+#include <SPIRV-Reflect/spirv_reflect.h>
+
 namespace Hydra
 {
 	class VulkanShader;
@@ -15,6 +17,10 @@ namespace Hydra
 	private:
 
 		void CompileStage(const std::filesystem::path& shaderPath, ShaderStageFlag stageFlag, Ref<VulkanShader>& shader);
-		void Reflect(std::vector<uint32_t> spirv, std::unordered_map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>>& layouts);
+		void Reflect(std::vector<uint32_t> spirv, std::unordered_map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>>& layouts, Ref<VulkanShader>& shader);
+
+		void ReflectVertexAttributes(SpvReflectShaderModule& spvModule, Ref<Hydra::VulkanShader>& shader);
+
+		VkFormat GetVkFormatFromReflectFormat(SpvReflectFormat& reflect);
 	};
 }

@@ -19,7 +19,8 @@ project "Hydra"
         "vendor/dx12Helpers/**.cpp",
         FileDir["VMA_H"],
         FileDir["DMA_H"],
-        FileDir["DMA_CPP"]
+        FileDir["DMA_CPP"],
+        FileDir["STB_IMAGE"]
     }
     
     includedirs

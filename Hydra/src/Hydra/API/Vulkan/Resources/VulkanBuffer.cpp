@@ -17,16 +17,16 @@ namespace Hydra
 		HY_CORE_ASSERT(m_Buffer.buffer != nullptr, "The buffer needs to be allocated before you try to unmap it!");
 		VulkanAllocator::UnMapMemory(m_Buffer);
 	}
-	void VulkanBuffer::CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData)
+	void VulkanBuffer::CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData, size_t offsetIndex)
 	{
-		void* mappedMemory = nullptr;
-		VulkanAllocator::MapMemory(m_Buffer, mappedMemory);
-		memcpy_s(mappedMemory, sizeOfData, data, sizeOfData);
+		uint8_t* mappedMemory = nullptr;
+		VulkanAllocator::MapMemory(m_Buffer, reinterpret_cast<void*&>(mappedMemory));
+		memcpy_s(mappedMemory + offsetIndex * m_Specs.stride, sizeOfData, data, sizeOfData);
 		VulkanAllocator::UnMapMemory(m_Buffer);
 	}
 	void VulkanBuffer::Allocate()
 	{
-		const size_t bufferSize = m_Specs.size * m_Specs.stride;
+		const size_t bufferSize = m_Specs.count * m_Specs.stride;
 
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;

@@ -215,24 +215,20 @@ namespace Hydra
 				range.ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_VERTEX;
 			}
 
-			/*else if (inputBinDesc.Type == D3D10_SIT_TEXTURE)
+			else if (inputBinDesc.Type == D3D10_SIT_TEXTURE )
 			{
-				D3D12_DESCRIPTOR_RANGE range{};
-				range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-				range.RegisterSpace = inputBinDesc.Space;
-				range.NumDescriptors = 0;
-				range.BaseShaderRegister = inputBinDesc.BindPoint;
-				range.OffsetInDescriptorsFromTableStart = D3D12_APPEND_ALIGNED_ELEMENT;
-
-				D3D12_ROOT_DESCRIPTOR_TABLE table{};
-				table.NumDescriptorRanges = 1;
-				table.pDescriptorRanges = &range;
-
-				auto& param = outRootPrameters.emplace_back();
-				param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-				param.DescriptorTable = table;
-				param.ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_VERTEX;
-			}*/
+				auto& range = outRootPrameters.emplace_back();
+				range.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+				range.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+				D3D12_DESCRIPTOR_RANGE* tableRange = new D3D12_DESCRIPTOR_RANGE();
+				tableRange->RangeType = inputBinDesc.Type == D3D10_SIT_TEXTURE ? D3D12_DESCRIPTOR_RANGE_TYPE_SRV : D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
+				tableRange->NumDescriptors = inputBinDesc.BindCount;
+				tableRange->BaseShaderRegister = inputBinDesc.BindPoint;
+				tableRange->RegisterSpace = inputBinDesc.Space;
+				tableRange->OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+				range.DescriptorTable.pDescriptorRanges = tableRange;
+				range.DescriptorTable.NumDescriptorRanges = 1;
+			}
 		}
 	}
 }

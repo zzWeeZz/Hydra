@@ -2,7 +2,7 @@
 #include "VulkanShaderCompiler.h"
 #include <Hydra/API/Vulkan/Resources/VulkanShader.h>
 #include <fstream>
-#include <SPIRV-Reflect/spirv_reflect.h>
+#include <Hydra/API/Vulkan/VulkanUtils.h>
 
 namespace Hydra
 {
@@ -111,11 +111,11 @@ namespace Hydra
 		shader->m_SpirvMap[stageFlag].resize(blob->GetBufferSize());
 		memcpy(shader->m_SpirvMap[stageFlag].data(), blob->GetBufferPointer(), blob->GetBufferSize());
 
-		Reflect(shader->m_SpirvMap[stageFlag], shader->m_Layouts);
+		Reflect(shader->m_SpirvMap[stageFlag], shader->m_Layouts, shader);
 	}
 
 
-	void VulkanShaderCompiler::Reflect(std::vector<uint32_t> spirv, std::unordered_map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>>& layouts)
+	void VulkanShaderCompiler::Reflect(std::vector<uint32_t> spirv, std::unordered_map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>>& layouts, Ref<VulkanShader>& shader)
 	{
 		SpvReflectShaderModule spvModule;
 		auto reflectResult = spvReflectCreateShaderModule(spirv.size(), reinterpret_cast<void*>(spirv.data()), &spvModule);
@@ -129,14 +129,15 @@ namespace Hydra
 			stage = VK_SHADER_STAGE_COMPUTE_BIT;
 			break;
 		}
-		
+
 		case SPV_REFLECT_SHADER_STAGE_VERTEX_BIT:
 		{
 			stage = VK_SHADER_STAGE_VERTEX_BIT;
+			ReflectVertexAttributes(spvModule, shader);
 			break;
 		}
 
-	
+
 		case SPV_REFLECT_SHADER_STAGE_FRAGMENT_BIT:
 		{
 			stage = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -144,19 +145,9 @@ namespace Hydra
 		}
 		}
 
-		uint32_t var_count = 0;
-		spvReflectEnumerateInputVariables(&spvModule, &var_count, NULL);
-		std::vector<SpvReflectInterfaceVariable*> inputVars(var_count);
-		spvReflectEnumerateInputVariables(&spvModule, &var_count, inputVars.data());
 
 		uint32_t spvBindingCount = 0;
 		spvReflectEnumerateDescriptorBindings(&spvModule, &spvBindingCount, nullptr);
-
-		for (auto& inputVar : inputVars)
-		{
-			
-		}
-
 		std::vector<SpvReflectDescriptorBinding*> spvBindings(spvBindingCount);
 		spvReflectEnumerateDescriptorBindings(&spvModule, &spvBindingCount, spvBindings.data());
 
@@ -192,5 +183,36 @@ namespace Hydra
 			layouts[spvBindings[layoutBindingIndex]->set].push_back(descriptorSetLayoutBinding);
 		}
 		spvReflectDestroyShaderModule(&spvModule);
+	}
+
+	void VulkanShaderCompiler::ReflectVertexAttributes(SpvReflectShaderModule& spvModule, Ref<Hydra::VulkanShader>& shader)
+	{
+		uint32_t var_count = 0;
+		spvReflectEnumerateInputVariables(&spvModule, &var_count, NULL);
+		std::vector<SpvReflectInterfaceVariable*> inputVars(var_count);
+		spvReflectEnumerateInputVariables(&spvModule, &var_count, inputVars.data());
+
+		for (size_t i = 0, offset = 0; auto & inputVar : inputVars)
+		{
+			if (inputVar->built_in < 0)
+			{
+				auto& shaderInputAttribute = shader->m_VertexInputAttributes.emplace_back();
+				shaderInputAttribute.location = inputVar->location;
+				shaderInputAttribute.format = GetVkFormatFromReflectFormat(inputVar->format);
+				shaderInputAttribute.binding = 0;
+				shaderInputAttribute.offset = static_cast<uint32_t>(offset);
+
+				offset += (GetSizeOfFormat(shaderInputAttribute.format));
+				i++;
+			}
+		}
+	}
+
+	VkFormat VulkanShaderCompiler::GetVkFormatFromReflectFormat(SpvReflectFormat& reflect)
+	{
+		VkFormat outFormat = static_cast<VkFormat>(reflect);
+
+
+		return outFormat;
 	}
 }

@@ -197,6 +197,7 @@ namespace Hydra
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || m_NeedToResize)
 		{
 			m_NeedToResize = false;
+
 			int32_t width, height;
 			auto& glfwWindow = *static_cast<GLFWwindow*>(Application::GetWindow().GetNativeWindow());
 			glfwGetFramebufferSize(&glfwWindow, &width, &height);
@@ -205,6 +206,7 @@ namespace Hydra
 				m_CurrentImage = -1;
 				return;
 			}
+
 			InternalResize();
 			m_Specs.width = m_SwapchainExtent.width;
 			m_Specs.height = m_SwapchainExtent.height;

@@ -23,6 +23,7 @@ namespace Hydra
 	class GraphicsPipeline;
 	class Swapchain;
 	class Buffer;
+	class Image;
 
 	class CommandBuffer
 	{
@@ -40,9 +41,11 @@ namespace Hydra
 		virtual void BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline){}
 		virtual void UnbindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline){}
 
+
 		virtual void BindVertexBuffer(uint32_t frameindex, Ref<Buffer>& buffer){}
 		virtual void BindIndexBuffer(uint32_t frameindex, Ref<Buffer>& buffer){}
-		virtual void BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer){}
+		virtual void BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer, size_t offsetIndex = 0){}
+		virtual void BindImage(uint32_t frameIndex, uint32_t bindPoint, uint32_t space, Ref<Image>& image){}
 
 		virtual void CopyFramebufferToSwapchain(uint32_t frameIndex, Ref<Framebuffer>& framebuffer, Ref<Swapchain> swapchain){}
 

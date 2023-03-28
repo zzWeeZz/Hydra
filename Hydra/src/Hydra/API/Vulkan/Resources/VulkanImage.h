@@ -5,15 +5,20 @@
 #include "Hydra/API/Vulkan/VulkanAllocator.h"
 namespace Hydra
 {
+	class VulkanDevice;
+
 	class VulkanImage : public Image
 	{
 	public:
-		VulkanImage(ImageSpecification& specs);
+		VulkanImage(ImageSpecification& specs, Ptr<VulkanDevice> device);
 
 		[[nodiscard]] FORCEINLINE AllocatedImage GetAllocatedImage() { return m_Image; }
 		[[nodiscard]] FORCEINLINE AllocatedImage GetAllocatedImage() const { return m_Image; }
 
 	private:
+		void Validate();
 		AllocatedImage m_Image;
+		VkImageView m_View;
+		Ptr<VulkanDevice> m_Device;
 	};
 }

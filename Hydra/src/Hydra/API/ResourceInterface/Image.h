@@ -6,16 +6,16 @@ namespace Hydra
 
 	struct ImageSpecification
 	{
-		ImageType imageType;
-		uint32_t width;
-		uint32_t height;
-		uint32_t depth;
-		uint32_t mipLevels;
-		uint32_t arrayLayers;
-		ImageFormat format;
+		ImageType imageType = ImageType::Image2D;
+		uint32_t width = 100;
+		uint32_t height = 100;
+		uint32_t depth = 1;
+		uint32_t mipLevels = 1;
+		uint32_t arrayLayers = 1;
+		ImageFormat format = ImageFormat::RGBA8UN;
 		ImageUsage usage;
 
-		MemoryUsage memoryUsage;
+		void* ImageData = nullptr;
 	};
 
 	class Image : public Resource
@@ -23,5 +23,7 @@ namespace Hydra
 	public:
 		Image() = default;
 		virtual ~Image(){}
+	protected:
+		ImageSpecification m_Specs;
 	};
 }

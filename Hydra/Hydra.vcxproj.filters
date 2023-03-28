@@ -67,6 +67,9 @@
     <Filter Include="vendor\dma">
       <UniqueIdentifier>{D492C5A8-C04A-07F6-2952-E0511529A2E6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\stb_image">
+      <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor\vma">
       <UniqueIdentifier>{66DFC5A8-5297-07F6-BB9E-E051A775A2E6}</UniqueIdentifier>
     </Filter>
@@ -132,9 +135,6 @@
     <ClInclude Include="src\Hydra\API\DX12\Resources\DxImage.h">
       <Filter>src\Hydra\API\DX12\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hydra\API\DX12\Resources\DxImageView.h">
-      <Filter>src\Hydra\API\DX12\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="src\Hydra\API\DX12\Resources\DxShader.h">
       <Filter>src\Hydra\API\DX12\Resources</Filter>
     </ClInclude>
@@ -166,9 +166,6 @@
       <Filter>src\Hydra\API\ResourceInterface</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\ResourceInterface\Image.h">
-      <Filter>src\Hydra\API\ResourceInterface</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hydra\API\ResourceInterface\ImageView.h">
       <Filter>src\Hydra\API\ResourceInterface</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\ResourceInterface\Shader.h">
@@ -214,9 +211,6 @@
       <Filter>src\Hydra\API\Vulkan\Resources</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanImage.h">
-      <Filter>src\Hydra\API\Vulkan\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanImageView.h">
       <Filter>src\Hydra\API\Vulkan\Resources</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\API\Vulkan\Resources\VulkanShader.h">
@@ -288,6 +282,9 @@
     <ClInclude Include="vendor\dma\D3D12MemAlloc.h">
       <Filter>vendor\dma</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\stb_image\stb_image.h">
+      <Filter>vendor\stb_image</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\vma\vk_mem_alloc.h">
       <Filter>vendor\vma</Filter>
     </ClInclude>
@@ -335,9 +332,6 @@
     <ClCompile Include="src\Hydra\API\DX12\Resources\DxImage.cpp">
       <Filter>src\Hydra\API\DX12\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hydra\API\DX12\Resources\DxImageView.cpp">
-      <Filter>src\Hydra\API\DX12\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="src\Hydra\API\DX12\Resources\DxShader.cpp">
       <Filter>src\Hydra\API\DX12\Resources</Filter>
     </ClCompile>
@@ -378,9 +372,6 @@
       <Filter>src\Hydra\API\Vulkan\Resources</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanImage.cpp">
-      <Filter>src\Hydra\API\Vulkan\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanImageView.cpp">
       <Filter>src\Hydra\API\Vulkan\Resources</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\API\Vulkan\Resources\VulkanShader.cpp">

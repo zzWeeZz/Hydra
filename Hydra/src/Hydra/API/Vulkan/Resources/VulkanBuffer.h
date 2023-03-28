@@ -12,7 +12,7 @@ namespace Hydra
 		virtual void MapMemory(void*& mappedMemory) override;
 		virtual void UnmapMemory() override;
 
-		void CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData) override;
+		void CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData, size_t offsetIndex = 0) override;
 
 		[[nodiscard]] FORCEINLINE AllocatedBuffer& GetAllocation() { return m_Buffer; }
 

@@ -12,6 +12,8 @@
 
 #include "Hydra/API/Vulkan/Pipeline/VulkanGraphicsPipeline.h"
 
+#include "Hydra/API/Vulkan/Resources/VulkanImage.h"
+
 namespace Hydra
 {
 
@@ -121,6 +123,11 @@ namespace Hydra
 	void VulkanDevice::CreateBuffer(BufferCreateSpecification& bufferSpecs, Ref<Buffer>& buffer)
 	{
 		buffer = std::make_shared<VulkanBuffer>(bufferSpecs);
+	}
+
+	void VulkanDevice::CreateImage(ImageSpecification& imageSpecs, Ref<Image>& image)
+	{
+		image = std::make_shared<VulkanImage>(imageSpecs, std::reinterpret_pointer_cast<VulkanDevice>(shared_from_this()));
 	}
 
 	void VulkanDevice::Shutdown()

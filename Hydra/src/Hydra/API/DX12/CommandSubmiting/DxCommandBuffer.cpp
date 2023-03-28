@@ -7,6 +7,7 @@
 #include <Hydra/API/DX12/Backend/DxSwapchain.h>
 #include <Hydra/API/DX12/Pipeline/DxGraphicsPipeline.h>
 #include <Hydra/API/DX12/Resources/DxBuffer.h>
+#include <Hydra/API/DX12/Resources/DxImage.h>
 namespace Hydra
 {
 	DxCommandBuffer::DxCommandBuffer(CommandBufferSpecification& specs)
@@ -108,15 +109,25 @@ namespace Hydra
 		view.SizeInBytes = dxbuffer->GetSizeInBytes();
 		view.Format = dxbuffer->IndexFormat();
 
-		m_CommandList->IASetIndexBuffer(&view);
+		m_CommandList->IASetIndexBuffer(&view); 
 	}
 
-	void DxCommandBuffer::BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer)
+	void DxCommandBuffer::BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer, size_t offsetIndex)
 	{
 		auto dxbuffer = std::reinterpret_pointer_cast<DxBuffer>(buffer);
 		size_t cBufferOffset = (dxbuffer->StrideInBytes() + 255) & ~255;
 
-		m_CommandList->SetGraphicsRootConstantBufferView(0, dxbuffer->GetAllocation(frameindex).buffer->GetGPUVirtualAddress());
+		m_CommandList->SetGraphicsRootConstantBufferView(0, dxbuffer->GetAllocation(frameindex).buffer->GetGPUVirtualAddress() + cBufferOffset * offsetIndex);
+	}
+
+	void DxCommandBuffer::BindImage(uint32_t frameIndex, uint32_t bindPoint, uint32_t space, Ref<Image>& image)
+	{
+		auto dxImage = std::reinterpret_pointer_cast<DxImage>(image);
+		CD3DX12_GPU_DESCRIPTOR_HANDLE tex(
+			dxImage->GetHeap()->GetGPUDescriptorHandleForHeapStart()
+		);
+		m_CommandList->SetDescriptorHeaps(1, dxImage->GetHeap().GetAddressOf());
+		m_CommandList->SetGraphicsRootDescriptorTable(1, tex);
 	}
 
 	void DxCommandBuffer::BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline)

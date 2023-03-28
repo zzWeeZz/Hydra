@@ -24,6 +24,8 @@ namespace Hydra
 
 		void CreateBuffer(BufferCreateSpecification& bufferSpecs, Ref<Buffer>& buffer) override;
 
+		void CreateImage(ImageSpecification& imageSpecs, Ref<Image>& image) override;
+
 		void Shutdown();
 
 		void WaitForIdle();

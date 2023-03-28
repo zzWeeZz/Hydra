@@ -38,8 +38,6 @@ namespace Hydra
 		HY_VK_CHECK(vkAllocateCommandBuffers(vulkanDevice->GetHandle(), &allocInfo, &m_CommandBuffer));
 
 		vkCmdPushDescriptorSetKHR = (PFN_vkCmdPushDescriptorSetKHR)vkGetDeviceProcAddr(vulkanDevice->GetHandle(), "vkCmdPushDescriptorSetKHR");
-		if (!vkCmdPushDescriptorSetKHR) {
-		}
 	}
 
 	void VulkanCommandBuffer::Begin()
@@ -121,14 +119,14 @@ namespace Hydra
 		vkCmdBindIndexBuffer(m_CommandBuffer, vulkanBuffer->GetAllocation().buffer, offset, VK_INDEX_TYPE_UINT16);
 	}
 
-	void VulkanCommandBuffer::BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer)
+	void VulkanCommandBuffer::BindConstantBuffer(uint32_t frameindex, uint32_t bindPoint, uint32_t space, Ref<Buffer>& buffer, size_t offsetIndex)
 	{
 		auto vulkanBuffer = std::reinterpret_pointer_cast<VulkanBuffer>(buffer);
 
 		VkDescriptorBufferInfo info = {};
 		info.buffer = vulkanBuffer->GetAllocation().buffer;
-		info.offset = 0;
-		info.range = vulkanBuffer->GetAllocation().sizeOfBuffer;
+		info.offset = offsetIndex * vulkanBuffer->GetStride();
+		info.range = vulkanBuffer->GetStride();
 
 		VkWriteDescriptorSet set = {};
 		set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

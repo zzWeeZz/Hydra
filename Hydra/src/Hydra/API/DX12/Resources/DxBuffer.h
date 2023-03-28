@@ -16,7 +16,7 @@ namespace Hydra
 		// Inherited via Buffer
 		void MapMemory(void*& mappedMemory) override;
 		void UnmapMemory() override;
-		void CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData) override;
+		void CopyToBuffer(int32_t frameIndex, void* data, size_t sizeOfData, size_t offsetIndex = 0) override;
 
 		HY_GET_INLINE AllocatedBuffer& GetAllocation() { return m_Buffer[0]; }
 		HY_GET_INLINE AllocatedBuffer& GetAllocation(uint32_t frameIndex) { return m_Buffer[frameIndex]; }

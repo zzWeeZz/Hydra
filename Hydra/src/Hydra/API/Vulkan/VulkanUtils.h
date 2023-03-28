@@ -117,6 +117,76 @@ namespace Hydra
 		return format;
 	}
 
+	inline size_t GetSizeOfFormat(VkFormat format)
+	{
+		size_t out = 0;
+		switch (format)
+		{
+		case VK_FORMAT_R8_UNORM:
+			out = sizeof(uint8_t);
+			break;
+		case VK_FORMAT_R8G8B8A8_UNORM:
+			out = sizeof(uint8_t) * 4;
+			break;
+		case VK_FORMAT_R32_UINT:
+			out = sizeof(uint32_t);
+			break;
+		case VK_FORMAT_R32_SFLOAT:
+			out = sizeof(float);
+			break;
+		case VK_FORMAT_R32_SINT:
+			out = sizeof(int32_t);
+			break;
+		case VK_FORMAT_R32G32_SFLOAT:
+			out = sizeof(float) * 2;
+			break;
+		case VK_FORMAT_R32G32_SINT:
+			out = sizeof(int32_t) * 2;
+			break;
+		case VK_FORMAT_R32G32_UINT:
+			out = sizeof(uint32_t) * 2;
+			break;
+		case VK_FORMAT_R32G32B32_SFLOAT:
+			out = sizeof(float) * 3;
+			break;
+		case VK_FORMAT_R32G32B32_SINT:
+			out = sizeof(int32_t) * 3;
+			break;
+		case VK_FORMAT_R32G32B32_UINT:
+			out = sizeof(uint32_t) * 3;
+			break;
+		case VK_FORMAT_R32G32B32A32_SFLOAT:
+			out = sizeof(float) * 4;
+			break;
+		case VK_FORMAT_R32G32B32A32_UINT:
+			out = sizeof(uint32_t) * 4;
+			break;
+		case VK_FORMAT_R32G32B32A32_SINT:
+			out = sizeof(int32_t) * 4;
+			break;
+		case VK_FORMAT_R16G16B16A16_SFLOAT:
+			out = sizeof(float) * 4 / 2;
+			break;
+		case VK_FORMAT_R16G16B16A16_UNORM:
+			out = sizeof(uint16_t) * 4;
+			break;
+		case VK_FORMAT_R16G16B16A16_UINT:
+			out = sizeof(uint16_t) * 4;
+			break;
+		case VK_FORMAT_R16G16B16A16_SNORM:
+			out = sizeof(int16_t) * 4;
+			break;
+		case VK_FORMAT_R16G16B16A16_SINT:
+			out = sizeof(int16_t) * 4;
+			break;
+		default:
+			// Unsupported format
+			assert(false);
+			break;
+		}
+		return out;
+	}
+
 	inline VmaMemoryUsage GetVmaMemoryUsage(MemoryUsage usage)
 	{
 		VmaMemoryUsage vma = {};
