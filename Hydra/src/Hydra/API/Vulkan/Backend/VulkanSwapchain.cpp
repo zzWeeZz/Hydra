@@ -313,7 +313,11 @@ namespace Hydra
 				return availableFormat;
 			}
 		}
-		return availableFormats[0];
+		VkSurfaceFormatKHR result = {};
+		result.format = VK_FORMAT_R8G8B8A8_UNORM;
+		result.colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+		
+		return result;
 	}
 
 	VkPresentModeKHR VulkanSwapchain::ChooseSwapchainPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)

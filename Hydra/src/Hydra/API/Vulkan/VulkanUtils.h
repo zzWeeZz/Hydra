@@ -106,10 +106,13 @@ namespace Hydra
 			format = VK_FORMAT_R16G16B16A16_SINT;
 			break;
 		case Hydra::ImageFormat::Depth32:
-			format = VK_FORMAT_D32_SFLOAT_S8_UINT;
+			format = VK_FORMAT_D32_SFLOAT;
 			break;
 		case Hydra::ImageFormat::Depth24:
 			format = VK_FORMAT_D24_UNORM_S8_UINT;
+			break;
+		case Hydra::ImageFormat::BC7UN:
+			format = VK_FORMAT_BC7_UNORM_BLOCK;
 			break;
 		default:
 			break;

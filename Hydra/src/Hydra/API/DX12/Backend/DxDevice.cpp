@@ -114,6 +114,11 @@ namespace Hydra
 		auto dxDeviceQueue = std::reinterpret_pointer_cast<DxDeviceQueue>(m_DeviceQueues[QueueType::Graphics]);
 		auto dxCommandBuffer = std::reinterpret_pointer_cast<DxCommandBuffer>(m_CommandQueues[QueueType::Graphics][0]->GetCommandBuffer().lock());
 
+		WinRef<ID3D12Fence> fence;
+		uint32_t fenceValue = 0;
+		HANDLE handle = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
+		HY_DX_CHECK(m_Device->CreateFence(0, D3D12_FENCE_FLAG_SHARED, HY_DX_ID(fence)));
+
 
 		dxCommandQueue->Reset();
 		dxCommandBuffer->Begin();
@@ -121,6 +126,16 @@ namespace Hydra
 		dxCommandBuffer->End();
 		ID3D12CommandList* ppCommandList[] = { dxCommandBuffer->Get() };
 		dxDeviceQueue->Get()->ExecuteCommandLists(1, ppCommandList);
+
+		dxDeviceQueue->Get()->Signal(fence.Get(), fenceValue);
+
+		if (fence->GetCompletedValue() > fenceValue)
+		{
+			fence->SetEventOnCompletion(fenceValue, handle);
+			WaitForSingleObject(handle, INFINITE);
+		}
+		CloseHandle(handle);
+		fence->Release();
 
 	}
 	void DxDevice::UpdateValidationLayer()

@@ -22,6 +22,8 @@ namespace Hydra
 
 		VkRect2D m_Rect;
 		PerFrameInFlight<std::vector<VkRenderingAttachmentInfo>> m_Attachments;
+		PerFrameInFlight<VkRenderingAttachmentInfo> m_DepthAttachment;
+		
 		PerFrameInFlight<std::vector<AllocatedImage>> m_Images;
 		PerFrameInFlight<std::vector<VkImageView>> m_Views;
 	};

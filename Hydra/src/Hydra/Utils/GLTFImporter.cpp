@@ -10,10 +10,11 @@
 #include "tinygltf/tiny_gltf.h"
 
 #include "Hydra/Assets/Mesh.h"
+#include <Hydra/Assets/Material.h>
 
 namespace Hydra
 {
-	void GLTFImporter::Import(const std::filesystem::path& filepath, std::vector<Submesh>& outMeshes)
+	void GLTFImporter::Import(const std::filesystem::path& filepath, std::vector<Submesh>& outMeshes, std::vector<Ref<Material>>& materials)
 	{
 		tinygltf::Model model;
 		tinygltf::TinyGLTF loader;
@@ -57,17 +58,23 @@ namespace Hydra
 		const tinygltf::Scene& scene = model.scenes[model.defaultScene];
 		std::hash<std::string> strHasher;
 		const size_t pathHash = strHasher(filepath.string());
-		for (size_t i = 0; i < scene.nodes.size(); i++)
+		for (int i : scene.nodes)
 		{
-			const tinygltf::Node& node = model.nodes[scene.nodes[i]];
+			const tinygltf::Node& node = model.nodes[i];
 			LoadNode(node, model, nullptr, outMeshes, pathHash);
-
+		}
+		materials.resize(model.materials.size());
+		for (size_t i = 0; auto& mat : model.materials)
+		{
+			HY_CORE_INFO("{}", mat.name);
+			materials[i] = Material::Create(mat.name, filepath);
+			++i;
 		}
 	}
 	void GLTFImporter::LoadNode(const tinygltf::Node& node, const tinygltf::Model& model, Node* parent, std::vector<Submesh>& outMeshes, size_t pathHash)
 	{
 		Node currentNode{};
-
+		
 		if (node.translation.size() == 3)
 		{
 			double dubScale[3] = { node.translation[0], node.translation[1], node.translation[2] };
@@ -88,26 +95,24 @@ namespace Hydra
 			currentNode.transform = currentNode.transform * glm::rotate(glm::mat4(1.f), static_cast<float>(dubRotation[2]), glm::vec3(0.f, 0.f, 1.f));
 		}
 
-		for (size_t i = 0; i < node.children.size(); i++)
+
+		for (int i : node.children)
 		{
-			LoadNode(model.nodes[node.children[i]], model, &currentNode, outMeshes, pathHash);
+			LoadNode(model.nodes[i], model, &currentNode, outMeshes, pathHash);
 		}
 
 		if (node.mesh > -1)
 		{
 			const tinygltf::Mesh mesh = model.meshes[node.mesh];
 
-			for (size_t i = 0; i < mesh.primitives.size(); ++i)
+			for (const tinygltf::Primitive primative : mesh.primitives)
 			{
-				const tinygltf::Primitive primative = mesh.primitives[i];
-
 				const float* positionBuffer = nullptr;
 				const float* normalBuffer = nullptr;
 				const float* texCoordsBuffer = nullptr;
 				const float* tangentBuffer = nullptr;
 
 				size_t vertexCount = 0;
-
 				if (primative.attributes.find("POSITION") != primative.attributes.end())
 				{
 					const tinygltf::Accessor& accessor = model.accessors[primative.attributes.find("POSITION")->second];
@@ -204,7 +209,7 @@ namespace Hydra
 						HY_CORE_ERROR("Index component not supported!");
 						return;
 					}
-					outMeshes.emplace_back(outVerties, outIndices);
+					outMeshes.emplace_back(outVerties, outIndices, primative.material);
 				}
 			}
 		}

@@ -12,9 +12,14 @@
 #include "Hydra/Events/ApplicationEvent.h"
 #include "glm/glm/glm.hpp"
 #include <glm/glm/gtx/quaternion.hpp>
-
+#include "Hydra/Utils/Chrono.h"
+#include "Hydra/Utils/Input.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
+
+#include "Hydra/Assets/Mesh.h"
+#include <Hydra/Events/InputEvent.h>
+#include "Hydra/Assets/Material.h"
 
 namespace Hydra
 {
@@ -38,19 +43,24 @@ namespace Hydra
 
 	static Ref<Image> testImage;
 
-	struct Vertex
-	{
-		glm::vec4 position;
-		glm::vec4 color = glm::vec4(1.f);
-		glm::vec2 uv = glm::vec2(0.f);
-	};
-
+	static MeshObject mesh;
 	struct CameraData
 	{
 		glm::mat4 view;
 		glm::mat4 proj;
 		glm::mat4 objectSpace;
 	};
+	static CameraData camdata;
+	static glm::vec3 position;
+	static glm::vec3 rotation;
+	static glm::vec3 scale;
+
+	static glm::vec3 forward;
+
+	static float m_Pitch = 0.f;
+	static float m_Yaw = 0.f;
+	static float m_Roll = 0.f;
+
 
 	void Renderer::Initialize()
 	{
@@ -58,6 +68,7 @@ namespace Hydra
 		auto device = GraphicsContext::GetDevice();
 		FramebufferSpecification framebufferSpecs = {};
 		framebufferSpecs.formats.emplace_back(ImageFormat::RGBA8UN);
+		framebufferSpecs.formats.emplace_back(ImageFormat::Depth32);
 		framebufferSpecs.width = 1280;
 		framebufferSpecs.height = 720;
 
@@ -67,7 +78,7 @@ namespace Hydra
 		createSpecs.behaviorFlag = CompilerBehaviorFlag::TreatWarningsAsErrors;
 		Factory::ConstructShaderCompiler(createSpecs, shaderCompiler);
 
-		void* pix;
+		/*void* pix;
 		int texWidth, texHeight, texChannels;
 		pix = stbi_load("Titan.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 		ImageSpecification specs = {};
@@ -75,7 +86,7 @@ namespace Hydra
 		specs.height = texHeight;
 		specs.width = texWidth;
 
-		GraphicsContext::GetDevice().lock()->CreateImage(specs, testImage);
+		GraphicsContext::GetDevice().lock()->CreateImage(specs, testImage);*/
 
 
 		ShaderSpecification testShaderSpecs = {};
@@ -91,57 +102,22 @@ namespace Hydra
 
 		GraphicsPipelineSpecification graphicsSpecs = {};
 
-		graphicsSpecs.shaderObject = testShader;
+		graphicsSpecs.shaderObject = testShader2;
+
 		graphicsSpecs.framebufferObject = cache->framebuffer;
 
 		graphicsSpecs.bindingDescription.binding = 0;
 		graphicsSpecs.bindingDescription.stride = sizeof(Vertex);
 
-		GraphicsContext::GetDevice().lock()->CreateGraphicsPipeline(graphicsSpecs, testPipeline);
-
-		graphicsSpecs.shaderObject = testShader2;
 		GraphicsContext::GetDevice().lock()->CreateGraphicsPipeline(graphicsSpecs, testPipeline2);
 		
 		
-		std::vector<Vertex> vertices = {
-	{glm::vec4(-1.0f, -1.0f,  1.0f, 1.0f), glm::vec4(1.f, 0.f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, // Front Bottom Left
-	{glm::vec4(1.0f, -1.0f,  1.0f, 1.0f), glm::vec4(0.f, 1.f, 0.f, 1.f), glm::vec2(1.f, 0.f)}, // Front Bottom Right
-	{glm::vec4(1.0f,  1.0f,  1.0f, 1.0f), glm::vec4(0.f, 0.f, 1.f, 1.f), glm::vec2(1.f, 1.f)}, // Front Top Right
-	{glm::vec4(-1.0f,  1.0f,  1.0f, 1.0f), glm::vec4(1.f, 1.f, 1.f, 1.f), glm::vec2(0.f, 1.f)}, // Front Top Left
-	{glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f), glm::vec4(1.f, 1.f, 0.f, 1.f), glm::vec2(0.f, 0.f)}, // Back Bottom Left
-	{glm::vec4(1.0f, -1.0f, -1.0f, 1.0f), glm::vec4(0.f, 1.f, 1.f, 1.f), glm::vec2(1.f, 0.f)}, // Back Bottom Right
-	{glm::vec4(1.0f,  1.0f, -1.0f, 1.0f), glm::vec4(1.f, 0.f, 1.f, 1.f), glm::vec2(1.f, 1.f)}, // Back Top Right
-	{glm::vec4(-1.0f,  1.0f, -1.0f, 1.0f), glm::vec4(0.f, 0.f, 0.f, 1.f), glm::vec2(0.f, 1.f)}  // Back Top Left
-		};
-
-		
-
-		std::vector<uint16_t> indices = {
-		0, 1, 2, 2, 3, 0, // Front Face
-		1, 5, 6, 6, 2, 1, // Right Face
-		4, 7, 6, 6, 5, 4, // Back Face
-		0, 3, 7, 7, 4, 0, // Left Face
-		3, 2, 6, 6, 7, 3, // Top Face
-		0, 4, 5, 5, 1, 0  // Bottom Face
-		};
+		position = glm::vec3(0.f);
+		forward = { 1, 0,0 };
 
 		BufferCreateSpecification bufferSpecs = {};
 
-		bufferSpecs.usage = BufferUsage::VertexBuffer;
-		bufferSpecs.stride = sizeof(Vertex);
-		bufferSpecs.count = vertices.size();
-		bufferSpecs.data = vertices.data();
-		bufferSpecs.allocationUsage = MemoryUsage::CPU_To_GPU;
-
-		GraphicsContext::GetDevice().lock()->CreateBuffer(bufferSpecs, testVertexBuffer);
-
-		bufferSpecs.usage = BufferUsage::IndexBuffer;
-		bufferSpecs.stride = sizeof(uint16_t);
-		bufferSpecs.count = indices.size();
-		bufferSpecs.data = indices.data();
-		bufferSpecs.allocationUsage = MemoryUsage::CPU_To_GPU;
-
-		GraphicsContext::GetDevice().lock()->CreateBuffer(bufferSpecs, testIndexBuffer);
+		
 
 		bufferSpecs.usage = BufferUsage::ConstantBuffer;
 		bufferSpecs.stride = sizeof(CameraData);
@@ -150,6 +126,7 @@ namespace Hydra
 		bufferSpecs.allocationUsage = MemoryUsage::CPU_To_GPU;
 
 		GraphicsContext::GetDevice().lock()->CreateBuffer(bufferSpecs, testConstantBuffer);
+		mesh.Loader("Sponza/Sponza.glb");
 	}
 	void Renderer::OnEvent(Event& e)
 	{
@@ -157,6 +134,35 @@ namespace Hydra
 		dispatcher.Dispatch<WindowResizeEvent>([&] (WindowResizeEvent& e)
 			{
 				cache->framebuffer->Resize(e.GetWidth(), e.GetHeight());
+			});
+
+		dispatcher.Dispatch<MouseMoveEvent>([&](MouseMoveEvent& e)
+			{
+				if (Input::MouseButton(Mouse::ButtonRight, InputMode::Down))
+				{
+					float xoffset = static_cast<float>(e.GetMouseDelta().first);
+					float yoffset = static_cast<float>(e.GetMouseDelta().second);
+
+
+					const float sensitivity = 0.5f;
+					xoffset *= sensitivity;
+					yoffset *= sensitivity;
+
+					m_Yaw += xoffset;
+					m_Pitch += yoffset;
+
+					if (m_Pitch > 89.0f)
+						m_Pitch = 89.0f;
+					if (m_Pitch < -89.0f)
+						m_Pitch = -89.0f;
+
+					glm::vec3 direction{};
+					direction.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+					direction.y = sin(glm::radians(-m_Pitch));
+					direction.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+					forward = glm::normalize(direction);
+				}
+				return false;
 			});
 	}
 	void Renderer::Begin()
@@ -176,54 +182,41 @@ namespace Hydra
 
 		commandQueue->Reset();
 		commandBuffer->Begin();
-		static float time = 0;
-		time += 0.003f;
-		CameraData data = {};
-		data.proj = glm::perspective(glm::radians(90.f), 16.f/9.f, 1.f, 20000.f);
 
-		data.view = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 10));
-		data.view = glm::inverse(data.view);
+		RunEditorCamera();
+
+		//camdata.view = glm::inverse(camdata.view);
 		
 
 		auto pos = glm::translate(glm::mat4(1.0f), glm::vec3());
-		auto rot = glm::mat4_cast(glm::tquat<float>(glm::vec3(time, time * 2, time / 2.f)));
+		auto rot = glm::mat4_cast(glm::tquat<float>(glm::vec3(3.14f / 2.f, 0.f, 0.f)));
 		auto scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.f));
-		data.objectSpace = pos * rot * scale;
+		camdata.objectSpace = pos * rot * scale;
 
-		testConstantBuffer->CopyToBuffer(frameIndex, &data, sizeof(CameraData), 0);
+		testConstantBuffer->CopyToBuffer(frameIndex, &camdata, sizeof(CameraData), 0);
 
 		float clear[] = { 0.32f, 0.32f, 0.32f, 1.f };
 
 		commandBuffer->BeginFramebuffer(frameIndex, cache->framebuffer, clear);
 
-		commandBuffer->BindGraphicsPipeline(frameIndex, testPipeline);
+		commandBuffer->BindGraphicsPipeline(frameIndex, testPipeline2);
 		
 		commandBuffer->BindConstantBuffer(frameIndex, 0, 0, testConstantBuffer, 0);
 
-		commandBuffer->BindVertexBuffer(frameIndex, testVertexBuffer);
 
-		commandBuffer->BindIndexBuffer(frameIndex, testIndexBuffer);
+		for (auto& sub : mesh.GetSubmeshes())
+		{
+			auto& material = mesh.GetMaterials();
+			auto tex = material[sub.materialID]->GetColorTexture().lock()->GetImage().lock();
+			commandBuffer->BindImage(frameIndex, 1, 0, tex);
 
-		commandBuffer->DrawIndexedInstanced(testIndexBuffer->GetBufferSize(), 1, 0, 0, 0);
+			commandBuffer->BindVertexBuffer(frameIndex, sub.vertexBuffer);
 
-		commandBuffer->BindGraphicsPipeline(frameIndex, testPipeline2);
+			commandBuffer->BindIndexBuffer(frameIndex, sub.indexBuffer);
 
-		pos = glm::translate(glm::mat4(1.0f), glm::vec3(10.f, 0, 0));
-		rot = glm::mat4_cast(glm::tquat<float>(glm::vec3(time, 0, time / 2.f)));
-		scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.f));
-		data.objectSpace = pos * rot * scale;
+			commandBuffer->DrawIndexedInstanced(sub.indexBuffer->GetBufferSize(), 1, 0, 0, 0);
+		}
 
-		testConstantBuffer->CopyToBuffer(frameIndex, &data, sizeof(CameraData), 1);
-
-		commandBuffer->BindConstantBuffer(frameIndex, 0, 0, testConstantBuffer, 1);
-
-		commandBuffer->BindImage(frameIndex, 1, 0, testImage);
-
-		commandBuffer->BindVertexBuffer(frameIndex, testVertexBuffer);
-
-		commandBuffer->BindIndexBuffer(frameIndex, testIndexBuffer);
-
-		commandBuffer->DrawIndexedInstanced(testIndexBuffer->GetBufferSize(), 1, 0, 0, 0);
 
 		commandBuffer->EndFramebuffer(frameIndex, cache->framebuffer);
 
@@ -243,5 +236,36 @@ namespace Hydra
 		GraphicsContext::GetContext().lock()->WaitForIdle();
 
 		device.lock()->DestroyFramebuffer(cache->framebuffer);
+	}
+	void Renderer::RunEditorCamera()
+	{
+		float delta = Chrono::Timestep();
+		if (Input::Key(Key::S, InputMode::Down))
+		{
+			position -= forward * delta * 10.f;
+		}
+		if (Input::Key(Key::W, InputMode::Down))
+		{
+			position += forward * delta * 10.f;
+		}
+		if (Input::Key(Key::D, InputMode::Down))
+		{
+			position += glm::cross(forward, glm::vec3(0, 1, 0)) * delta * 10.f;
+		}
+		if (Input::Key(Key::A, InputMode::Down))
+		{
+			position -= glm::cross(forward, glm::vec3(0, 1, 0)) * delta * 10.f;
+		}
+		if (Input::Key(Key::E, InputMode::Down))
+		{
+			position.y += delta * 10.f;
+		}
+		if (Input::Key(Key::Q, InputMode::Down))
+		{
+			position.y -= delta * 10.f;
+		}
+
+		camdata.view = glm::lookAt(position, position + forward, glm::vec3(0, 1, 0));
+		camdata.proj = glm::perspective(glm::radians(60.f), 16.f/9.f, 0.1f, 200.f);
 	}
 }

@@ -25,9 +25,10 @@ namespace Hydra
 		
 		virtual void Resize(const size_t width, const size_t height) = 0;
 
-		[[nodiscard]] FORCEINLINE std::vector<ImageFormat> const& GetFormats() { return m_Specs.formats; }
+		[[nodiscard]] FORCEINLINE std::vector<ImageFormat>& GetFormats() { return m_Specs.formats; }
 
 	protected:
+		bool m_HasDepth = false;
 		FramebufferSpecification m_Specs;
 		Ptr<Device> m_Device;
 	};

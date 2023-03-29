@@ -76,6 +76,9 @@
     <Filter Include="vendor\stb_image">
       <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\tinydds">
+      <UniqueIdentifier>{8155B9AB-6D23-ADB1-56B7-1DD842248916}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor\tinygltf">
       <UniqueIdentifier>{53CDE522-BF58-53E7-C869-D6DB3474AFE7}</UniqueIdentifier>
     </Filter>
@@ -279,10 +282,19 @@
     <ClInclude Include="src\Hydra\Rendering\Renderer.h">
       <Filter>src\Hydra\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\Utils\Chrono.h">
+      <Filter>src\Hydra\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Utils\EnumUtils.h">
       <Filter>src\Hydra\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\Utils\GLTFImporter.h">
+      <Filter>src\Hydra\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\Utils\Input.h">
+      <Filter>src\Hydra\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\Utils\KeyCode.h">
       <Filter>src\Hydra\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\Utils\Log.h">
@@ -291,7 +303,13 @@
     <ClInclude Include="src\Hydra\Utils\Memory.h">
       <Filter>src\Hydra\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\Utils\MouseCode.h">
+      <Filter>src\Hydra\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Utils\PlatformDetection.h">
+      <Filter>src\Hydra\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\Utils\Timer.h">
       <Filter>src\Hydra\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\Window.h">
@@ -302,6 +320,9 @@
     </ClInclude>
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\tinydds\tinyddsloader.h">
+      <Filter>vendor\tinydds</Filter>
     </ClInclude>
     <ClInclude Include="vendor\tinygltf\stb_image.h">
       <Filter>vendor\tinygltf</Filter>
@@ -315,6 +336,8 @@
     <ClInclude Include="vendor\vma\vk_mem_alloc.h">
       <Filter>vendor\vma</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\Assets\Texture.h" />
+    <ClInclude Include="src\Hydra\Assets\Material.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -440,14 +463,25 @@
     <ClCompile Include="src\Hydra\Rendering\Renderer.cpp">
       <Filter>src\Hydra\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\Utils\Chrono.cpp">
+      <Filter>src\Hydra\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="src\Hydra\Utils\GLTFImporter.cpp">
+      <Filter>src\Hydra\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\Utils\Input.cpp">
       <Filter>src\Hydra\Utils</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\Utils\Log.cpp">
       <Filter>src\Hydra\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\Utils\Timer.cpp">
+      <Filter>src\Hydra\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp">
       <Filter>vendor\dma</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\Assets\Texture.cpp" />
+    <ClCompile Include="src\Hydra\Assets\Material.cpp" />
   </ItemGroup>
 </Project>

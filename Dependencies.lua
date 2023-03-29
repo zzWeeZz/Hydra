@@ -7,6 +7,7 @@ FileDir["DMA_H"] = "%{wks.location}/Hydra/vendor/dma/D3D12MemAlloc.h"
 FileDir["DMA_CPP"] = "%{wks.location}/Hydra/vendor/dma/D3D12MemAlloc.cpp"
 FileDir["STB_IMAGE"] = "%{wks.location}/Hydra/vendor/stb_image/stb_image.h"
 FileDir["TINYGLTF"] = "%{wks.location}/Hydra/vendor/tinygltf/**.h", "%{wks.location}/Hydra/vendor/tinygltf/**.hpp"
+FileDir["TINYDDS"] = "%{wks.location}/Hydra/vendor/tinydds/**.h"
 
 IncludeDir = {};
 

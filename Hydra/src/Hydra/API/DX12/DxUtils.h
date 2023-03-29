@@ -205,6 +205,9 @@ namespace Hydra
 		case Hydra::ImageFormat::Depth24:
 			dxFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 			break;
+		case Hydra::ImageFormat::BC7UN:
+			dxFormat = DXGI_FORMAT_BC7_UNORM;
+			break;
 		default:
 			break;
 		}

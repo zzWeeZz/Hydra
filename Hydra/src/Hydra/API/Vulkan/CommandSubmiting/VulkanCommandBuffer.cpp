@@ -61,13 +61,18 @@ namespace Hydra
 
 		vulkanFramebuffer->m_Attachments[frameIndex][0].clearValue = { {{color[0], color[1], color[2], color[3]}} };
 
-		const VkRenderingInfo renderInfo{
+		VkRenderingInfo renderInfo{
 			.sType = VK_STRUCTURE_TYPE_RENDERING_INFO,
 			.renderArea = vulkanFramebuffer->m_Rect,
 			.layerCount = 1,
 			.colorAttachmentCount = static_cast<uint32_t>(vulkanFramebuffer->m_Attachments[frameIndex].size()),
 			.pColorAttachments = (vulkanFramebuffer->m_Attachments[frameIndex].data()),
 		};
+
+		if (vulkanFramebuffer->m_HasDepth)
+		{
+			renderInfo.pDepthAttachment = &vulkanFramebuffer->m_DepthAttachment[frameIndex];
+		}
 
 		vkCmdBeginRendering(m_CommandBuffer, &renderInfo);
 

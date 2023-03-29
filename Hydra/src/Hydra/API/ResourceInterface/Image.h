@@ -15,6 +15,8 @@ namespace Hydra
 		ImageFormat format = ImageFormat::RGBA8UN;
 		ImageUsage usage;
 
+		uint32_t memSize;
+
 		void* ImageData = nullptr;
 	};
 

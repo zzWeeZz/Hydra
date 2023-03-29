@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <glm/glm/glm.hpp>
-
+#include <filesystem>
 namespace tinygltf
 {
 	class Node;
@@ -11,6 +11,7 @@ namespace tinygltf
 namespace Hydra
 {
 	class Submesh;
+	class Material;
 	struct Primitive
 	{
 		uint32_t firstIndex;
@@ -34,7 +35,7 @@ namespace Hydra
 	class GLTFImporter
 	{
 	public:
-		static void Import(const std::filesystem::path& filepath, std::vector<Submesh>& outVertex);
+		static void Import(const std::filesystem::path& filepath, std::vector<Submesh>& outVertex, std::vector<Ref<Material>>& materials);
 	private:
 		static void LoadNode(const tinygltf::Node& node, const tinygltf::Model& model, Node* parent, std::vector<Submesh>& outMeshes, size_t pathHash);
 	};

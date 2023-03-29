@@ -22,7 +22,7 @@ namespace Hydra
 		texDesc.Height = m_Specs.height;
 		texDesc.DepthOrArraySize = 1;
 		texDesc.MipLevels = 1;
-		texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		texDesc.Format = GetDxFormat( m_Specs.format);
 		texDesc.SampleDesc.Count = 1;
 		texDesc.SampleDesc.Quality = 0;
 		texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
@@ -68,7 +68,7 @@ namespace Hydra
 				D3D12_SUBRESOURCE_DATA textureSubresourceData = {};
 				textureSubresourceData.pData = m_Specs.ImageData;
 				textureSubresourceData.RowPitch = m_Specs.width * 4;
-				textureSubresourceData.SlicePitch = m_Specs.width * 4 * m_Specs.height;
+				textureSubresourceData.SlicePitch = m_Specs.width * m_Specs.height * 4;
 
 				UpdateSubresources(cmd, m_Image.texture, uploadImage.texture, 0, 0, 1, &textureSubresourceData);
 

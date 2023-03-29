@@ -14,6 +14,7 @@ namespace Hydra
 		D3D12MA::ALLOCATOR_DESC allocDesc = {};
 		allocDesc.pAdapter = adapter;
 		allocDesc.pDevice = device;
+		allocDesc.Flags = D3D12MA::ALLOCATOR_FLAG_ALWAYS_COMMITTED;
 		allocDesc.Flags = D3D12MA::ALLOCATOR_FLAG_NONE;
 
 		HY_DX_CHECK(D3D12MA::CreateAllocator(&allocDesc, &s_Allcator));

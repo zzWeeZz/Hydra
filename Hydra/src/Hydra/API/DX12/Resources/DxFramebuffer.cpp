@@ -7,10 +7,10 @@ namespace Hydra
 {
 	DxFramebuffer::DxFramebuffer(FramebufferSpecification& specs, Ptr<Device> device) : Framebuffer(specs, device)
 	{
-		for (size_t i = 0; i < g_FramesInFlight; i++)
+		/*for (size_t i = 0; i < g_FramesInFlight; i++)
 		{
 			m_RenderTargets[i].resize(m_Specs.formats.size());
-		}
+		}*/
 		Validate();
 	}
 
@@ -50,7 +50,50 @@ namespace Hydra
 		{
 			for (size_t j = 0; j < m_Specs.formats.size(); ++j)
 			{
+				if (FormatIsDepth(m_Specs.formats[j]))
+				{
+					D3D12_DESCRIPTOR_HEAP_DESC DsvHeapDesc = {};
+					DsvHeapDesc.NumDescriptors = g_FramesInFlight;
+					DsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 
+					DsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+					HY_DX_CHECK(dxDevice->Get()->CreateDescriptorHeap(&DsvHeapDesc, IID_PPV_ARGS(m_DsvDescriptorHeap.GetAddressOf())));
+
+					CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle(m_DsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+					m_DsvDescriptorSize = dxDevice->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+
+					D3D12_RESOURCE_DESC texDesc = {};
+					texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+					texDesc.Width = m_Specs.width;
+					texDesc.Height = m_Specs.height;
+					texDesc.DepthOrArraySize = 1;
+					texDesc.MipLevels = 1;
+					texDesc.Format = GetDxFormat(m_Specs.formats[j]);
+					texDesc.SampleDesc.Count = 1;
+					texDesc.SampleDesc.Quality = 0;
+					texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+					texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+					D3D12_HEAP_PROPERTIES HeapProps = {};
+					HeapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
+					HeapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+					HeapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+					HeapProps.CreationNodeMask = 1;
+					HeapProps.VisibleNodeMask = 1;
+
+					HY_DX_CHECK(dxDevice->Get()->CreateCommittedResource(
+						&HeapProps,
+						D3D12_HEAP_FLAG_NONE,
+						&texDesc,
+						D3D12_RESOURCE_STATE_DEPTH_WRITE,
+						nullptr,
+						IID_PPV_ARGS(m_DepthTarget[i].ReleaseAndGetAddressOf())
+					));
+
+					m_DepthFormat = GetDxFormat(m_Specs.formats[j]);
+					dxDevice->Get()->CreateDepthStencilView(m_DepthTarget[i].Get(), nullptr, dsvHandle);
+					m_HasDepth = true;
+					continue;
+				}
 				D3D12_RESOURCE_DESC texDesc = {};
 				texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 				texDesc.Width = m_Specs.width;
@@ -78,16 +121,18 @@ namespace Hydra
 				clrValue.Color[2] = clearColor[2];
 				clrValue.Color[3] = clearColor[3];
 
+				auto& renderTarget = m_RenderTargets[i].emplace_back();
+
 				HY_DX_CHECK(dxDevice->Get()->CreateCommittedResource(
 					&HeapProps,
 					D3D12_HEAP_FLAG_NONE,
 					&texDesc,
 					D3D12_RESOURCE_STATE_RENDER_TARGET,
 					&clrValue,
-					IID_PPV_ARGS(m_RenderTargets[i][j].ReleaseAndGetAddressOf())
+					IID_PPV_ARGS(renderTarget.ReleaseAndGetAddressOf())
 				));
 
-				dxDevice->Get()->CreateRenderTargetView(m_RenderTargets[i][j].Get(), nullptr, rtvHandle);
+				dxDevice->Get()->CreateRenderTargetView(renderTarget.Get(), nullptr, rtvHandle);
 
 				rtvHandle.Offset(1, static_cast<UINT>(m_RtvDescriptorSize));
 			}

@@ -6,6 +6,8 @@ namespace Hydra
 {
 	class DxFramebuffer : public Framebuffer
 	{
+		friend class DxGraphicsPipeline;
+		friend class DxCommandBuffer;
 	public:
 		DxFramebuffer(FramebufferSpecification& specs, Ptr<Device> device);
 
@@ -19,10 +21,18 @@ namespace Hydra
 		[[nodiscard]] FORCEINLINE ID3D12Resource* GetResource(uint32_t frameindex) { return m_RenderTargets[frameindex][0].Get(); }
 	private:
 		void Validate();
+		DXGI_FORMAT m_DepthFormat;
+
 		WinRef<ID3D12DescriptorHeap> m_RtvDescriptorHeap;
+		WinRef<ID3D12DescriptorHeap> m_DsvDescriptorHeap;
+
 		PerFrameInFlight<std::vector<WinRef<ID3D12Resource>>> m_RenderTargets;
+		PerFrameInFlight<WinRef<ID3D12Resource>> m_DepthTarget;
+
 		D3D12_VIEWPORT viewPort = {};
 		D3D12_RECT rect = {};
+
 		size_t m_RtvDescriptorSize = 0;
+		size_t m_DsvDescriptorSize = 0;
 	};
 }

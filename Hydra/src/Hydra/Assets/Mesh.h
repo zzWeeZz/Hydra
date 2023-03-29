@@ -4,7 +4,7 @@
 #include "Hydra/API/ResourceInterface/Buffer.h"
 #include "Hydra/Rendering/GraphicsContext.h"
 #include "Hydra/Utils/GLTFImporter.h"
-
+#include "Hydra/Assets/Material.h"
 #include <filesystem>
 namespace Hydra
 {
@@ -18,7 +18,7 @@ namespace Hydra
 
 	struct Submesh
 	{
-		Submesh(std::vector<Vertex>& verts, std::vector<uint16_t>& indices)
+		Submesh(std::vector<Vertex>& verts, std::vector<uint16_t>& indices, int32_t materialId)
 		{
 			BufferCreateSpecification bufferSpecs = {};
 
@@ -37,10 +37,12 @@ namespace Hydra
 			bufferSpecs.allocationUsage = MemoryUsage::CPU_To_GPU;
 
 			GraphicsContext::GetDevice().lock()->CreateBuffer(bufferSpecs, indexBuffer);
+			materialID = materialId;
 		}
 
 		Ref<Buffer> vertexBuffer;
 		Ref<Buffer> indexBuffer;
+		int32_t materialID = -1;
 	};
 
 	class MeshObject
@@ -48,10 +50,13 @@ namespace Hydra
 	public:
 		void Loader(const std::filesystem::path& path)
 		{
-			GLTFImporter::Import(path, m_Submeshes);
+			GLTFImporter::Import(path, m_Submeshes, m_Materials);
 		}
+		std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
+		std::vector<Ref<Material>>& GetMaterials() { return m_Materials; }
 	private:
 		std::vector<Submesh> m_Submeshes;
+		std::vector<Ref<Material>> m_Materials;
 
 	};
 }

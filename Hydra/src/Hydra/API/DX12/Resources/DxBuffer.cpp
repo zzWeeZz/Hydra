@@ -129,9 +129,8 @@ namespace Hydra
 		};
 
 		D3D12MA::ALLOCATION_DESC allocation_desc = {
-		  .HeapType = D3D12_HEAP_TYPE_UPLOAD
+		  .HeapType = D3D12_HEAP_TYPE_UPLOAD,
 		};
-
 
 		for (auto& alloc : m_Buffer)
 		{

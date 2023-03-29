@@ -90,12 +90,12 @@ namespace Hydra
 
 		VkPipelineColorBlendAttachmentState colorBlendAttachment{};
 		colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-		colorBlendAttachment.blendEnable = VK_FALSE;
-		colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE; // Optional
-		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
+		colorBlendAttachment.blendEnable = VK_TRUE;
+		colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA; // Optional
+		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA; // Optional
 		colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD; // Optional
-		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE; // Optional
-		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
+		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA; // Optional
+		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE; // Optional
 		colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD; // Optional
 
 		VkPipelineColorBlendStateCreateInfo colorBlending{};
@@ -161,6 +161,9 @@ namespace Hydra
 		HY_VK_CHECK(vkCreatePipelineLayout(m_DeviceHandle.lock()->GetHandle(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout));
 		VulkanAllocator::CustomDeletion([&]() { vkDestroyPipelineLayout(m_DeviceHandle.lock()->GetHandle(), m_PipelineLayout, nullptr); });
 
+		auto vulkanFramebuffer = std::reinterpret_pointer_cast<VulkanFramebuffer>(m_Specs.framebufferObject.lock());
+
+		auto& formats = vulkanFramebuffer->GetFormats();
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -173,19 +176,28 @@ namespace Hydra
 		pipelineInfo.pMultisampleState = &multisampling;
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
-		//pipelineInfo.pDepthStencilState = &depthStencil;
+		int32_t depthID = 0;
+		if (FormatIsDepthInContainer(formats.data(), formats.size(), depthID))
+		{
+			pipelineInfo.pDepthStencilState = &depthStencil;
+		}
 
 		pipelineInfo.layout = m_PipelineLayout;
-		auto vulkanFramebuffer = std::reinterpret_pointer_cast<VulkanFramebuffer>(m_Specs.framebufferObject.lock());
-
-		auto& formats = vulkanFramebuffer->GetFormats();
+		
 
 		// Fetch vk formats
-		std::vector<VkFormat> vkFormats(formats.size());
-
-		for (size_t i = 0; auto & vkformat : vkFormats)
+		std::vector<VkFormat> vkFormats;
+		VkFormat vkDepthFormat = VK_FORMAT_UNDEFINED;
+		for (size_t i = 0; auto & format : formats)
 		{
-			vkformat = GetVkFormat(formats[i]);
+			if (!FormatIsDepth(format))
+			{
+				vkFormats.emplace_back(GetVkFormat(format));
+			}
+			else
+			{
+				vkDepthFormat = GetVkFormat(format);
+			}
 			i++;
 		}
 
@@ -195,7 +207,7 @@ namespace Hydra
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR,
 			.colorAttachmentCount = static_cast<uint32_t>(vkFormats.size()),
 			.pColorAttachmentFormats = vkFormats.data(),
-			.depthAttachmentFormat = VK_FORMAT_UNDEFINED,
+			.depthAttachmentFormat = vkDepthFormat,
 		};
 
 		pipelineInfo.pNext = &pipelineRenderingCreateInfo;

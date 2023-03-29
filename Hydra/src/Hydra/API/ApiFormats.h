@@ -89,20 +89,45 @@ namespace Hydra
 		RGB32F,
 		RGB32S,
 		RGB32UI,
-	
+
 		RGBA32F,
 		RGBA32UI,
 		RGBA32SI,
-		
+
 		RGBA16F,
 		RGBA16UN,
 		RGBA16UI,
 		RGBA16SN,
 		RGBA16SI,
-		
+
 		Depth32,
 		Depth24,
+
+		BC7UN,
 	};
+
+	inline bool FormatIsDepth(ImageFormat& format)
+	{
+		if (format == ImageFormat::Depth24 || format == ImageFormat::Depth32)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	inline bool FormatIsDepthInContainer(ImageFormat* data, size_t size, int32_t& outIndex)
+	{
+		for (size_t i = 0; i < size; ++i)
+		{
+			if (data[i] == ImageFormat::Depth24 || data[i] == ImageFormat::Depth32)
+			{
+				outIndex = i;
+				return true;
+			}
+		}
+		outIndex = -1.f;
+		return false;
+	}
 
 	enum class ImageType
 	{

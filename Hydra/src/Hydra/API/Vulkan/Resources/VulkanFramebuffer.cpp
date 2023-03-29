@@ -10,13 +10,13 @@ namespace Hydra
 		{
 			m_Images[i].resize(m_Specs.formats.size());
 			m_Views[i].resize(m_Specs.formats.size());
-			m_Attachments[i].resize(m_Specs.formats.size());
 		}
 		Validate();
 	}
 	
 	void VulkanFramebuffer::CleanUp()
 	{
+		m_HasDepth = false;
 		for (size_t i = 0; i < g_FramesInFlight; ++i)
 		{
 			for (size_t imageFormatIndex = 0; imageFormatIndex < m_Specs.formats.size(); ++imageFormatIndex)
@@ -30,6 +30,8 @@ namespace Hydra
 			{
 				VulkanAllocator::DeAllocate(m_Images[i][imageFormatIndex]);
 			}
+			m_Attachments[i].clear();
+			m_DepthAttachment[i] = {};
 		}
 	}
 
@@ -58,6 +60,72 @@ namespace Hydra
 		{
 			for (size_t imageFormatIndex = 0; imageFormatIndex < m_Specs.formats.size(); ++imageFormatIndex)
 			{
+				if (FormatIsDepth(m_Specs.formats[imageFormatIndex]))
+				{
+					VkImageCreateInfo imageInfo{};
+					imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+					imageInfo.imageType = VK_IMAGE_TYPE_2D;
+					imageInfo.extent.width = static_cast<uint32_t>(m_Specs.width);
+					imageInfo.extent.height = static_cast<uint32_t>(m_Specs.height);
+					imageInfo.extent.depth = 1;
+					imageInfo.mipLevels = 1;
+					imageInfo.arrayLayers = 1;
+					imageInfo.format = GetVkFormat(m_Specs.formats[imageFormatIndex]);
+					imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+					imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+					imageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+					imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+					imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+					imageInfo.flags = 0; // Optional
+
+					VmaAllocationCreateInfo imgAllocInfo{};
+					imgAllocInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY;
+
+					VulkanAllocator::Allocate(m_Images[i][imageFormatIndex], &imageInfo, &imgAllocInfo);
+
+
+					vkDevice->ImmediateSubmit([&](VkCommandBuffer buffer)
+						{
+							VkImageSubresourceRange framebufferRange = {};
+							framebufferRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+							framebufferRange.baseArrayLayer = 0;
+							framebufferRange.baseMipLevel = 0;
+							framebufferRange.layerCount = 1;
+							framebufferRange.levelCount = 1;
+
+							TransitionImageLayout(buffer, m_Images[i][imageFormatIndex].Image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL, framebufferRange);
+						});
+
+
+					VkImageViewCreateInfo viewInfo{};
+					viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+					viewInfo.image = m_Images[i][imageFormatIndex].Image;
+					viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+					viewInfo.format = GetVkFormat(m_Specs.formats[imageFormatIndex]);
+					viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+					viewInfo.subresourceRange.baseMipLevel = 0;
+					viewInfo.subresourceRange.levelCount = 1;
+					viewInfo.subresourceRange.baseArrayLayer = 0;
+					viewInfo.subresourceRange.layerCount = 1;
+
+					HY_VK_CHECK(vkCreateImageView(vkDevice->GetHandle(), &viewInfo, nullptr, &m_Views[i][imageFormatIndex]));
+					VkClearValue depthClear{};
+					depthClear.depthStencil.depth = 1.f;
+					depthClear.depthStencil.stencil = 0;
+					const VkRenderingAttachmentInfo depthAttachmentInfo
+					{
+						.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO,
+						.imageView = m_Views[i][imageFormatIndex],
+						.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+						.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+						.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+						.clearValue = depthClear,
+					};
+
+					m_DepthAttachment[i] = depthAttachmentInfo;
+					m_HasDepth = true;
+					continue;
+				}
 				VkImageCreateInfo imageInfo{};
 				imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 				imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -84,7 +152,12 @@ namespace Hydra
 				viewInfo.image = m_Images[i][imageFormatIndex].Image;
 				viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
 				viewInfo.format = GetVkFormat(m_Specs.formats[imageFormatIndex]);
+				viewInfo.components.r = VK_COMPONENT_SWIZZLE_B;
+				viewInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+				viewInfo.components.b = VK_COMPONENT_SWIZZLE_R;
+				viewInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY; 
 				viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+				
 				viewInfo.subresourceRange.baseMipLevel = 0;
 				viewInfo.subresourceRange.levelCount = 1;
 				viewInfo.subresourceRange.baseArrayLayer = 0;
@@ -115,7 +188,7 @@ namespace Hydra
 					.clearValue = clearColor,
 				};
 
-				m_Attachments[i][imageFormatIndex] = colorAttachmentInfo;
+				m_Attachments[i].emplace_back(colorAttachmentInfo);
 			}
 		}
 	}

@@ -9,9 +9,10 @@ struct VertexOut
 
 struct VertexIn
 {
-    float4 Position : POSTION;
-    float4 Color : COLOR;
-    float2 Uv : TEXCOORD;
+    float3 Position : POSTION;
+    float3 Normal : NORMAL;
+    float3 Tangent : TANGENT;
+    float2 Texcoord : TEXCOORD;
 };
 
 struct CameraData
@@ -31,9 +32,9 @@ VertexOut main(VertexIn inVertex, uint vertexID : SV_VertexID)
 {
     VertexOut outer = (VertexOut) 0;
   
-    outer.position = mul(u_CamData.GetMVP(), inVertex.Position);
-    outer.color = inVertex.Color;
-    outer.uv = inVertex.Uv;
+    outer.position = mul(u_CamData.GetMVP(), float4(inVertex.Position, 1.f));
+    outer.color = float4(1,1,1,1);
+    outer.uv = inVertex.Texcoord;
     
     return outer;
 }

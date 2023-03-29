@@ -48,15 +48,6 @@ namespace Hydra
 		}
 		auto dxCommandQueue = std::reinterpret_pointer_cast<DxCommandQueue>(m_Specs.queue.lock());
 		m_CommandList->Reset(dxCommandQueue->Get(), nullptr);
-
-		/*auto beginRB = CD3DX12_RESOURCE_BARRIER::Transition(
-			m_RenderTargets[m_FrameIndex].Get(),
-			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET);
-
-		m_CommandList->ResourceBarrier(
-			1,
-			&beginRB);*/
 	}
 
 	void DxCommandBuffer::End()
@@ -73,15 +64,24 @@ namespace Hydra
 		auto dxFramebuffer = std::reinterpret_pointer_cast<DxFramebuffer>(framebuffer);
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(dxFramebuffer->GetHeap()->GetCPUDescriptorHandleForHeapStart(), frameIndex, dxFramebuffer->DescriptorSize());
 
-		
-
-		
+		m_CommandList->RSSetScissorRects(1, &dxFramebuffer->GetRect());
+		m_CommandList->RSSetViewports(1, &dxFramebuffer->GetViewport());
 
 
 		m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
-		m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
-		m_CommandList->RSSetScissorRects(1, &dxFramebuffer->GetRect());
-		m_CommandList->RSSetViewports(1, &dxFramebuffer->GetViewport());
+
+		if (dxFramebuffer->m_HasDepth)
+		{
+			CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle(dxFramebuffer->m_DsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+			m_CommandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.f, 0, 0, nullptr);
+			m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+
+		}
+		else
+		{
+			m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+		}
+	
 	}
 
 	void DxCommandBuffer::EndFramebuffer(uint32_t frameIndex, Ref<Framebuffer>& framebuffer)

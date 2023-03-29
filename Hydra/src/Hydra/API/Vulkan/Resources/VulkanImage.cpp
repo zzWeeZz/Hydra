@@ -13,8 +13,15 @@ namespace Hydra
 	void VulkanImage::Validate()
 	{
 		auto vkDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Device.lock());
-
-		uint32_t bufferSize = m_Specs.width * m_Specs.height * 4;
+		uint32_t bufferSize = 0; 
+		if (m_Specs.memSize > 0)
+		{
+			bufferSize = m_Specs.memSize;
+		}
+		else
+		{
+			bufferSize = m_Specs.width * m_Specs.height;
+		}
 
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;

@@ -9,5 +9,6 @@ namespace Hydra
 		static void OnEvent(Event& e);
 		static void Begin();
 		static void Shutdown();
+		static void RunEditorCamera();
 	};
 }
