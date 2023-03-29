@@ -249,7 +249,13 @@
     <ClInclude Include="src\Hydra\Application.h">
       <Filter>src\Hydra</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hydra\Assets\Material.h">
+      <Filter>src\Hydra\Assets</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hydra\Assets\Mesh.h">
+      <Filter>src\Hydra\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hydra\Assets\Texture.h">
       <Filter>src\Hydra\Assets</Filter>
     </ClInclude>
     <ClInclude Include="src\Hydra\EntryPoint.h">
@@ -336,8 +342,6 @@
     <ClInclude Include="vendor\vma\vk_mem_alloc.h">
       <Filter>vendor\vma</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hydra\Assets\Texture.h" />
-    <ClInclude Include="src\Hydra\Assets\Material.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HYpch.cpp">
@@ -445,7 +449,13 @@
     <ClCompile Include="src\Hydra\Application.cpp">
       <Filter>src\Hydra</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hydra\Assets\Material.cpp">
+      <Filter>src\Hydra\Assets</Filter>
+    </ClCompile>
     <ClCompile Include="src\Hydra\Assets\Mesh.cpp">
+      <Filter>src\Hydra\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hydra\Assets\Texture.cpp">
       <Filter>src\Hydra\Assets</Filter>
     </ClCompile>
     <ClCompile Include="src\Hydra\Layer.cpp">
@@ -481,7 +491,5 @@
     <ClCompile Include="vendor\dma\D3D12MemAlloc.cpp">
       <Filter>vendor\dma</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hydra\Assets\Texture.cpp" />
-    <ClCompile Include="src\Hydra\Assets\Material.cpp" />
   </ItemGroup>
 </Project>

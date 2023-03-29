@@ -9,14 +9,11 @@ struct VertexOut
 
 Texture2D u_TestTexture : register(t1, space0);
 
-SamplerState u_PointWrap : register(s0);
-SamplerState u_PointClamp : register(s1);
-SamplerState u_LinearWrap : register(s2);
-SamplerState u_LinearClamp : register(s3);
-SamplerState u_AnisotropicWrap : register(s4);
-SamplerState u_AnisotropicClamp : register(s5);
+SamplerState u_PointClamp : register(s2, space0);
+SamplerState u_PointWrap : register(s3, space0);
+
 
 float4 main(VertexOut pIn) : SV_Target
 {
-    return u_TestTexture.Sample(u_PointClamp, pIn.uv);
+    return u_TestTexture.Sample(u_PointWrap, pIn.uv);
 }

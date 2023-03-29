@@ -6,7 +6,7 @@ namespace Hydra
 	void GraphicsContext::Intitalize(API api)
 	{
 		ContextConstructSpecifications contextCSpecs{};
-		contextCSpecs.contextSpecs.debuging = false;
+		contextCSpecs.contextSpecs.debuging = true;
 		contextCSpecs.contextSpecs.queueTypes = QueueType::Graphics | QueueType::Transfer | QueueType::Compute;
 		contextCSpecs.context = s_Context;
 		contextCSpecs.api = api;

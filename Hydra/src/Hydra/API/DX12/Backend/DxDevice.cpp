@@ -135,8 +135,6 @@ namespace Hydra
 			WaitForSingleObject(handle, INFINITE);
 		}
 		CloseHandle(handle);
-		fence->Release();
-
 	}
 	void DxDevice::UpdateValidationLayer()
 	{

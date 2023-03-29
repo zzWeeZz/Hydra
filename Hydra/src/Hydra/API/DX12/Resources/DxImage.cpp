@@ -21,7 +21,7 @@ namespace Hydra
 		texDesc.Width = m_Specs.width;
 		texDesc.Height = m_Specs.height;
 		texDesc.DepthOrArraySize = 1;
-		texDesc.MipLevels = 1;
+		texDesc.MipLevels = 5;
 		texDesc.Format = GetDxFormat( m_Specs.format);
 		texDesc.SampleDesc.Count = 1;
 		texDesc.SampleDesc.Quality = 0;
@@ -79,7 +79,6 @@ namespace Hydra
 				textureBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 				textureBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 				cmd->ResourceBarrier(1, &textureBarrier);
-
 			});
 
 		

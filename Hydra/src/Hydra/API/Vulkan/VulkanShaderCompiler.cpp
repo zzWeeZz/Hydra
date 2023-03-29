@@ -3,6 +3,7 @@
 #include <Hydra/API/Vulkan/Resources/VulkanShader.h>
 #include <fstream>
 #include <Hydra/API/Vulkan/VulkanUtils.h>
+#include "Hydra/API/Vulkan/Backend/VulkanDevice.h"
 
 namespace Hydra
 {
@@ -155,16 +156,17 @@ namespace Hydra
 		for (uint32_t layoutBindingIndex = 0; layoutBindingIndex < spvBindingCount; ++layoutBindingIndex)
 		{
 			VkDescriptorType descType = static_cast<VkDescriptorType>(spvBindings[layoutBindingIndex]->descriptor_type);
+			VkDescriptorSetLayoutBinding descriptorSetLayoutBinding{};
+
 			if (descType == VK_DESCRIPTOR_TYPE_SAMPLER)
 			{
-				continue;
+				descriptorSetLayoutBinding.pImmutableSamplers = &VulkanDevice::GetLibrary().Get(std::to_string(spvBindings[layoutBindingIndex]->binding));
 			}
-			VkDescriptorSetLayoutBinding descriptorSetLayoutBinding{};
+
 			descriptorSetLayoutBinding.binding = spvBindings[layoutBindingIndex]->binding;
 			descriptorSetLayoutBinding.descriptorCount = 1;
 			descriptorSetLayoutBinding.descriptorType = descType;
 			descriptorSetLayoutBinding.stageFlags = stage;
-			descriptorSetLayoutBinding.pImmutableSamplers = nullptr;
 
 			layouts[spvBindings[layoutBindingIndex]->set].push_back(descriptorSetLayoutBinding);
 		}

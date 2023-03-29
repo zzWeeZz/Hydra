@@ -117,7 +117,7 @@ namespace Hydra
 
 	inline bool FormatIsDepthInContainer(ImageFormat* data, size_t size, int32_t& outIndex)
 	{
-		for (size_t i = 0; i < size; ++i)
+		for (uint32_t i = 0; i < size; ++i)
 		{
 			if (data[i] == ImageFormat::Depth24 || data[i] == ImageFormat::Depth32)
 			{
@@ -125,7 +125,7 @@ namespace Hydra
 				return true;
 			}
 		}
-		outIndex = -1.f;
+		outIndex = -1;
 		return false;
 	}
 

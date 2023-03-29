@@ -20,6 +20,15 @@ namespace Hydra
 		void* ImageData = nullptr;
 	};
 
+	struct MipSpecification
+	{
+		uint32_t width = 0;
+		uint32_t height = 0;
+		uint32_t mipLevel = 0;
+		size_t MipSize = 0;
+		void* MipData = nullptr;
+	};
+
 	class Image : public Resource
 	{
 	public:

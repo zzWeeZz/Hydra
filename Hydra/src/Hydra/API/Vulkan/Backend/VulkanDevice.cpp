@@ -137,6 +137,61 @@ namespace Hydra
 		image = std::make_shared<VulkanImage>(imageSpecs, std::reinterpret_pointer_cast<VulkanDevice>(shared_from_this()));
 	}
 
+	void VulkanDevice::AddMipToImage(Ref<Image>& image, MipSpecification& mipSpecs)
+	{
+		auto vkImage = std::reinterpret_pointer_cast<VulkanImage>(image);
+		AllocatedBuffer cpubuffer = {};
+		
+		VkBufferCreateInfo bufferInfo{};
+		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferInfo.pNext = nullptr;
+		bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+		
+		bufferInfo.size = mipSpecs.MipSize;
+
+		VmaAllocationCreateInfo allocInfo{};
+
+		allocInfo.usage = GetVmaMemoryUsage(MemoryUsage::CPU_To_GPU);
+
+		VulkanAllocator::Allocate(cpubuffer, &bufferInfo, &allocInfo);
+
+		void* mappedMem = nullptr;
+		VulkanAllocator::MapMemory(cpubuffer, mappedMem);
+		memcpy(mappedMem, mipSpecs.MipData, mipSpecs.MipSize);
+		VulkanAllocator::UnMapMemory(cpubuffer);
+
+		ImmediateSubmit([&](VkCommandBuffer buffer)
+			{
+				VkImageSubresourceRange framebufferRange = {};
+				framebufferRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+				framebufferRange.baseArrayLayer = 0;
+				framebufferRange.baseMipLevel = mipSpecs.mipLevel;
+				framebufferRange.layerCount = 1;
+				framebufferRange.levelCount = VK_REMAINING_MIP_LEVELS;
+
+				TransitionImageLayout(buffer, vkImage->GetAllocatedImage().Image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, framebufferRange);
+
+				VkBufferImageCopy copyRegion{};
+				copyRegion.bufferOffset = 0;
+				copyRegion.bufferRowLength = mipSpecs.width;
+				copyRegion.bufferImageHeight = 0;
+
+				copyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+				copyRegion.imageSubresource.mipLevel = mipSpecs.mipLevel;
+				copyRegion.imageSubresource.baseArrayLayer = 0;
+				copyRegion.imageSubresource.layerCount = 1;
+				copyRegion.imageExtent.height = mipSpecs.height ;
+				copyRegion.imageExtent.width = mipSpecs.width;
+				copyRegion.imageExtent.depth = 1;
+
+				vkCmdCopyBufferToImage(buffer, cpubuffer.buffer, vkImage->GetAllocatedImage().Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
+
+
+				TransitionImageLayout(buffer, vkImage->GetAllocatedImage().Image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, framebufferRange);
+			});
+		VulkanAllocator::DeAllocate(cpubuffer);
+	}
+
 	void VulkanDevice::Shutdown()
 	{
 		vkDestroyDevice(m_Device, nullptr);

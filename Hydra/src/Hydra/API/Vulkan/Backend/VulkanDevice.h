@@ -27,18 +27,22 @@ namespace Hydra
 
 		void CreateImage(ImageSpecification& imageSpecs, Ref<Image>& image) override;
 
+		void AddMipToImage(Ref<Image>& image, MipSpecification& mipSpecs) override;
+
 		void Shutdown();
 
 		void WaitForIdle();
 
 		void ImmediateSubmit(std::function<void(VkCommandBuffer cmd)>&& func);
 
+		static SamplerLibrary& GetLibrary() { return m_SamplerLib; }
+
 	private:
 		void CreateCommandPools(Ref<VulkanPhysicalDevice> physicalDevice, size_t amount = 1);
 		bool CheckDeviceExtensionSupport(Ref<VulkanPhysicalDevice> physicalDevice, const std::vector<const char*> deviceExtensions);
 
 		VkDevice m_Device;
-		SamplerLibrary m_SamplerLib;
+		static inline SamplerLibrary m_SamplerLib;
 		// Inherited via Device
 	};
 }

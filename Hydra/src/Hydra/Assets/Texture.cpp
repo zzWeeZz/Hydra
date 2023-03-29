@@ -34,13 +34,25 @@ namespace Hydra
 								<< ")\n";
 						}
 					}*/
-
 				specs.format = ImageFormat::BC7UN;
-
+				specs.mipLevels = dds.GetMipCount();
 				 specs.ImageData = dds.GetImageData()->m_mem;
 				 //specs.memSize = dds.GetImageData()->m_memSlicePitch * dds.GetImageData()->m_memPitch;
 				 GraphicsContext::GetDevice().lock()->CreateImage(specs, m_Image);
 
+
+				 for (size_t i = 1; i < dds.GetMipCount(); ++i)
+				 {
+					 MipSpecification mipSpecs = {};
+					 mipSpecs.height = dds.GetImageData(i)->m_height;
+					 mipSpecs.width = dds.GetImageData(i)->m_width;
+
+					 mipSpecs.mipLevel = i;
+					 mipSpecs.MipData = dds.GetImageData(i)->m_mem;
+					 mipSpecs.MipSize = dds.GetImageData(i)->m_memSlicePitch;
+
+					 GraphicsContext::GetDevice().lock()->AddMipToImage(m_Image, mipSpecs);
+				 }
 			}
 
 		}

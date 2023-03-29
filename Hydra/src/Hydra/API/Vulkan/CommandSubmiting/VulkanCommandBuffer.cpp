@@ -48,6 +48,7 @@ namespace Hydra
 		beginInfo.flags = 0; // Optional
 		beginInfo.pInheritanceInfo = nullptr; // Optional
 		HY_VK_CHECK(vkBeginCommandBuffer(m_CommandBuffer, &beginInfo));
+		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.device.lock());
 	}
 
 	void VulkanCommandBuffer::End()
@@ -104,9 +105,63 @@ namespace Hydra
 
 	void VulkanCommandBuffer::BindGraphicsPipeline(uint32_t frameIndex, Ref<GraphicsPipeline>& pipeline)
 	{
+		auto vulkanDevice = std::reinterpret_pointer_cast<VulkanDevice>(m_Specs.device.lock());
 		auto vulkanPipeline = std::reinterpret_pointer_cast<VulkanGraphicsPipeline>(pipeline);
 		m_CurrentPipeline = vulkanPipeline;
 		vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline->GetHandle());
+		//VkDescriptorImageInfo info = {};
+		//info.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		//info.imageView = nullptr;
+		//info.sampler = vulkanDevice->GetLibrary().Get("0");
+		//std::vector<VkWriteDescriptorSet> sets = {};
+		//VkWriteDescriptorSet& set = sets.emplace_back();
+		//set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		//set.dstSet = 0;
+		//set.dstBinding = 0;
+		//set.descriptorCount = 1;
+		//set.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
+		//set.pImageInfo = &info;
+
+		//VkDescriptorImageInfo info2 = {};
+		//info2.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		//info2.imageView = nullptr;
+		//info2.sampler = vulkanDevice->GetLibrary().Get("1");
+
+		//VkWriteDescriptorSet& set2 = sets.emplace_back();
+		//set2.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		//set2.dstSet = 0;
+		//set2.dstBinding = 1;
+		//set2.descriptorCount = 1;
+		//set2.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
+		//set2.pImageInfo = &info2;
+
+		///*VkDescriptorImageInfo info3 = {};
+		//info3.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		//info3.imageView = nullptr;
+		//info3.sampler = vulkanDevice->GetLibrary().Get("2");
+
+		//VkWriteDescriptorSet& set3 = sets.emplace_back();
+		//set3.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		//set3.dstSet = 0;
+		//set3.dstBinding = 2;
+		//set3.descriptorCount = 1;
+		//set3.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
+		//set3.pImageInfo = &info3;
+
+		//VkDescriptorImageInfo info4 = {};
+		//info4.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		//info4.imageView = nullptr;
+		//info4.sampler = vulkanDevice->GetLibrary().Get("3");
+
+		//VkWriteDescriptorSet& set4 = sets.emplace_back();
+		//set4.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		//set4.dstSet = 0;
+		//set4.dstBinding = 3;
+		//set4.descriptorCount = 1;
+		//set4.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
+		//set4.pImageInfo = &info4;*/
+
+		//vkCmdPushDescriptorSetKHR(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_CurrentPipeline.lock()->GetLayout(), 0, sets.size(), sets.data());
 	}
 
 	void VulkanCommandBuffer::BindVertexBuffer(uint32_t frameindex, Ref<Buffer>& buffer)
