@@ -103,10 +103,10 @@ namespace Hydra
 
 		CreateCommandPools(physicalDevice);
 		m_SamplerLib.Initalize(std::reinterpret_pointer_cast<VulkanDevice>(shared_from_this()));
-		m_SamplerLib.Add("0", VulkanFilter::Nearest, VulkanAddress::Repeat, VulkanMipmapMode::Nearest, false);
-		m_SamplerLib.Add("1", VulkanFilter::Nearest, VulkanAddress::ClampToEdge, VulkanMipmapMode::Nearest, false);
-		m_SamplerLib.Add("2", VulkanFilter::Linear, VulkanAddress::Repeat, VulkanMipmapMode::Linear, false);
-		m_SamplerLib.Add("3", VulkanFilter::Linear, VulkanAddress::ClampToEdge, VulkanMipmapMode::Linear, false);
+		m_SamplerLib.Add("2", VulkanFilter::Nearest, VulkanAddress::Repeat, VulkanMipmapMode::Nearest, false);
+		m_SamplerLib.Add("3", VulkanFilter::Nearest, VulkanAddress::ClampToBorder, VulkanMipmapMode::Nearest, false);
+		m_SamplerLib.Add("4", VulkanFilter::Linear, VulkanAddress::Repeat, VulkanMipmapMode::Linear, false);
+		m_SamplerLib.Add("5", VulkanFilter::Linear, VulkanAddress::ClampToBorder, VulkanMipmapMode::Linear, false);
 		//m_SamplerLib.Add("4", VulkanFilter::Nearest, VulkanAddress::Repeat, VulkanMipmapMode::Nearest, true);
 		//m_SamplerLib.Add("5", VulkanFilter::Nearest, VulkanAddress::ClampToEdge, VulkanMipmapMode::Nearest, true);
 	}

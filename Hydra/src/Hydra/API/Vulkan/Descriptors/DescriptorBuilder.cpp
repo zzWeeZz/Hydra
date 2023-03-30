@@ -14,17 +14,9 @@ namespace Hydra
 		builder.m_Device = device;
 		return builder;
 	}
-	DescriptorBuilder& DescriptorBuilder::BindBuffer(uint32_t binding, VkDescriptorBufferInfo* bufferInfo, VkDescriptorType type, VkShaderStageFlags stageFlags)
+	DescriptorBuilder& DescriptorBuilder::BindBuffer(VkDescriptorSetLayoutBinding& binding, VkDescriptorBufferInfo* bufferInfo)
 	{
-		VkDescriptorSetLayoutBinding newBinding{};
-
-		newBinding.descriptorCount = 1;
-		newBinding.descriptorType = type;
-		newBinding.pImmutableSamplers = nullptr;
-		newBinding.stageFlags = stageFlags;
-		newBinding.binding = binding;
-
-		m_Bindings.push_back(newBinding);
+		m_Bindings.push_back(binding);
 
 		//create the descriptor write
 		VkWriteDescriptorSet newWrite{};
@@ -32,33 +24,26 @@ namespace Hydra
 		newWrite.pNext = nullptr;
 
 		newWrite.descriptorCount = 1;
-		newWrite.descriptorType = type;
+		newWrite.descriptorType = binding.descriptorType;
 		newWrite.pBufferInfo = bufferInfo;
-		newWrite.dstBinding = binding;
+		newWrite.dstBinding = binding.binding;
 
 		m_Writes.push_back(newWrite);
 		return *this;
 	}
-	DescriptorBuilder& DescriptorBuilder::BindImage(uint32_t binding, VkDescriptorImageInfo* imageInfo, VkDescriptorType type, VkShaderStageFlags stageFlags, size_t descriptorCount)
+	DescriptorBuilder& DescriptorBuilder::BindImage(VkDescriptorSetLayoutBinding& binding, VkDescriptorImageInfo* imageInfo)
 	{
-		VkDescriptorSetLayoutBinding newBinding{};
-
-		newBinding.descriptorCount = static_cast<uint32_t>(descriptorCount);
-		newBinding.descriptorType = type;
-		newBinding.pImmutableSamplers = nullptr;
-		newBinding.stageFlags = stageFlags;
-		newBinding.binding = binding;
-
-		m_Bindings.push_back(newBinding);
+		
+		m_Bindings.push_back(binding);
 
 		VkWriteDescriptorSet newWrite{};
 		newWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		newWrite.pNext = nullptr;
 
 		newWrite.descriptorCount = 1;
-		newWrite.descriptorType = type;
+		newWrite.descriptorType = binding.descriptorType;
 		newWrite.pImageInfo = imageInfo;
-		newWrite.dstBinding = binding;
+		newWrite.dstBinding = binding.binding;
 
 		m_Writes.push_back(newWrite);
 		return *this;
@@ -96,5 +81,10 @@ namespace Hydra
 	{
 		VkDescriptorSetLayout layout;
 		return Build(set, layout);
+	}
+	void DescriptorBuilder::Reset()
+	{
+		m_Bindings.clear();
+		m_Writes.clear();
 	}
 }

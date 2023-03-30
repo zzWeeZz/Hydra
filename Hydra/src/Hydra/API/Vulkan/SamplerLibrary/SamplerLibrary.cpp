@@ -21,12 +21,14 @@ void Hydra::SamplerLibrary::Add(const std::string& key, const VulkanFilter& filt
     info.unnormalizedCoordinates = VK_FALSE;
     info.compareEnable = VK_FALSE;
     info.compareOp = VK_COMPARE_OP_ALWAYS;
+    
 	info.mipmapMode = FormatToVkFormat(mipmapMode);
 	info.mipLodBias = 0.0f;
-	info.minLod = 0.0f;
-	info.maxLod = 0.0f;
+	info.minLod = 7.0f;
+	info.maxLod = 11.0f;
 	info.anisotropyEnable = isAnisotropic;
 	info.maxAnisotropy = 1.0f;
+    
     VkSampler sampler;
     HY_VK_CHECK(vkCreateSampler(m_Device.lock()->GetHandle(), &info, nullptr, &sampler));
     m_Samplers[key] = sampler;

@@ -162,11 +162,13 @@ namespace Hydra
 			{
 				descriptorSetLayoutBinding.pImmutableSamplers = &VulkanDevice::GetLibrary().Get(std::to_string(spvBindings[layoutBindingIndex]->binding));
 			}
-
+			{
+				descriptorSetLayoutBinding.descriptorType = descType;
+				descriptorSetLayoutBinding.descriptorCount = 1;
+			}
 			descriptorSetLayoutBinding.binding = spvBindings[layoutBindingIndex]->binding;
-			descriptorSetLayoutBinding.descriptorCount = 1;
-			descriptorSetLayoutBinding.descriptorType = descType;
 			descriptorSetLayoutBinding.stageFlags = stage;
+
 
 			layouts[spvBindings[layoutBindingIndex]->set].push_back(descriptorSetLayoutBinding);
 		}

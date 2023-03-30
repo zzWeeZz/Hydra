@@ -10,11 +10,12 @@ namespace Hydra
 	public:
 		static DescriptorBuilder Begin(DescriptorLayoutCache* layoutCache, DescriptorAllocator* allocator, Ptr<VulkanDevice> device);
 
-		DescriptorBuilder& BindBuffer(uint32_t binding, VkDescriptorBufferInfo* bufferInfo, VkDescriptorType type, VkShaderStageFlags stageFlags);
-		DescriptorBuilder& BindImage(uint32_t binding, VkDescriptorImageInfo* imageInfo, VkDescriptorType type, VkShaderStageFlags stageFlags, size_t descriptorCount = 1);
+		DescriptorBuilder& BindBuffer(VkDescriptorSetLayoutBinding& binding, VkDescriptorBufferInfo* bufferInfo);
+		DescriptorBuilder& BindImage(VkDescriptorSetLayoutBinding& binding, VkDescriptorImageInfo* imageInfo);
 
 		bool Build(VkDescriptorSet& set, VkDescriptorSetLayout& layout);
 		bool Build(VkDescriptorSet& set);
+		void Reset();
 	private:
 		std::vector<VkWriteDescriptorSet> m_Writes;
 		std::vector<VkDescriptorSetLayoutBinding> m_Bindings;

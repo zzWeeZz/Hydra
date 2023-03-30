@@ -10,6 +10,12 @@ namespace Hydra
 		m_DeviceHandle = device;
 		Validate();
 	}
+	VkDescriptorSetLayoutBinding& VulkanGraphicsPipeline::GetDescriptorSetLayoutBinding(uint32_t space, uint32_t binding)
+	{
+		auto vulkanShader = std::reinterpret_pointer_cast<VulkanShader>(m_Specs.shaderObject.lock());
+		auto bindVectorIndex = vulkanShader->m_BindingLookup[space][binding];
+		return vulkanShader->m_Layouts[space][bindVectorIndex];
+	}
 	void VulkanGraphicsPipeline::Validate()
 	{
 		std::vector<VkDynamicState> dynamicStates =
@@ -215,6 +221,8 @@ namespace Hydra
 
 		HY_VK_CHECK(vkCreateGraphicsPipelines(m_DeviceHandle.lock()->GetHandle(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline));
 		VulkanAllocator::CustomDeletion([&]() {vkDestroyPipeline(m_DeviceHandle.lock()->GetHandle(), m_Pipeline, nullptr); });
+
+		m_Layouts = &vulkanShader->m_Layouts;
 
 		for (auto& pipelineStage : pipeStages)
 		{

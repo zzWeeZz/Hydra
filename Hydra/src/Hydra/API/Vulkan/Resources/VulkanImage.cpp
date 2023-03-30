@@ -104,7 +104,10 @@ namespace Hydra
 		viewInfo.subresourceRange.layerCount = 1;
 
 		HY_VK_CHECK(vkCreateImageView(vkDevice->GetHandle(), &viewInfo, nullptr, &m_View));
-
+		VulkanAllocator::CustomDeletion([=]
+			{
+				vkDestroyImageView(vkDevice->GetHandle(), m_View, nullptr);
+			});
 		VulkanAllocator::DeAllocate(cpuBuffer);
 	}
 }
